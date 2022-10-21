@@ -2,13 +2,16 @@
 <model ref="r:9204995e-e366-44b4-8f75-d7451dd22026(trafic)">
   <persistence version="9" />
   <languages>
-    <use id="c840535e-4213-4a05-832f-5cc528f47f6e" name="StateMachines" version="2" />
+    <use id="c840535e-4213-4a05-832f-5cc528f47f6e" name="StateMachines" version="3" />
   </languages>
   <imports />
   <registry>
     <language id="c840535e-4213-4a05-832f-5cc528f47f6e" name="StateMachines">
       <concept id="6930325218362948548" name="StateMachines.structure.TableInput" flags="ng" index="MmgRl" />
       <concept id="6930325218362948551" name="StateMachines.structure.TableOutput" flags="ng" index="MmgRm" />
+      <concept id="6864088223273688403" name="StateMachines.structure.TableInputReference" flags="ng" index="10qrUc">
+        <reference id="6864088223273688404" name="input" index="10qrUb" />
+      </concept>
       <concept id="2400230518048822444" name="StateMachines.structure.Input" flags="ng" index="1e5k1s" />
       <concept id="1353375090556841615" name="StateMachines.structure.State" flags="ng" index="1yi8BQ">
         <reference id="6146149013205916067" name="output" index="3Dyxxl" />
@@ -33,8 +36,8 @@
         <child id="6146149013206739143" name="rows" index="3Dxq$L" />
         <child id="6146149013206739140" name="headers" index="3Dxq$M" />
       </concept>
-      <concept id="6146149013206739406" name="StateMachines.structure.PossibleTransitionCell" flags="ng" index="3DxqwS">
-        <reference id="6146149013207842989" name="input" index="3D_85r" />
+      <concept id="6146149013206739406" name="StateMachines.structure.TransitionsCell" flags="ng" index="3DxqwS">
+        <child id="6864088223273688400" name="inputs" index="10qrUf" />
       </concept>
       <concept id="6146149013206739210" name="StateMachines.structure.LeftUpperHeader" flags="ng" index="3DxqzW" />
       <concept id="6146149013206739211" name="StateMachines.structure.ToStateHeader" flags="ng" index="3DxqzX">
@@ -55,22 +58,22 @@
   <node concept="1yishZ" id="7cBVUd6SvdM">
     <property role="TrG5h" value="TrafficLight" />
     <ref role="2wiCVd" node="7FCg8KIXFUu" resolve="goGreen" />
-    <ref role="2wn6lj" node="7FCg8KIXFUy" resolve="green" />
     <ref role="2wn6mT" node="7cBVUd6SvdO" resolve="GREEN" />
+    <ref role="2wn6lj" node="7FCg8KIXFUy" resolve="green" />
     <node concept="1yishM" id="7FCg8KIXFUE" role="3CNqeR">
-      <ref role="1yishP" node="7cBVUd6SvdO" resolve="start" />
-      <ref role="1yishR" node="7cBVUd6Sve2" resolve="ORANGE" />
+      <ref role="1yishP" node="7cBVUd6SvdO" resolve="GREEN" />
       <ref role="3Dyx$3" node="2cmYrTpHt_Q" resolve="goRed" />
+      <ref role="1yishR" node="7cBVUd6Sve2" resolve="ORANGE" />
     </node>
     <node concept="1yishM" id="2cmYrTpHtAc" role="3CNqeR">
       <ref role="1yishP" node="7cBVUd6Sve2" resolve="ORANGE" />
       <ref role="3Dyx$3" node="2cmYrTpHt_W" resolve="timerEnd" />
       <ref role="1yishR" node="2cmYrTpHt_b" resolve="RED" />
     </node>
-    <node concept="1yishM" id="2cmYrTpHtAf" role="3CNqeR">
+    <node concept="1yishM" id="7TiP68NnbKh" role="3CNqeR">
+      <ref role="1yishR" node="7cBVUd6SvdO" resolve="GREEN" />
       <ref role="1yishP" node="2cmYrTpHt_b" resolve="RED" />
       <ref role="3Dyx$3" node="7FCg8KIXFUu" resolve="goGreen" />
-      <ref role="1yishR" node="7cBVUd6SvdO" resolve="GREEN" />
     </node>
     <node concept="3DyF41" id="7FCg8KIXFUy" role="3CNqff">
       <property role="TrG5h" value="green" />
@@ -92,7 +95,7 @@
     </node>
     <node concept="1yi8BQ" id="7cBVUd6SvdO" role="3Cd_sJ">
       <property role="TrG5h" value="GREEN" />
-      <ref role="3Dyxxl" node="7FCg8KIXFUy" resolve="567567" />
+      <ref role="3Dyxxl" node="7FCg8KIXFUy" resolve="green" />
     </node>
     <node concept="1yi8BQ" id="7cBVUd6Sve2" role="3Cd_sJ">
       <property role="TrG5h" value="ORANGE" />
@@ -126,7 +129,7 @@
     <node concept="3DxqzW" id="7cBVUd6SvdQ" role="3Dxq$M" />
     <node concept="3DxqzX" id="7cBVUd6SvdR" role="3Dxq$M">
       <property role="TrG5h" value="GREEN" />
-      <ref role="3D$bE_" node="7FCg8KIXFUw" resolve="567567" />
+      <ref role="3D$bE_" node="7FCg8KIXFUw" resolve="green" />
     </node>
     <node concept="3DxqzX" id="7cBVUd6Sve6" role="3Dxq$M">
       <property role="TrG5h" value="ORANGE" />
@@ -143,7 +146,9 @@
       </node>
       <node concept="3DxqwS" id="7cBVUd6SvdT" role="3Dxq$R" />
       <node concept="3DxqwS" id="7cBVUd6Sve7" role="3Dxq$R">
-        <ref role="3D_85r" node="2cmYrTpHt_T" resolve="goRed" />
+        <node concept="10qrUc" id="5X28XWvkxEP" role="10qrUf">
+          <ref role="10qrUb" node="2cmYrTpHt_T" resolve="goRed" />
+        </node>
       </node>
       <node concept="3DxqwS" id="2cmYrTpHt_h" role="3Dxq$R" />
     </node>
@@ -155,7 +160,9 @@
       <node concept="3DxqwS" id="7cBVUd6Sve9" role="3Dxq$R" />
       <node concept="3DxqwS" id="7cBVUd6Svea" role="3Dxq$R" />
       <node concept="3DxqwS" id="2cmYrTpHt_i" role="3Dxq$R">
-        <ref role="3D_85r" node="2cmYrTpHtA0" resolve="timerEnd" />
+        <node concept="10qrUc" id="5X28XWvkxEU" role="10qrUf">
+          <ref role="10qrUb" node="2cmYrTpHtA0" resolve="timerEnd" />
+        </node>
       </node>
     </node>
     <node concept="3DxqA6" id="2cmYrTpHt_f" role="3Dxq$L">
@@ -164,7 +171,9 @@
         <property role="TrG5h" value="RED" />
       </node>
       <node concept="3DxqwS" id="2cmYrTpHt_k" role="3Dxq$R">
-        <ref role="3D_85r" node="7FCg8KIXFUs" resolve="goGreen" />
+        <node concept="10qrUc" id="7TiP68NnbKf" role="10qrUf">
+          <ref role="10qrUb" node="7FCg8KIXFUs" resolve="goGreen" />
+        </node>
       </node>
       <node concept="3DxqwS" id="2cmYrTpHt_l" role="3Dxq$R" />
       <node concept="3DxqwS" id="2cmYrTpHt_m" role="3Dxq$R" />

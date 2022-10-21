@@ -324,12 +324,20 @@
   <node concept="1TIwiD" id="5lbwvqWNyBe">
     <property role="EcuMT" value="6146149013206739406" />
     <property role="3GE5qa" value="table" />
-    <property role="TrG5h" value="PossibleTransitionCell" />
+    <property role="TrG5h" value="TransitionsCell" />
     <ref role="1TJDcQ" node="5lbwvqWNyz0" resolve="StateMachineCell" />
+    <node concept="1TJgyj" id="5X28XWvaTPg" role="1TKVEi">
+      <property role="IQ2ns" value="6864088223273688400" />
+      <property role="20lmBu" value="fLJjDmT/aggregation" />
+      <property role="20kJfa" value="inputs" />
+      <property role="20lbJX" value="fLJekj5/_0__n" />
+      <ref role="20lvS9" node="5X28XWvaTPj" resolve="TableInputReference" />
+    </node>
     <node concept="1TJgyj" id="5lbwvqWRK2H" role="1TKVEi">
       <property role="IQ2ns" value="6146149013207842989" />
       <property role="20kJfa" value="input" />
       <ref role="20lvS9" node="60Htx5it7J4" resolve="TableInput" />
+      <node concept="asaX9" id="5X28XWvaTPm" role="lGtFl" />
     </node>
   </node>
   <node concept="1TIwiD" id="60Htx5it7J4">
@@ -348,6 +356,18 @@
     <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
     <node concept="PrWs8" id="60Htx5it7J8" role="PzmwI">
       <ref role="PrY4T" to="tpck:h0TrEE$" resolve="INamedConcept" />
+    </node>
+  </node>
+  <node concept="1TIwiD" id="5X28XWvaTPj">
+    <property role="EcuMT" value="6864088223273688403" />
+    <property role="3GE5qa" value="table" />
+    <property role="TrG5h" value="TableInputReference" />
+    <ref role="1TJDcQ" to="tpck:gw2VY9q" resolve="BaseConcept" />
+    <node concept="1TJgyj" id="5X28XWvaTPk" role="1TKVEi">
+      <property role="IQ2ns" value="6864088223273688404" />
+      <property role="20kJfa" value="input" />
+      <property role="20lbJX" value="fLJekj4/_1" />
+      <ref role="20lvS9" node="60Htx5it7J4" resolve="TableInput" />
     </node>
   </node>
 </model>

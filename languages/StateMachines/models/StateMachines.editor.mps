@@ -20,6 +20,7 @@
       <concept id="1140524381322" name="jetbrains.mps.lang.editor.structure.CellModel_ListWithRole" flags="ng" index="2czfm3">
         <property id="1140524450557" name="separatorText" index="2czwfO" />
         <child id="1140524464360" name="cellLayout" index="2czzBx" />
+        <child id="1140524464359" name="emptyCellModel" index="2czzBI" />
       </concept>
       <concept id="1106270549637" name="jetbrains.mps.lang.editor.structure.CellLayout_Horizontal" flags="nn" index="2iRfu4" />
       <concept id="1106270571710" name="jetbrains.mps.lang.editor.structure.CellLayout_Vertical" flags="nn" index="2iRkQZ" />
@@ -41,6 +42,9 @@
         <property id="1186403771423" name="style" index="Vbekb" />
       </concept>
       <concept id="1186404549998" name="jetbrains.mps.lang.editor.structure.ForegroundColorStyleClassItem" flags="ln" index="VechU" />
+      <concept id="1186414536763" name="jetbrains.mps.lang.editor.structure.BooleanStyleSheetItem" flags="ln" index="VOi$J">
+        <property id="1186414551515" name="flag" index="VOm3f" />
+      </concept>
       <concept id="1186414928363" name="jetbrains.mps.lang.editor.structure.SelectableStyleSheetItem" flags="ln" index="VPM3Z" />
       <concept id="1186415722038" name="jetbrains.mps.lang.editor.structure.FontSizeStyleClassItem" flags="ln" index="VSNWy">
         <property id="1221209241505" name="value" index="1lJzqX" />
@@ -62,7 +66,6 @@
       <concept id="1088185857835" name="jetbrains.mps.lang.editor.structure.InlineEditorComponent" flags="ig" index="1sVBvm" />
       <concept id="1139848536355" name="jetbrains.mps.lang.editor.structure.CellModel_WithRole" flags="ng" index="1$h60E">
         <property id="1214560368769" name="emptyNoTargetText" index="39s7Ar" />
-        <property id="1139852716018" name="noTargetText" index="1$x2rV" />
         <property id="1140017977771" name="readOnly" index="1Intyy" />
         <reference id="1140103550593" name="relationDeclaration" index="1NtTu8" />
       </concept>
@@ -694,24 +697,20 @@
   </node>
   <node concept="24kQdi" id="5lbwvqWNyBD">
     <property role="3GE5qa" value="table" />
-    <ref role="1XX52x" to="kq7i:5lbwvqWNyBe" resolve="PossibleTransitionCell" />
+    <ref role="1XX52x" to="kq7i:5lbwvqWNyBe" resolve="TransitionsCell" />
     <node concept="3EZMnI" id="5lbwvqWNyBF" role="2wV5jI">
       <node concept="2iRfu4" id="5lbwvqWNyBG" role="2iSdaV" />
-      <node concept="1iCGBv" id="5lbwvqWTsqf" role="3EZMnx">
-        <property role="39s7Ar" value="true" />
-        <property role="1$x2rV" value=" " />
-        <ref role="1NtTu8" to="kq7i:5lbwvqWRK2H" resolve="input" />
-        <node concept="1sVBvm" id="5lbwvqWTsqg" role="1sWHZn">
-          <node concept="3F0A7n" id="5lbwvqWTsql" role="2wV5jI">
-            <property role="1Intyy" value="true" />
-            <ref role="1NtTu8" to="tpck:h0TrG11" resolve="name" />
-            <node concept="Vb9p2" id="5lbwvqWTsqo" role="3F10Kt">
-              <property role="Vbekb" value="g1_kEg4/ITALIC" />
-            </node>
+      <node concept="VPM3Z" id="5lbwvqWYlQz" role="3F10Kt" />
+      <node concept="3F2HdR" id="5X28XWvcgtS" role="3EZMnx">
+        <property role="2czwfO" value="," />
+        <ref role="1NtTu8" to="kq7i:5X28XWvaTPg" resolve="inputs" />
+        <node concept="2iRfu4" id="5X28XWvcgtT" role="2czzBx" />
+        <node concept="3F0ifn" id="5X28XWvh6mJ" role="2czzBI">
+          <node concept="VPM3Z" id="5X28XWvjet5" role="3F10Kt">
+            <property role="VOm3f" value="true" />
           </node>
         </node>
       </node>
-      <node concept="VPM3Z" id="5lbwvqWYlQz" role="3F10Kt" />
     </node>
   </node>
   <node concept="1h_SRR" id="v9KtuBmxg7">
@@ -884,6 +883,19 @@
         <ref role="1NtTu8" to="tpck:h0TrG11" resolve="name" />
         <node concept="Vb9p2" id="60Htx5iSeP0" role="3F10Kt">
           <property role="Vbekb" value="g1_kEg4/ITALIC" />
+        </node>
+      </node>
+    </node>
+  </node>
+  <node concept="24kQdi" id="5X28XWvcguq">
+    <property role="3GE5qa" value="table" />
+    <ref role="1XX52x" to="kq7i:5X28XWvaTPj" resolve="TableInputReference" />
+    <node concept="1iCGBv" id="5X28XWvcgus" role="2wV5jI">
+      <ref role="1NtTu8" to="kq7i:5X28XWvaTPk" resolve="input" />
+      <node concept="1sVBvm" id="5X28XWvcguu" role="1sWHZn">
+        <node concept="3F0A7n" id="5X28XWvcgu_" role="2wV5jI">
+          <property role="1Intyy" value="true" />
+          <ref role="1NtTu8" to="tpck:h0TrG11" resolve="name" />
         </node>
       </node>
     </node>

@@ -12,7 +12,7 @@
   </facets>
   <sourcePath />
   <languageVersions>
-    <language slang="l:c840535e-4213-4a05-832f-5cc528f47f6e:StateMachines" version="2" />
+    <language slang="l:c840535e-4213-4a05-832f-5cc528f47f6e:StateMachines" version="3" />
     <language slang="l:ceab5195-25ea-4f22-9b92-103b95ca8c0c:jetbrains.mps.lang.core" version="2" />
   </languageVersions>
   <dependencyVersions>
