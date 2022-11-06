@@ -57,9 +57,9 @@
   </registry>
   <node concept="1yishZ" id="7cBVUd6SvdM">
     <property role="TrG5h" value="TrafficLight" />
-    <ref role="2wiCVd" node="7FCg8KIXFUu" resolve="goGreen" />
-    <ref role="2wn6mT" node="7cBVUd6SvdO" resolve="GREEN" />
-    <ref role="2wn6lj" node="7FCg8KIXFUy" resolve="green" />
+    <ref role="2wiCVd" node="2cmYrTpHt_Q" resolve="goRed" />
+    <ref role="2wn6lj" node="2cmYrTpHtA4" resolve="timerStart" />
+    <ref role="2wn6mT" node="7cBVUd6Sve2" resolve="ORANGE" />
     <node concept="1yishM" id="7FCg8KIXFUE" role="3CNqeR">
       <ref role="1yishP" node="7cBVUd6SvdO" resolve="GREEN" />
       <ref role="3Dyx$3" node="2cmYrTpHt_Q" resolve="goRed" />
