@@ -1,0 +1,3 @@
+[submodule "globalModelListener"]
+	path = globalModelListener
+	url = https://github.com/moham1999/globalPlugin.git/
