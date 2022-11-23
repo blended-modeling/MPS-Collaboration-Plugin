@@ -4,6 +4,7 @@ package MPSListener.plugin;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
+import MPSListener.EMF.EmfClient;
 import jetbrains.mps.smodel.MPSModuleRepository;
 import java.util.Iterator;
 import org.jetbrains.mps.openapi.module.SModule;

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependenciesRoot>
+  <uses language="l:f3061a53-9226-4cc5-a443-f952ceaf5816:jetbrains.mps.baseLanguage" />
+  <uses language="l:760a0a8c-eabb-4521-8bfd-65db761a9ba3:jetbrains.mps.baseLanguage.logging" />
+  <uses language="l:df345b11-b8c7-4213-ac66-48d2a9b75d88:jetbrains.mps.baseLanguageInternal" />
+  <uses language="l:ceab5195-25ea-4f22-9b92-103b95ca8c0c:jetbrains.mps.lang.core" />
+  <uses module="3f233e7f-b8a6-46d2-a57f-795d56775243(Annotations)" kind="dp" />
+  <uses module="6354ebe7-c22a-4a0f-ac54-50b52ab9b065(JDK)" kind="rt+dp" />
+  <uses module="6ed54515-acc8-4d1e-a16c-9fd6cfe951ea(MPS.Core)" kind="dp" />
+  <uses module="1ed103c3-3aa6-49b7-9c21-6765ee11f224(MPS.Editor)" kind="dp" />
+  <uses module="498d89d2-c2e9-11e2-ad49-6cf049e62fe5(MPS.IDEA)" kind="dp" />
+  <uses module="8865b7a8-5271-43d3-884c-6fd1d9cfdd34(MPS.OpenAPI)" kind="dp" />
+  <uses module="742f6602-5a2f-4313-aa6e-ae1cd4ffdc61(MPS.Platform)" kind="dp" />
+  <uses module="9aa8175d-5e61-44db-afaf-94a7e3f58777(MPSListener)" kind="dp" />
+  <uses module="a3e4657f-a76c-45bb-bbda-c764596ecc65(jetbrains.mps.baseLanguage.logging.runtime)" kind="rt" />
+  <uses module="52b81ac7-93fd-4e9e-b972-4995882da6d4(jetbrains.mps.baseLanguage.references.runtime)" kind="rt" />
+  <dependency className="MPSListener.EMF.EMF_ecoreParser">
+    <classNode dependClassName="MPSListener.EMF.EmfClient" />
+    <classNode dependClassName="com.fasterxml.jackson.core.JsonProcessingException" />
+    <classNode dependClassName="com.fasterxml.jackson.databind.ObjectMapper" />
+    <classNode dependClassName="ecoreRepresentation.Root" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="org.apache.log4j.Logger" />
+  </dependency>
+  <dependency className="MPSListener.EMF.EMF_fileData">
+    <classNode dependClassName="MPSListener.EMF.EMF_input" />
+    <classNode dependClassName="MPSListener.EMF.EMF_output" />
+    <classNode dependClassName="MPSListener.EMF.EMF_states" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.Collections" />
+    <classNode dependClassName="java.util.List" />
+  </dependency>
+  <dependency className="MPSListener.EMF.EMF_input">
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.HashMap" />
+  </dependency>
+  <dependency className="MPSListener.EMF.EMF_output">
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.HashMap" />
+  </dependency>
+  <dependency className="MPSListener.EMF.EMF_parser">
+    <classNode dependClassName="MPSListener.EMF.EMF_fileData" />
+    <classNode dependClassName="MPSListener.EMF.EMF_input" />
+    <classNode dependClassName="MPSListener.EMF.EMF_output" />
+    <classNode dependClassName="MPSListener.EMF.EMF_states" />
+    <classNode dependClassName="MPSListener.EMF.EmfClient" />
+    <classNode dependClassName="MPSListener.plugin.MPS_synchroniseWithEMF" />
+    <classNode dependClassName="com.fasterxml.jackson.core.JsonProcessingException" />
+    <classNode dependClassName="com.fasterxml.jackson.core.type.TypeReference" />
+    <classNode dependClassName="com.fasterxml.jackson.databind.ObjectMapper" />
+    <classNode dependClassName="java.lang.Class" />
+    <classNode dependClassName="java.lang.Object" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.ArrayList" />
+    <classNode dependClassName="java.util.Collections" />
+    <classNode dependClassName="java.util.HashMap" />
+    <classNode dependClassName="java.util.Iterator" />
+    <classNode dependClassName="java.util.List" />
+    <classNode dependClassName="java.util.Map" />
+    <classNode dependClassName="org.apache.log4j.BasicConfigurator" />
+    <classNode dependClassName="org.apache.log4j.Level" />
+    <classNode dependClassName="org.apache.log4j.LogManager" />
+    <classNode dependClassName="org.apache.log4j.Logger" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
+  </dependency>
+  <dependency className="MPSListener.EMF.EMF_states">
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.HashMap" />
+  </dependency>
+  <dependency className="MPSListener.EMF.EmfClient">
+    <classNode dependClassName="MPSListener.EMF.EMF_parser" />
+    <classNode dependClassName="MPSListener.plugin.PropertyChanged" />
+    <classNode dependClassName="com.fasterxml.jackson.core.JsonProcessingException" />
+    <classNode dependClassName="com.fasterxml.jackson.databind.JsonNode" />
+    <classNode dependClassName="com.fasterxml.jackson.databind.ObjectMapper" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.net.URISyntaxException" />
+    <classNode dependClassName="org.apache.http.client.utils.URIBuilder" />
+    <classNode dependClassName="org.apache.log4j.BasicConfigurator" />
+    <classNode dependClassName="org.apache.log4j.Logger" />
+    <classNode dependClassName="org.springframework.http.HttpHeaders" />
+    <classNode dependClassName="org.springframework.http.ResponseEntity" />
+    <classNode dependClassName="org.springframework.web.client.HttpServerErrorException" />
+    <classNode dependClassName="org.springframework.web.client.RestTemplate" />
+  </dependency>
+</dependenciesRoot>
+

@@ -13,11 +13,13 @@ public class MPS_fileData {
   private List<SNode> states;
   private String modelName;
 
+
   public MPS_fileData(List<SNode> inputs, List<SNode> outputs, List<SNode> states, String name) {
     this.inputs = inputs;
     this.outputs = outputs;
     this.states = states;
     this.modelName = name;
+
   }
 
   public MPS_fileData(String modelName) {

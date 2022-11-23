@@ -4,6 +4,7 @@ package MPSListener.plugin;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
+import MPSListener.EMF.EMF_fileData;
 import org.jetbrains.mps.openapi.module.SRepository;
 import java.util.List;
 import org.jetbrains.mps.openapi.module.SModule;
@@ -56,9 +57,6 @@ public class MPS_synchroniseWithEMF {
             SNode currentNode = nodeIterator.next();
             if (currentNode.getName().toString().equals(fileName)) {
               Iterator<? extends SNode> modelInstanceChildren = currentNode.getChildren().iterator();
-              if (LOG.isInfoEnabled()) {
-                LOG.info("woopa");
-              }
               parseModeldata(modelInstanceChildren);
               return true;
             }
