@@ -129,6 +129,9 @@ public class GlobalSModelListener implements SRepositoryListener, SModuleListene
   }
   @Override
   public void commandStarted(SRepository repository) {
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Command started....");
+    }
   }
   @Override
   public void commandFinished(SRepository repository) {
@@ -201,10 +204,11 @@ public class GlobalSModelListener implements SRepositoryListener, SModuleListene
   }
 
 
-
-
   @Override
   public void modelLoaded(SModel model, boolean partially) {
+    if (LOG.isInfoEnabled()) {
+      LOG.info(model.getName() + "loaded. Partial load:" + partially);
+    }
   }
   @Override
   public void modelReplaced(SModel model) {
@@ -251,5 +255,12 @@ public class GlobalSModelListener implements SRepositoryListener, SModuleListene
   }
   @Override
   public void nodeRemoved(@NotNull SNodeRemoveEvent event) {
+  }
+
+  public List<SRepository> getRepositary() {
+    return this.myRepos;
+  }
+  public List<SModule> getModules() {
+    return this.myModules;
   }
 }

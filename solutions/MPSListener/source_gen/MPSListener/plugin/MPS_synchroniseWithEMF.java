@@ -11,9 +11,9 @@ import org.jetbrains.mps.openapi.model.SModel;
 import jetbrains.mps.smodel.MPSModuleRepository;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import java.util.ArrayList;
+import jetbrains.mps.internal.collections.runtime.Sequence;
 import java.util.Iterator;
 import org.jetbrains.mps.openapi.model.SNode;
-import jetbrains.mps.internal.collections.runtime.Sequence;
 
 public class MPS_synchroniseWithEMF {
   private static final Logger LOG = LogManager.getLogger(MPS_synchroniseWithEMF.class);
@@ -31,12 +31,25 @@ public class MPS_synchroniseWithEMF {
   public MPS_synchroniseWithEMF(EMF_fileData emfFileData) {
     this.emfFileData = emfFileData;
     this.myRepositary = MPSModuleRepository.getInstance();
-    System.out.println(myRepositary);
     this.myModules = ListSequence.fromList(new ArrayList<SModule>());
     this.myRepos = ListSequence.fromList(new ArrayList<SRepository>());
     this.myModels = ListSequence.fromList(new ArrayList<SModel>());
     start();
   }
+
+
+  public void start() {
+    myRepositary.getModelAccess().runReadAction(() -> {
+      ListSequence.fromList(myRepos).addElement(myRepositary);
+      for (SModule module : Sequence.fromIterable(myRepositary.getModules())) {
+        for (SModel model : Sequence.fromIterable(module.getModels())) {
+          ListSequence.fromList(myModels).addElement(model);
+        }
+        ListSequence.fromList(myModules).addElement(module);
+      }
+    });
+  }
+
   private Boolean fileIsPresentLocally() {
     String fileName = emfFileData.getName();
     Iterator<SModule> moduleIterator = ListSequence.fromList(myModules).iterator();
@@ -56,9 +69,6 @@ public class MPS_synchroniseWithEMF {
             SNode currentNode = nodeIterator.next();
             if (currentNode.getName().toString().equals(fileName)) {
               Iterator<? extends SNode> modelInstanceChildren = currentNode.getChildren().iterator();
-              if (LOG.isInfoEnabled()) {
-                LOG.info("woopa");
-              }
               parseModeldata(modelInstanceChildren);
               return true;
             }
@@ -97,26 +107,4 @@ public class MPS_synchroniseWithEMF {
     }
     return null;
   }
-
-  public void start() {
-    myRepositary.getModelAccess().runReadAction(() -> start(myRepositary));
-  }
-
-  protected void start(SModule module) {
-    ListSequence.fromList(myModules).addElement(module);
-    for (SModel model : Sequence.fromIterable(module.getModels())) {
-      ListSequence.fromList(myModels).addElement(model);
-    }
-  }
-
-
-
-  protected void start(SRepository repo) {
-    ListSequence.fromList(myRepos).addElement(repo);
-    for (SModule module : Sequence.fromIterable(myRepositary.getModules())) {
-      start(module);
-    }
-  }
-
-
 }

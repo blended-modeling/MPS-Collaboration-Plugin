@@ -19,6 +19,7 @@ public class WebSocketClient {
     this.subscriptionID = "StateMachine.xmi";
 
     SubscriptionListener listener = new ExampleXMISubscriptionListener(this.subscriptionID) {
+      @Override
       public void onIncrementalUpdate(final EObject incrementalUpdate) {
         printResponse("Incremental <XmiEObject> update from model server received: " + incrementalUpdate.toString());
         if (LOG.isInfoEnabled()) {

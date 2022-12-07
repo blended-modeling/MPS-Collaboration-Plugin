@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<product version="3" modelHash="-2y3njc7h5pfpuz22sqmzc45k0ofenr8">
-  <files names="ApplicationPlugin_AppPluginPart.java:EMF_fileData.java:EMF_input.java:EMF_output.java:EMF_parser.java:EMF_states.java:EmfClient.java:GlobalSModelListener.java:MPSListener_ApplicationPlugin.java:MPS_fileData.java:MPS_synchroniseWithEMF.java:MyListener.java:PropertyChanged.java:SubscriptionListenerMPS.java:WebSocketClient.java:testListener_Action.java" />
+<product version="3" modelHash="-1j3h61exedws26zlwm3ub50t8ukkbkz">
+  <files names="ApplicationPlugin_AppPluginPart.java:EMF_fileData.java:EMF_input.java:EMF_output.java:EMF_parser.java:EMF_states.java:EmfClient.java:GlobalSModelListener.java:MPSListener_ApplicationPlugin.java:MPS_fileData.java:MPS_synchroniseWithEMF.java:Mapper.java:MyListener.java:PropertyChanged.java:SubscriptionListenerMPS.java:WebSocketClient.java:actionGroup_ActionGroup.java:actionTool_Action.java" />
 </product>
 

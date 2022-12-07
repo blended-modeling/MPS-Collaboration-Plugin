@@ -37,6 +37,7 @@ public class PropertyChanged {
     return new String(this.modelName);
   }
 
+  @Override
   public String toString() {
     return "Node: " + this.nodeName + "\nRoot:" + this.rootNodeName + "\nConcept:" + this.conceptName + "\nProperty:" + this.propertyName + "\nModel:" + this.modelName;
   }

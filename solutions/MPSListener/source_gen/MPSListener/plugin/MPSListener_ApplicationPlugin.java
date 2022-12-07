@@ -5,6 +5,7 @@ package MPSListener.plugin;
 import jetbrains.mps.plugins.applicationplugins.BaseApplicationPlugin;
 import com.intellij.openapi.extensions.PluginId;
 import org.jetbrains.annotations.NotNull;
+import jetbrains.mps.ide.actions.CreateRootNode_ActionGroup;
 import java.util.List;
 import jetbrains.mps.plugins.part.ApplicationPluginPart;
 
@@ -21,8 +22,12 @@ public class MPSListener_ApplicationPlugin extends BaseApplicationPlugin {
 
   public void createGroups() {
     // actions w/o parameters
-    addAction(new testListener_Action());
+    addAction(new actionTool_Action());
     // groups
+    addGroup(new actionGroup_ActionGroup(this));
+  }
+  public void adjustRegularGroups() {
+    insertGroupIntoAnother(actionGroup_ActionGroup.ID, CreateRootNode_ActionGroup.ID, null);
   }
   @Override
   public void fillCustomParts(List<ApplicationPluginPart> parts) {

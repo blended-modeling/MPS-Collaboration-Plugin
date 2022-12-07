@@ -7,18 +7,20 @@ import java.util.HashMap;
 public class EMF_states {
   private String id;
   private String name;
-
+  /**
+   * To consider: States seem to have a name and an output has reference, example does not seem to have any link to outputs, be warned.
+   */
   public EMF_states(HashMap<String, String> statesMap) {
     this.id = statesMap.get("$id");
     this.name = statesMap.get("name");
   }
 
   public String getId() {
-    return new String(this.id);
+    return this.id;
   }
 
   public String getName() {
-    return new String(this.name);
+    return this.name;
   }
 
 }

@@ -7,10 +7,12 @@ import java.util.HashMap;
 public class EMF_input {
   private String id;
   private String name;
+  private String description;
 
   public EMF_input(HashMap<String, String> inputMap) {
     this.id = inputMap.get("$id");
     this.name = inputMap.get("name");
+    this.description = inputMap.get("description");
   }
 
   public String getId() {
@@ -21,4 +23,7 @@ public class EMF_input {
     return new String(this.name);
   }
 
+  public String getDescription() {
+    return new String(this.description);
+  }
 }
