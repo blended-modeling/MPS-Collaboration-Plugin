@@ -2,11 +2,11 @@
 <dependenciesRoot>
   <uses language="l:f3061a53-9226-4cc5-a443-f952ceaf5816:jetbrains.mps.baseLanguage" />
   <uses language="l:443f4c36-fcf5-4eb6-9500-8d06ed259e3e:jetbrains.mps.baseLanguage.classifiers" />
-  <uses language="l:fd392034-7849-419d-9071-12563d152375:jetbrains.mps.baseLanguage.closures" />
   <uses language="l:83888646-71ce-4f1c-9c53-c54016f6ad4f:jetbrains.mps.baseLanguage.collections" />
   <uses language="l:f2801650-65d5-424e-bb1b-463a8781b786:jetbrains.mps.baseLanguage.javadoc" />
   <uses language="l:760a0a8c-eabb-4521-8bfd-65db761a9ba3:jetbrains.mps.baseLanguage.logging" />
   <uses language="l:df345b11-b8c7-4213-ac66-48d2a9b75d88:jetbrains.mps.baseLanguageInternal" />
+  <uses language="l:698a8d22-a104-47a0-ba8d-10e3ec237f13:jetbrains.mps.build.workflow" />
   <uses language="l:63650c59-16c8-498a-99c8-005c7ee9515d:jetbrains.mps.lang.access" />
   <uses language="l:ceab5195-25ea-4f22-9b92-103b95ca8c0c:jetbrains.mps.lang.core" />
   <uses language="l:28f9e497-3b42-4291-aeba-0a1039153ab1:jetbrains.mps.lang.plugin" />
@@ -28,6 +28,7 @@
   <uses module="bfbdd672-7ff5-403f-af4f-16da5226f34c(jetbrains.mps.findUsages.runtime)" kind="dp" />
   <uses module="019b622b-0aef-4dd3-86d0-4eef01f3f6bb(jetbrains.mps.ide)" kind="dp" />
   <uses module="25092e07-e655-497c-92fb-558a8e3080ed(jetbrains.mps.ide.ui)" kind="dp" />
+  <uses module="8a2e464f-d2c2-485e-a2ed-8b50c6327795(jetbrains.mps.java.workbench)" kind="dp" />
   <uses module="2d3c70e9-aab2-4870-8d8d-6036800e4103(jetbrains.mps.kernel)" kind="rt" />
   <uses module="d936855b-48da-4812-a8a0-2bfddd633ac5(jetbrains.mps.lang.behavior.api)" kind="rt+dp" />
   <uses module="d936855b-48da-4812-a8a0-2bfddd633ac4(jetbrains.mps.lang.behavior.runtime)" kind="rt" />
@@ -38,8 +39,21 @@
     <classNode dependClassName="MPSListener.plugin.EMF_parser" />
     <classNode dependClassName="MPSListener.plugin.MyListener" />
     <classNode dependClassName="MPSListener.plugin.specifyModel.StartPlugin" />
-    <classNode dependClassName="java.lang.Override" />
     <classNode extendsClassName="jetbrains.mps.plugins.part.ApplicationPluginPart" />
+  </dependency>
+  <dependency className="MPSListener.plugin.Disable_Collaboration_Action">
+    <classNode dependClassName="MPSListener.plugin.specifyModel.StartPlugin" />
+    <classNode dependClassName="com.intellij.openapi.actionSystem.AnActionEvent" />
+    <classNode dependClassName="java.lang.Object" />
+    <classNode dependClassName="java.lang.Override" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.Map" />
+    <classNode dependClassName="javax.swing.Icon" />
+    <classNode dependClassName="jetbrains.mps.ide.actions.MPSCommonDataKeys" />
+    <classNode dependClassName="jetbrains.mps.workbench.action.ActionAccess" />
+    <classNode dependClassName="org.jetbrains.annotations.NotNull" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
+    <classNode extendsClassName="jetbrains.mps.workbench.action.BaseAction" />
   </dependency>
   <dependency className="MPSListener.plugin.EMF_fileData">
     <classNode dependClassName="MPSListener.plugin.EMF_input" />
@@ -105,15 +119,25 @@
     <classNode dependClassName="org.springframework.web.client.HttpServerErrorException" />
     <classNode dependClassName="org.springframework.web.client.RestTemplate" />
   </dependency>
+  <dependency className="MPSListener.plugin.Enable_Collaboration_Action">
+    <classNode dependClassName="MPSListener.plugin.specifyModel.StartPlugin" />
+    <classNode dependClassName="com.intellij.openapi.actionSystem.AnActionEvent" />
+    <classNode dependClassName="com.intellij.openapi.actionSystem.CommonDataKeys" />
+    <classNode dependClassName="com.intellij.openapi.project.Project" />
+    <classNode dependClassName="java.lang.Object" />
+    <classNode dependClassName="java.lang.Override" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.Map" />
+    <classNode dependClassName="javax.swing.Icon" />
+    <classNode dependClassName="jetbrains.mps.ide.actions.MPSCommonDataKeys" />
+    <classNode dependClassName="jetbrains.mps.workbench.action.ActionAccess" />
+    <classNode dependClassName="org.jetbrains.annotations.NotNull" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
+    <classNode extendsClassName="jetbrains.mps.workbench.action.BaseAction" />
+  </dependency>
   <dependency className="MPSListener.plugin.GlobalSModelListener">
-    <classNode dependClassName="java.lang.Deprecated" />
     <classNode dependClassName="java.lang.Iterable" />
     <classNode dependClassName="java.lang.Override" />
-    <classNode dependClassName="java.lang.System" />
-    <classNode dependClassName="java.util.ArrayList" />
-    <classNode dependClassName="java.util.List" />
-    <classNode dependClassName="jetbrains.mps.internal.collections.runtime.ListSequence" />
-    <classNode dependClassName="jetbrains.mps.internal.collections.runtime.Sequence" />
     <classNode dependClassName="org.apache.log4j.LogManager" />
     <classNode dependClassName="org.apache.log4j.Logger" />
     <classNode dependClassName="org.jetbrains.annotations.NotNull" />
@@ -121,26 +145,22 @@
     <classNode dependClassName="org.jetbrains.mps.openapi.event.SNodeRemoveEvent" />
     <classNode dependClassName="org.jetbrains.mps.openapi.event.SPropertyChangeEvent" />
     <classNode dependClassName="org.jetbrains.mps.openapi.event.SReferenceChangeEvent" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.language.SLanguage" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SModel" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.model.SModelReference" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.module.SDependency" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode dependClassName="org.jetbrains.mps.openapi.module.SModule" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.module.SModuleReference" />
     <classNode dependClassName="org.jetbrains.mps.openapi.module.SRepository" />
     <classNode extendsClassName="org.jetbrains.mps.openapi.model.SModelListener" />
     <classNode extendsClassName="org.jetbrains.mps.openapi.model.SNodeChangeListener" />
-    <classNode extendsClassName="org.jetbrains.mps.openapi.module.SModuleListener" />
-    <classNode extendsClassName="org.jetbrains.mps.openapi.module.SRepositoryListener" />
   </dependency>
   <dependency className="MPSListener.plugin.MPSListener_ApplicationPlugin">
     <classNode dependClassName="MPSListener.plugin.ApplicationPlugin_AppPluginPart" />
-    <classNode dependClassName="MPSListener.plugin.actionGroup_ActionGroup" />
-    <classNode dependClassName="MPSListener.plugin.actionTool_Action" />
+    <classNode dependClassName="MPSListener.plugin.Disable_Collaboration_Action" />
+    <classNode dependClassName="MPSListener.plugin.Enable_Collaboration_Action" />
+    <classNode dependClassName="MPSListener.plugin.collaborate_ActionGroup" />
     <classNode dependClassName="com.intellij.openapi.extensions.PluginId" />
     <classNode dependClassName="java.lang.Override" />
     <classNode dependClassName="java.util.List" />
-    <classNode dependClassName="jetbrains.mps.ide.actions.CreateRootNode_ActionGroup" />
+    <classNode dependClassName="jetbrains.mps.ide.actions.NodeActions_ActionGroup" />
     <classNode dependClassName="jetbrains.mps.plugins.part.ApplicationPluginPart" />
     <classNode dependClassName="org.jetbrains.annotations.NotNull" />
     <classNode extendsClassName="jetbrains.mps.plugins.applicationplugins.BaseApplicationPlugin" />
@@ -180,9 +200,6 @@
     <classNode dependClassName="MPSListener.plugin.PropertyChanged" />
     <classNode dependClassName="java.lang.Override" />
     <classNode dependClassName="java.lang.System" />
-    <classNode dependClassName="jetbrains.mps.internal.collections.runtime.IVisitor" />
-    <classNode dependClassName="jetbrains.mps.internal.collections.runtime.ListSequence" />
-    <classNode dependClassName="jetbrains.mps.smodel.MPSModuleRepository" />
     <classNode dependClassName="org.apache.log4j.LogManager" />
     <classNode dependClassName="org.apache.log4j.Logger" />
     <classNode dependClassName="org.jetbrains.annotations.NotNull" />
@@ -190,7 +207,6 @@
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SModel" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
     <classNode dependClassName="org.jetbrains.mps.openapi.module.SModule" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.module.SRepository" />
     <classNode extendsClassName="MPSListener.plugin.GlobalSModelListener" />
   </dependency>
   <dependency className="MPSListener.plugin.PropertyChanged">
@@ -218,23 +234,11 @@
     <classNode dependClassName="org.eclipse.emfcloud.modelserver.client.SubscriptionListener" />
     <classNode dependClassName="org.eclipse.emfcloud.modelserver.example.client.ExampleXMISubscriptionListener" />
   </dependency>
-  <dependency className="MPSListener.plugin.actionGroup_ActionGroup">
+  <dependency className="MPSListener.plugin.collaborate_ActionGroup">
     <classNode dependClassName="java.lang.String" />
     <classNode dependClassName="jetbrains.mps.workbench.action.ApplicationPlugin" />
     <classNode dependClassName="org.jetbrains.annotations.NotNull" />
     <classNode extendsClassName="jetbrains.mps.plugins.actions.GeneratedActionGroup" />
-  </dependency>
-  <dependency className="MPSListener.plugin.actionTool_Action">
-    <classNode dependClassName="com.intellij.openapi.actionSystem.AnActionEvent" />
-    <classNode dependClassName="java.lang.Object" />
-    <classNode dependClassName="java.lang.Override" />
-    <classNode dependClassName="java.lang.String" />
-    <classNode dependClassName="java.util.Map" />
-    <classNode dependClassName="javax.swing.Icon" />
-    <classNode dependClassName="javax.swing.JOptionPane" />
-    <classNode dependClassName="jetbrains.mps.workbench.action.ActionAccess" />
-    <classNode dependClassName="org.jetbrains.annotations.NotNull" />
-    <classNode extendsClassName="jetbrains.mps.workbench.action.BaseAction" />
   </dependency>
 </dependenciesRoot>
 

@@ -4,29 +4,25 @@ package MPSListener.plugin;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
-import jetbrains.mps.smodel.MPSModuleRepository;
+import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
 import org.jetbrains.mps.openapi.model.SModel;
-import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.module.SModule;
-import jetbrains.mps.internal.collections.runtime.ListSequence;
-import jetbrains.mps.internal.collections.runtime.IVisitor;
-import org.jetbrains.mps.openapi.module.SRepository;
 
 public class MyListener extends GlobalSModelListener {
   private static final Logger LOG = LogManager.getLogger(MyListener.class);
   private EmfClient emfClient;
   private static MyListener myListener;
-  private MyListener() {
-    super(MPSModuleRepository.getInstance());
+  private MyListener(SNode node) {
+    super(node);
     this.emfClient = EmfClient.getInstance();
   }
 
-  public static MyListener getInstance() {
+  public static MyListener getInstance(SNode startingNode) {
     if (myListener == null) {
       System.out.println("Creating instance at MyListener.");
-      myListener = new MyListener();
+      myListener = new MyListener(startingNode);
     }
     return myListener;
   }
@@ -34,7 +30,7 @@ public class MyListener extends GlobalSModelListener {
   @Override
   public void propertyChanged(@NotNull SPropertyChangeEvent event) {
     PropertyChanged propertyChanged = new PropertyChanged(event);
-
+    System.out.println("hello");
     if (LOG.isInfoEnabled()) {
       LOG.info(propertyChanged.toString());
     }
@@ -42,10 +38,6 @@ public class MyListener extends GlobalSModelListener {
     SModel sModel = event.getModel();
     SNode sNode = event.getNode();
     SModule sModule = event.getModel().getModule();
-    ListSequence.fromList(myRepos).visitAll(new IVisitor<SRepository>() {
-      public void visit(SRepository it) {
-      }
-    });
   }
 
 

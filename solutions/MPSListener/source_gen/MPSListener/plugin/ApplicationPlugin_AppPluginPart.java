@@ -11,15 +11,4 @@ public class ApplicationPlugin_AppPluginPart extends ApplicationPluginPart {
   private StartPlugin startPlugin;
   public ApplicationPlugin_AppPluginPart() {
   }
-  @Override
-  public void init() {
-    ApplicationPlugin_AppPluginPart.this.listener = MyListener.getInstance();
-    ApplicationPlugin_AppPluginPart.this.startPlugin = new StartPlugin();
-    ApplicationPlugin_AppPluginPart.this.startPlugin.start();
-    ApplicationPlugin_AppPluginPart.this.listener.start();
-  }
-  @Override
-  public void dispose() {
-    ApplicationPlugin_AppPluginPart.this.listener.stop();
-  }
 }
