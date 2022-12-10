@@ -48,7 +48,7 @@
     <classNode dependClassName="org.jetbrains.mps.openapi.module.SRepository" />
   </dependency>
   <dependency className="MPSListener.plugin.specifyModel.StartPlugin">
-    <classNode dependClassName="MPSListener.plugin.MyListener" />
+    <classNode dependClassName="MPSListener.plugin.listener.MyListener" />
     <classNode dependClassName="MPSListener.plugin.specifyModel.JFrame" />
     <classNode dependClassName="MPSListener.plugin.specifyModel.MPS_LocalRepo" />
     <classNode dependClassName="java.lang.System" />

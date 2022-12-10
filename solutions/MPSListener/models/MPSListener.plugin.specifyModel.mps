@@ -25,6 +25,7 @@
     <import index="1m72" ref="498d89d2-c2e9-11e2-ad49-6cf049e62fe5/java:com.intellij.openapi.components(MPS.IDEA/)" />
     <import index="4nm9" ref="498d89d2-c2e9-11e2-ad49-6cf049e62fe5/java:com.intellij.openapi.project(MPS.IDEA/)" />
     <import index="iwsx" ref="498d89d2-c2e9-11e2-ad49-6cf049e62fe5/java:com.intellij.openapi.fileEditor(MPS.IDEA/)" />
+    <import index="6jn5" ref="r:e33f8c38-c0cd-45e3-84b3-05a1971ea78b(MPSListener.plugin.listener)" />
     <import index="wyt6" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/java:java.lang(JDK/)" implicit="true" />
     <import index="guwi" ref="6354ebe7-c22a-4a0f-ac54-50b52ab9b065/java:java.io(JDK/)" implicit="true" />
   </imports>
@@ -1288,9 +1289,9 @@
         </node>
         <node concept="3clFbF" id="14jW9zxU5zg" role="3cqZAp">
           <node concept="2OqwBi" id="14jW9zxU5Yt" role="3clFbG">
-            <node concept="2YIFZM" id="1LyLKPbpqKL" role="2Oq$k0">
-              <ref role="37wK5l" to="71nd:pI4pwV0o$Q" resolve="getInstance" />
-              <ref role="1Pybhc" to="71nd:s6eKOrlQ5N" resolve="MyListener" />
+            <node concept="2YIFZM" id="7P2o1jEoLsI" role="2Oq$k0">
+              <ref role="37wK5l" to="6jn5:pI4pwV0o$Q" resolve="getInstance" />
+              <ref role="1Pybhc" to="6jn5:s6eKOrlQ5N" resolve="MyListener" />
               <node concept="2OqwBi" id="1LyLKPbpqKM" role="37wK5m">
                 <node concept="Xjq3P" id="1LyLKPbpqKN" role="2Oq$k0" />
                 <node concept="2OwXpG" id="1LyLKPbpqKO" role="2OqNvi">
@@ -1299,7 +1300,7 @@
               </node>
             </node>
             <node concept="liA8E" id="14jW9zxU6Fo" role="2OqNvi">
-              <ref role="37wK5l" to="71nd:1LyLKPbm7A1" resolve="start" />
+              <ref role="37wK5l" to="6jn5:1LyLKPbm7A1" resolve="start" />
             </node>
           </node>
         </node>
@@ -1350,9 +1351,9 @@
       <node concept="3clFbS" id="2Bjn4wMWCfk" role="3clF47">
         <node concept="3clFbF" id="2Bjn4wMWKv5" role="3cqZAp">
           <node concept="2OqwBi" id="2Bjn4wMWMXi" role="3clFbG">
-            <node concept="2YIFZM" id="2Bjn4wMWL9C" role="2Oq$k0">
-              <ref role="37wK5l" to="71nd:pI4pwV0o$Q" resolve="getInstance" />
-              <ref role="1Pybhc" to="71nd:s6eKOrlQ5N" resolve="MyListener" />
+            <node concept="2YIFZM" id="7P2o1jEoLsJ" role="2Oq$k0">
+              <ref role="37wK5l" to="6jn5:pI4pwV0o$Q" resolve="getInstance" />
+              <ref role="1Pybhc" to="6jn5:s6eKOrlQ5N" resolve="MyListener" />
               <node concept="2OqwBi" id="2Bjn4wMWM20" role="37wK5m">
                 <node concept="Xjq3P" id="2Bjn4wMWLPh" role="2Oq$k0" />
                 <node concept="2OwXpG" id="2Bjn4wMWMzY" role="2OqNvi">
@@ -1361,7 +1362,7 @@
               </node>
             </node>
             <node concept="liA8E" id="2Bjn4wMWNtm" role="2OqNvi">
-              <ref role="37wK5l" to="71nd:21JGCLSYM55" resolve="stop" />
+              <ref role="37wK5l" to="6jn5:21JGCLSYM55" resolve="stop" />
             </node>
           </node>
         </node>

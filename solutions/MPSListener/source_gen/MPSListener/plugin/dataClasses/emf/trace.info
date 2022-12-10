@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debug-info version="2">
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123140:jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123155:jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068390468200:jetbrains.mps.baseLanguage.structure.FieldDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123165:jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242878:jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+  <root nodeRef="r:2c662981-37d0-4094-be06-515ddb80f2ea(MPSListener.plugin.dataClasses.emf)/1827749510579871664">
+    <file name="input.java">
+      <node id="1827749510579892983" at="8,0,9,0" concept="2" trace="id" />
+      <node id="1827749510579898171" at="9,0,10,0" concept="2" trace="name" />
+      <node id="6983184702455760712" at="10,0,11,0" concept="2" trace="description" />
+      <node id="1827749510579912587" at="12,50,13,34" concept="1" />
+      <node id="1827749510579935478" at="13,34,14,37" concept="1" />
+      <node id="6791411149807899148" at="14,37,15,51" concept="1" />
+      <node id="1827749510580072801" at="18,25,19,31" concept="4" />
+      <node id="1827749510580071764" at="22,27,23,33" concept="4" />
+      <node id="6983184702455767493" at="26,34,27,40" concept="4" />
+      <node id="1827749510580072799" at="18,0,21,0" concept="3" trace="getId#()Ljava/lang/String;" />
+      <node id="1827749510580071762" at="22,0,25,0" concept="3" trace="getName#()Ljava/lang/String;" />
+      <node id="6983184702455766020" at="26,0,29,0" concept="3" trace="getDescription#()Ljava/lang/String;" />
+      <node id="1827749510579902111" at="12,0,17,0" concept="0" trace="input#(Ljava/util/HashMap;)V" />
+      <scope id="1827749510580072800" at="18,25,19,31" />
+      <scope id="1827749510580071763" at="22,27,23,33" />
+      <scope id="6983184702455766023" at="26,34,27,40" />
+      <scope id="1827749510579902114" at="12,50,15,51" />
+      <scope id="1827749510580072799" at="18,0,21,0" />
+      <scope id="1827749510580071762" at="22,0,25,0" />
+      <scope id="6983184702455766020" at="26,0,29,0" />
+      <scope id="1827749510579902111" at="12,0,17,0">
+        <var name="inputMap" id="1827749510579903891" />
+      </scope>
+      <unit id="1827749510579871664" at="7,0,30,0" name="MPSListener.plugin.dataClasses.emf.input" />
+    </file>
+  </root>
+  <root nodeRef="r:2c662981-37d0-4094-be06-515ddb80f2ea(MPSListener.plugin.dataClasses.emf)/1827749510579960596">
+    <file name="output.java">
+      <node id="1827749510579972092" at="8,0,9,0" concept="2" trace="id" />
+      <node id="1827749510579976413" at="9,0,10,0" concept="2" trace="name" />
+      <node id="1827749510579988482" at="11,52,12,35" concept="1" />
+      <node id="1827749510580011720" at="12,35,13,38" concept="1" />
+      <node id="1827749510580043236" at="16,25,17,31" concept="4" />
+      <node id="1827749510580058305" at="20,27,21,33" concept="4" />
+      <node id="1827749510580041636" at="16,0,19,0" concept="3" trace="getId#()Ljava/lang/String;" />
+      <node id="1827749510580056124" at="20,0,23,0" concept="3" trace="getName#()Ljava/lang/String;" />
+      <node id="1827749510579980848" at="11,0,15,0" concept="0" trace="output#(Ljava/util/HashMap;)V" />
+      <scope id="1827749510580041639" at="16,25,17,31" />
+      <scope id="1827749510580056127" at="20,27,21,33" />
+      <scope id="1827749510579980851" at="11,52,13,38" />
+      <scope id="1827749510580041636" at="16,0,19,0" />
+      <scope id="1827749510580056124" at="20,0,23,0" />
+      <scope id="1827749510579980848" at="11,0,15,0">
+        <var name="outputMap" id="1827749510579982628" />
+      </scope>
+      <unit id="1827749510579960596" at="7,0,24,0" name="MPSListener.plugin.dataClasses.emf.output" />
+    </file>
+  </root>
+  <root nodeRef="r:2c662981-37d0-4094-be06-515ddb80f2ea(MPSListener.plugin.dataClasses.emf)/1827749510580073393">
+    <file name="fileData.java">
+      <node id="1827749510580087278" at="9,0,10,0" concept="2" trace="type" />
+      <node id="1827749510580092982" at="10,0,11,0" concept="2" trace="id" />
+      <node id="1827749510580096539" at="11,0,12,0" concept="2" trace="name" />
+      <node id="1827749510580104759" at="12,0,13,0" concept="2" trace="inputs" />
+      <node id="1827749510580108806" at="13,0,14,0" concept="2" trace="outputs" />
+      <node id="1827749510580196612" at="14,0,15,0" concept="2" trace="states" />
+      <node id="1827749510580231353" at="16,119,17,21" concept="1" />
+      <node id="1827749510580235902" at="17,21,18,17" concept="1" />
+      <node id="1827749510580240075" at="18,17,19,21" concept="1" />
+      <node id="1827749510580243999" at="19,21,20,25" concept="1" />
+      <node id="1827749510580250568" at="20,25,21,27" concept="1" />
+      <node id="1827749510580258557" at="21,27,22,25" concept="1" />
+      <node id="1827749510580273407" at="25,27,26,33" concept="4" />
+      <node id="1827749510580299405" at="29,25,30,31" concept="4" />
+      <node id="1827749510580334203" at="33,27,34,33" concept="4" />
+      <node id="1827749510580359030" at="37,34,38,53" concept="4" />
+      <node id="5518883191589169252" at="41,36,42,54" concept="4" />
+      <node id="5518883191589193624" at="45,35,46,53" concept="4" />
+      <node id="1827749510580271763" at="25,0,28,0" concept="3" trace="getType#()Ljava/lang/String;" />
+      <node id="1827749510580297180" at="29,0,32,0" concept="3" trace="getID#()Ljava/lang/String;" />
+      <node id="1827749510580331921" at="33,0,36,0" concept="3" trace="getName#()Ljava/lang/String;" />
+      <node id="1827749510580357198" at="37,0,40,0" concept="3" trace="getInputs#()Ljava/util/List;" />
+      <node id="5518883191589165961" at="41,0,44,0" concept="3" trace="getOutputs#()Ljava/util/List;" />
+      <node id="5518883191589190116" at="45,0,48,0" concept="3" trace="getStates#()Ljava/util/List;" />
+      <node id="1827749510580204340" at="16,0,24,0" concept="0" trace="fileData#(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V" />
+      <scope id="1827749510580271766" at="25,27,26,33" />
+      <scope id="1827749510580297183" at="29,25,30,31" />
+      <scope id="1827749510580331924" at="33,27,34,33" />
+      <scope id="1827749510580357201" at="37,34,38,53" />
+      <scope id="5518883191589165964" at="41,36,42,54" />
+      <scope id="5518883191589190119" at="45,35,46,53" />
+      <scope id="1827749510580271763" at="25,0,28,0" />
+      <scope id="1827749510580297180" at="29,0,32,0" />
+      <scope id="1827749510580331921" at="33,0,36,0" />
+      <scope id="1827749510580357198" at="37,0,40,0" />
+      <scope id="5518883191589165961" at="41,0,44,0" />
+      <scope id="5518883191589190116" at="45,0,48,0" />
+      <scope id="1827749510580204343" at="16,119,22,25" />
+      <scope id="1827749510580204340" at="16,0,24,0">
+        <var name="id" id="1827749510580209572" />
+        <var name="inputs" id="1827749510580216082" />
+        <var name="name" id="1827749510580212695" />
+        <var name="outputs" id="1827749510580219568" />
+        <var name="states" id="1827749510580223835" />
+        <var name="tyoe" id="1827749510580206135" />
+      </scope>
+      <unit id="1827749510580073393" at="8,0,49,0" name="MPSListener.plugin.dataClasses.emf.fileData" />
+    </file>
+  </root>
+  <root nodeRef="r:2c662981-37d0-4094-be06-515ddb80f2ea(MPSListener.plugin.dataClasses.emf)/1827749510580111471">
+    <file name="states.java">
+      <node id="6791411149807987589" at="8,0,9,0" concept="2" trace="id" />
+      <node id="6791411149807990989" at="9,0,10,0" concept="2" trace="name" />
+      <node id="6791411149807992391" at="13,52,14,35" concept="1" />
+      <node id="6791411149808016416" at="14,35,15,38" concept="1" />
+      <node id="1827749510580191822" at="18,25,19,19" concept="4" />
+      <node id="1827749510580190986" at="22,27,23,21" concept="4" />
+      <node id="1827749510580191820" at="18,0,21,0" concept="3" trace="getId#()Ljava/lang/String;" />
+      <node id="1827749510580190984" at="22,0,25,0" concept="3" trace="getName#()Ljava/lang/String;" />
+      <node id="1827749510580136842" at="13,0,17,0" concept="0" trace="states#(Ljava/util/HashMap;)V" />
+      <scope id="1827749510580191821" at="18,25,19,19" />
+      <scope id="1827749510580190985" at="22,27,23,21" />
+      <scope id="1827749510580136845" at="13,52,15,38" />
+      <scope id="1827749510580191820" at="18,0,21,0" />
+      <scope id="1827749510580190984" at="22,0,25,0" />
+      <scope id="1827749510580136842" at="13,0,17,0">
+        <var name="statesMap" id="1827749510580138098" />
+      </scope>
+      <unit id="1827749510580111471" at="7,0,27,0" name="MPSListener.plugin.dataClasses.emf.states" />
+    </file>
+  </root>
+</debug-info>
+

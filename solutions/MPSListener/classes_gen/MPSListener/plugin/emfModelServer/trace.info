@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debug-info version="2">
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123140:jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123155:jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068390468200:jetbrains.mps.baseLanguage.structure.FieldDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123159:jetbrains.mps.baseLanguage.structure.IfStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123165:jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242864:jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242878:jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123157:jetbrains.mps.baseLanguage.structure.Statement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1070462154015:jetbrains.mps.baseLanguage.structure.StaticFieldDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1081236700938:jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/5351203823916750322:jetbrains.mps.baseLanguage.structure.TryUniversalStatement" />
+  <root nodeRef="r:1b8f6d59-f69d-4c8c-9b5f-c380edcfbedb(MPSListener.plugin.emfModelServer)/5265046927520653357">
+    <file name="WebSocketClient.java">
+      <node id="5265046927520653357" at="13,0,14,0" concept="8" trace="LOG" />
+      <node id="5265046927520863929" at="14,0,15,0" concept="2" trace="modelServerClient" />
+      <node id="5265046927520878099" at="15,0,16,0" concept="2" trace="webSocketAddress" />
+      <node id="5265046927521638179" at="16,0,17,0" concept="2" trace="subscriptionID" />
+      <node id="5265046927520880937" at="17,28,18,60" concept="1" />
+      <node id="5265046927521641080" at="18,60,19,45" concept="1" />
+      <node id="5265046927579060007" at="19,45,20,0" concept="7" />
+      <node id="5265046927578947201" at="23,72,24,117" concept="1" />
+      <node id="7444229236690397174" at="25,34,26,99" concept="1" />
+      <node id="5265046927521873946" at="29,6,30,68" concept="1" />
+      <node id="2957045368266530074" at="30,68,31,0" concept="7" />
+      <node id="7444229236690397174" at="24,117,27,9" concept="3" />
+      <node id="5265046927578893356" at="22,0,29,0" concept="4" trace="onIncrementalUpdate#(Lorg/eclipse/emf/ecore/EObject;)V" />
+      <node id="5265046927560169768" at="20,0,29,6" concept="5" />
+      <node id="5265046927520757329" at="17,0,33,0" concept="0" trace="WebSocketClient#()V" />
+      <scope id="7444229236690397174" at="25,34,26,99" />
+      <scope id="5265046927578893359" at="23,72,27,9" />
+      <scope id="5265046927578893356" at="22,0,29,0">
+        <var name="incrementalUpdate" id="5265046927578895940" />
+      </scope>
+      <scope id="5265046927520757332" at="17,28,31,0">
+        <var name="listener" id="5265046927560169769" />
+      </scope>
+      <scope id="5265046927520757329" at="17,0,33,0" />
+      <unit id="5265046927578886931" at="21,40,29,5" name="MPSListener.plugin.emfModelServer.WebSocketClient$1" />
+      <unit id="5265046927520653357" at="12,0,34,0" name="MPSListener.plugin.emfModelServer.WebSocketClient" />
+    </file>
+  </root>
+  <root nodeRef="r:1b8f6d59-f69d-4c8c-9b5f-c380edcfbedb(MPSListener.plugin.emfModelServer)/5844847416374871492">
+    <file name="EmfClient.java">
+      <node id="5844847416374871492" at="22,0,23,0" concept="8" trace="LOG" />
+      <node id="170305400073307957" at="23,0,24,0" concept="2" trace="serverSocketAddress" />
+      <node id="170305400073314680" at="24,0,25,0" concept="2" trace="models" />
+      <node id="213941562131849743" at="25,0,26,0" concept="2" trace="currentModel" />
+      <node id="213941562131956428" at="26,0,27,0" concept="2" trace="om" />
+      <node id="2957045368270179879" at="27,0,28,0" concept="8" trace="emfClient" />
+      <node id="170305400073472848" at="28,23,29,63" concept="1" />
+      <node id="170305400073478407" at="29,63,30,27" concept="1" />
+      <node id="213941562131858316" at="30,27,31,47" concept="1" />
+      <node id="213941562131966246" at="31,47,32,33" concept="1" />
+      <node id="2957045368270195494" at="36,28,37,34" concept="1" />
+      <node id="2957045368270205416" at="38,5,39,21" concept="6" />
+      <node id="170305400073344926" at="43,30,44,41" concept="1" />
+      <node id="170305400073347764" at="45,5,46,44" concept="5" />
+      <node id="170305400073456093" at="46,44,47,51" concept="5" />
+      <node id="170305400073692632" at="47,51,48,41" concept="5" />
+      <node id="213941562128020151" at="49,9,50,103" concept="1" />
+      <node id="170305400073626095" at="52,41,53,45" concept="1" />
+      <node id="170305400073678062" at="55,5,56,47" concept="6" />
+      <node id="213941562127906256" at="60,30,61,59" concept="1" />
+      <node id="213941562128075726" at="62,5,63,44" concept="5" />
+      <node id="213941562128095903" at="63,44,64,51" concept="5" />
+      <node id="213941562128120641" at="64,51,65,41" concept="5" />
+      <node id="213941562128784783" at="66,9,67,137" concept="5" />
+      <node id="213941562128147058" at="67,137,68,77" concept="1" />
+      <node id="213941562129020104" at="70,32,71,34" concept="1" />
+      <node id="213941562127922355" at="73,5,74,47" concept="6" />
+      <node id="213941562131880878" at="77,67,78,54" concept="5" />
+      <node id="213941562132058824" at="78,54,79,28" concept="5" />
+      <node id="213941562131927834" at="80,9,81,52" concept="5" />
+      <node id="213941562132794495" at="82,32,83,44" concept="1" />
+      <node id="213941562132039313" at="84,7,85,53" concept="1" />
+      <node id="213941562132648580" at="86,32,87,30" concept="1" />
+      <node id="213941562132203477" at="90,42,91,35" concept="1" />
+      <node id="213941562132228505" at="93,5,94,23" concept="6" />
+      <node id="213941562126965052" at="97,42,98,34" concept="1" />
+      <node id="213941562127007377" at="98,34,99,42" concept="5" />
+      <node id="213941562127400904" at="99,42,100,63" concept="1" />
+      <node id="2957045368270668457" at="100,63,101,55" concept="5" />
+      <node id="2957045368270170122" at="35,41,38,5" concept="3" />
+      <node id="170305400073344926" at="42,32,45,5" concept="3" />
+      <node id="170305400073626095" at="51,43,54,7" concept="3" />
+      <node id="213941562127906256" at="59,43,62,5" concept="3" />
+      <node id="213941562129020104" at="69,37,72,7" concept="3" />
+      <node id="213941562132794495" at="81,52,84,7" concept="3" />
+      <node id="213941562132648580" at="85,53,88,7" concept="3" />
+      <node id="213941562132203477" at="89,42,92,7" concept="3" />
+      <node id="170305400073471605" at="28,0,34,0" concept="0" trace="EmfClient#()V" />
+      <node id="2957045368270170119" at="35,0,41,0" concept="9" trace="getInstance#()LMPSListener/plugin/emfModelServer/EmfClient;" />
+      <node id="213941562126916997" at="97,0,103,0" concept="9" trace="main#([Ljava/lang/String;)V" />
+      <node id="170305400073602558" at="48,41,55,5" concept="10" />
+      <node id="213941562128965143" at="65,41,73,5" concept="10" />
+      <node id="213941562132018197" at="79,28,93,5" concept="10" />
+      <node id="170305400073329638" at="42,0,58,0" concept="4" trace="getAllModels#()Ljava/lang/String;" />
+      <node id="213941562127893273" at="59,0,76,0" concept="4" trace="getModel#(Ljava/lang/String;)Ljava/lang/String;" />
+      <node id="213941562131782068" at="77,0,96,0" concept="4" trace="getNodeFromModel#(LMPSListener/plugin/dataClasses/mps/PropertyChanged;)Ljava/lang/String;" />
+      <scope id="2957045368270170124" at="36,28,37,34" />
+      <scope id="170305400073344926" at="43,30,44,41" />
+      <scope id="170305400073602560" at="49,9,50,103" />
+      <scope id="170305400073626095" at="52,41,53,45" />
+      <scope id="213941562127906256" at="60,30,61,59" />
+      <scope id="213941562129020104" at="70,32,71,34" />
+      <scope id="213941562132794495" at="82,32,83,44" />
+      <scope id="213941562132648580" at="86,32,87,30" />
+      <scope id="213941562132203477" at="90,42,91,35" />
+      <scope id="213941562128965145" at="66,9,68,77">
+        <var name="queryAddress" id="213941562128784784" />
+      </scope>
+      <scope id="170305400073609210" at="51,43,54,7" />
+      <scope id="213941562128972671" at="69,37,72,7" />
+      <scope id="213941562132178302" at="89,42,92,7" />
+      <scope id="170305400073471608" at="28,23,32,33" />
+      <scope id="2957045368270170121" at="35,41,39,21" />
+      <scope id="170305400073609207" at="51,5,55,5">
+        <var name="su" id="170305400073609208" />
+      </scope>
+      <scope id="213941562128972668" at="69,5,73,5">
+        <var name="se" id="213941562128972669" />
+      </scope>
+      <scope id="213941562132178299" at="89,5,93,5">
+        <var name="pe" id="213941562132178300" />
+      </scope>
+      <scope id="213941562126917000" at="97,42,101,55">
+        <var name="emfServer" id="213941562127007378" />
+        <var name="emf_synchroniseModel" id="2957045368270668458" />
+      </scope>
+      <scope id="170305400073471605" at="28,0,34,0" />
+      <scope id="2957045368270170119" at="35,0,41,0" />
+      <scope id="213941562126916997" at="97,0,103,0">
+        <var name="args" id="213941562126920282" />
+      </scope>
+      <scope id="213941562132018199" at="80,9,88,7">
+        <var name="jsonNode" id="213941562131927835" />
+      </scope>
+      <scope id="170305400073329641" at="42,32,56,47">
+        <var name="headers" id="170305400073347765" />
+        <var name="responseEntity" id="170305400073692633" />
+        <var name="restTemplate" id="170305400073456094" />
+      </scope>
+      <scope id="213941562127893276" at="59,43,74,47">
+        <var name="headers" id="213941562128075727" />
+        <var name="responseEntity" id="213941562128120642" />
+        <var name="restTemplate" id="213941562128095904" />
+      </scope>
+      <scope id="170305400073329638" at="42,0,58,0" />
+      <scope id="213941562127893273" at="59,0,76,0">
+        <var name="modelUri" id="213941562127899149" />
+      </scope>
+      <scope id="213941562131782071" at="77,67,94,23">
+        <var name="modelDetails" id="213941562131880879" />
+        <var name="nodeDetails" id="213941562132058825" />
+      </scope>
+      <scope id="213941562131782068" at="77,0,96,0">
+        <var name="propertyChanged" id="213941562132100139" />
+      </scope>
+      <unit id="5844847416374871492" at="21,0,104,0" name="MPSListener.plugin.emfModelServer.EmfClient" />
+    </file>
+  </root>
+</debug-info>
+
