@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<product version="3" modelHash="-3nmi9iqqlr7ezftadd6gocq1nzezrhz">
-  <files names="EmfClient.java:WebSocketClient.java" />
+<product version="3" modelHash="cbl1diafz04iwyby8tnksc3hkdzutg8">
+  <files names="Client.java" />
 </product>
 

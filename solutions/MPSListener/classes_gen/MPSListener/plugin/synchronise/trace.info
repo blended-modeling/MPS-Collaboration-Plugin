@@ -4,137 +4,91 @@
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123155:jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068390468200:jetbrains.mps.baseLanguage.structure.FieldDeclaration" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1144226303539:jetbrains.mps.baseLanguage.structure.ForeachStatement" />
-  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123159:jetbrains.mps.baseLanguage.structure.IfStatement" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123165:jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" />
-  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242864:jetbrains.mps.baseLanguage.structure.LocalVariableDeclarationStatement" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242878:jetbrains.mps.baseLanguage.structure.ReturnStatement" />
-  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/6329021646629104954:jetbrains.mps.baseLanguage.structure.SingleLineComment" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123157:jetbrains.mps.baseLanguage.structure.Statement" />
-  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1070462154015:jetbrains.mps.baseLanguage.structure.StaticFieldDeclaration" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1163670490218:jetbrains.mps.baseLanguage.structure.SwitchStatement" />
-  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1076505808687:jetbrains.mps.baseLanguage.structure.WhileStatement" />
   <root nodeRef="r:ed1962b8-0c77-4d15-b4f0-5ab74ab2241c(MPSListener.plugin.synchronise)/3967682250601691810">
-    <file name="MPS_synchroniseWithEMF.java">
-      <node id="3967682250601691810" at="21,0,22,0" concept="10" trace="LOG" />
-      <node id="3967682250601730574" at="22,0,23,0" concept="2" trace="emfFileData" />
-      <node id="3967682250601774413" at="23,0,24,0" concept="2" trace="myRepositary" />
-      <node id="3967682250602462484" at="24,0,25,0" concept="2" trace="mpsFileData" />
-      <node id="463327157194980841" at="25,0,26,0" concept="2" trace="myListener" />
-      <node id="463327157194159445" at="27,0,28,0" concept="2" trace="myRepos" />
-      <node id="463327157194183634" at="28,0,29,0" concept="2" trace="myModules" />
-      <node id="463327157194201195" at="29,0,30,0" concept="2" trace="myModels" />
-      <node id="3967682250601741758" at="33,55,34,35" concept="1" />
-      <node id="3967682250601791749" at="34,35,35,58" concept="1" />
-      <node id="3967682250601801015" at="35,58,36,69" concept="1" />
-      <node id="463327157194259514" at="36,69,37,71" concept="1" />
-      <node id="463327157194284517" at="37,71,38,67" concept="1" />
-      <node id="6791411149815827794" at="38,67,39,12" concept="1" />
-      <node id="6791411149815866586" at="44,55,45,62" concept="1" />
-      <node id="6791411149815717829" at="47,72,48,60" concept="1" />
-      <node id="6791411149815732183" at="49,9,50,60" concept="1" />
-      <node id="3967682250601877706" at="55,42,56,44" concept="6" />
-      <node id="463327157193931875" at="56,44,57,83" concept="6" />
-      <node id="3967682250601891850" at="57,83,58,28" concept="8" />
-      <node id="3967682250601930154" at="59,38,60,52" concept="6" />
-      <node id="3967682250602022895" at="61,71,62,0" concept="9" />
-      <node id="3967682250602019191" at="62,0,63,75" concept="8" />
-      <node id="3967682250602161102" at="63,75,64,78" concept="6" />
-      <node id="3967682250602069819" at="65,41,66,53" concept="6" />
-      <node id="3967682250602268422" at="66,53,67,0" concept="9" />
-      <node id="3967682250602269850" at="67,0,68,69" concept="8" />
-      <node id="3967682250602261214" at="68,69,69,80" concept="6" />
-      <node id="3967682250602327781" at="70,42,71,52" concept="6" />
-      <node id="463327157186718594" at="72,68,73,101" concept="6" />
-      <node id="463327157186710330" at="73,101,74,52" concept="1" />
-      <node id="463327157186686252" at="74,52,75,26" concept="7" />
-      <node id="463327157186696779" at="80,5,81,17" concept="7" />
-      <node id="463327157192025573" at="88,80,89,57" concept="1" />
-      <node id="3967682250602555448" at="90,45,91,58" concept="6" />
-      <node id="3967682250602631245" at="93,22,94,62" concept="1" />
-      <node id="3967682250603827643" at="95,21,96,61" concept="1" />
-      <node id="3967682250603854677" at="97,21,98,61" concept="1" />
-      <node id="3967682250603875858" at="100,32,101,43" concept="1" />
-      <node id="463327157186889926" at="107,33,108,30" concept="7" />
-      <node id="463327157186910231" at="109,5,110,16" concept="7" />
-      <node id="6791411149815711028" at="46,79,49,9" concept="3" />
-      <node id="3967682250603875858" at="99,7,102,7" concept="4" />
-      <node id="463327157186880028" at="106,68,109,5" concept="4" />
-      <node id="3967682250602345873" at="71,52,76,13" concept="4" />
-      <node id="6791411149815705218" at="45,62,51,7" concept="3" />
-      <node id="463327157186874526" at="106,0,112,0" concept="5" trace="syncLocally#()LMPSListener/plugin/dataClasses/mps/fileData;" />
-      <node id="3967682250601708532" at="33,0,41,0" concept="0" trace="MPS_synchroniseWithEMF#(LMPSListener/plugin/dataClasses/emf/fileData;)V" />
-      <node id="3967682250602284045" at="69,80,77,11" concept="12" />
-      <node id="3967682250602580881" at="91,58,99,7" concept="11" />
-      <node id="6791411149815672401" at="43,23,52,7" concept="1" />
-      <node id="6791411149815672397" at="43,0,54,0" concept="5" trace="start#()V" />
-      <node id="3967682250602054688" at="64,78,78,9" concept="12" />
-      <node id="3967682250602541319" at="89,57,103,5" concept="12" />
-      <node id="3967682250602480617" at="88,0,105,0" concept="5" trace="parseModeldata#(Ljava/util/Iterator;)V" />
-      <node id="3967682250601942855" at="60,52,79,7" concept="4" />
-      <node id="3967682250601896390" at="58,28,80,5" concept="12" />
-      <node id="3967682250601872718" at="55,0,83,0" concept="5" trace="fileIsPresentLocally#()Ljava/lang/Boolean;" />
-      <scope id="6791411149815711031" at="47,72,48,60" />
-      <scope id="3967682250602627852" at="93,22,94,62" />
-      <scope id="3967682250603824761" at="95,21,96,61" />
-      <scope id="3967682250603851702" at="97,21,98,61" />
-      <scope id="3967682250603875858" at="100,32,101,43" />
-      <scope id="463327157186880030" at="107,33,108,30" />
-      <scope id="6791411149815711028" at="46,79,49,9">
+    <file name="SynchroniseWithEMF.java">
+      <node id="3967682250601730574" at="18,0,19,0" concept="2" trace="emfFileData" />
+      <node id="3967682250601774413" at="19,0,20,0" concept="2" trace="myRepositary" />
+      <node id="3967682250602462484" at="20,0,21,0" concept="2" trace="mpsFileData" />
+      <node id="463327157194980841" at="21,0,22,0" concept="2" trace="myListener" />
+      <node id="8948441842689107271" at="22,0,23,0" concept="2" trace="modelInstance" />
+      <node id="4657233923788989421" at="23,0,24,0" concept="2" trace="log" />
+      <node id="463327157194159445" at="25,0,26,0" concept="2" trace="myRepos" />
+      <node id="463327157194183634" at="26,0,27,0" concept="2" trace="myModules" />
+      <node id="463327157194201195" at="27,0,28,0" concept="2" trace="myModels" />
+      <node id="3967682250601741758" at="31,72,32,35" concept="1" />
+      <node id="3967682250601801015" at="32,35,33,69" concept="1" />
+      <node id="463327157194259514" at="33,69,34,71" concept="1" />
+      <node id="463327157194284517" at="34,71,35,67" concept="1" />
+      <node id="8948441842689111442" at="35,67,36,39" concept="1" />
+      <node id="8948441842689124536" at="36,39,37,82" concept="1" />
+      <node id="8948441842689430141" at="37,82,38,99" concept="1" />
+      <node id="4657233923789186444" at="38,99,39,77" concept="1" />
+      <node id="6791411149815827794" at="39,77,40,12" concept="1" />
+      <node id="4657233923789174197" at="45,55,46,0" concept="6" />
+      <node id="6791411149815866586" at="46,0,47,62" concept="1" />
+      <node id="6791411149815717829" at="49,72,50,60" concept="1" />
+      <node id="6791411149815732183" at="51,9,52,60" concept="1" />
+      <node id="8948441842689158180" at="54,7,55,21" concept="1" />
+      <node id="4657233923789211752" at="59,83,60,34" concept="1" />
+      <node id="3967682250602631245" at="62,22,63,55" concept="1" />
+      <node id="4015856154937971116" at="63,55,64,112" concept="1" />
+      <node id="4015856154940586330" at="64,112,65,0" concept="6" />
+      <node id="3967682250603827643" at="66,21,67,54" concept="1" />
+      <node id="3967682250603854677" at="68,21,69,54" concept="1" />
+      <node id="4015856154937785606" at="71,5,72,0" concept="6" />
+      <node id="8948441842689288263" at="75,71,76,28" concept="5" />
+      <node id="6791411149815711028" at="48,79,51,9" concept="3" />
+      <node id="8948441842689281351" at="75,0,78,0" concept="4" trace="getMPSFileData#()LMPSListener/plugin/dataClasses/mps/fileData;" />
+      <node id="6791411149815705218" at="47,62,53,7" concept="3" />
+      <node id="6791411149815672401" at="44,23,54,7" concept="1" />
+      <node id="3967682250602580881" at="60,34,70,7" concept="7" />
+      <node id="3967682250601708532" at="31,0,42,0" concept="0" trace="SynchroniseWithEMF#(LMPSListener/plugin/dataClasses/emf/fileData;Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <node id="6791411149815672397" at="44,0,57,0" concept="4" trace="start#()V" />
+      <node id="8948441842689204942" at="58,33,71,5" concept="3" />
+      <node id="3967682250602480617" at="58,0,74,0" concept="4" trace="parseModeldata#()V" />
+      <scope id="6791411149815711031" at="49,72,50,60" />
+      <scope id="3967682250603824761" at="66,21,67,54" />
+      <scope id="3967682250603851702" at="68,21,69,54" />
+      <scope id="8948441842689281354" at="75,71,76,28" />
+      <scope id="6791411149815711028" at="48,79,51,9">
         <var name="model" id="6791411149815711029" />
       </scope>
-      <scope id="3967682250602345875" at="72,68,75,26">
-        <var name="modelInstanceChildren" id="463327157186718600" />
-      </scope>
-      <scope id="6791411149815705221" at="46,79,50,60" />
-      <scope id="463327157186874529" at="106,68,110,16" />
-      <scope id="3967682250601708535" at="33,55,39,12" />
-      <scope id="6791411149815705218" at="45,62,51,7">
+      <scope id="3967682250602627852" at="62,22,65,0" />
+      <scope id="8948441842689281351" at="75,0,78,0" />
+      <scope id="6791411149815705221" at="48,79,52,60" />
+      <scope id="6791411149815705218" at="47,62,53,7">
         <var name="module" id="6791411149815705219" />
       </scope>
-      <scope id="3967682250602284047" at="70,42,76,13">
-        <var name="currentNode" id="3967682250602327782" />
-      </scope>
-      <scope id="463327157186874526" at="106,0,112,0" />
-      <scope id="6791411149815672403" at="44,55,51,7" />
-      <scope id="3967682250601708532" at="33,0,41,0">
+      <scope id="6791411149815672403" at="45,55,53,7" />
+      <scope id="3967682250601708535" at="31,72,40,12" />
+      <scope id="3967682250601708532" at="31,0,42,0">
         <var name="emfFileData" id="3967682250601738747" />
+        <var name="modelInstance" id="8948441842689100807" />
       </scope>
-      <scope id="6791411149815672400" at="43,23,52,7" />
-      <scope id="6791411149815672397" at="43,0,54,0" />
-      <scope id="3967682250602054690" at="65,41,77,11">
-        <var name="currentModel" id="3967682250602069820" />
-        <var name="nodeIterator" id="3967682250602261215" />
+      <scope id="6791411149815672400" at="44,23,55,21" />
+      <scope id="8948441842689204948" at="59,83,70,7" />
+      <scope id="6791411149815672397" at="44,0,57,0" />
+      <scope id="8948441842689204942" at="58,33,71,5">
+        <var name="element" id="8948441842689204944" />
       </scope>
-      <scope id="3967682250602541320" at="90,45,102,7">
-        <var name="currentElement" id="3967682250602555449" />
-      </scope>
-      <scope id="3967682250602480620" at="88,80,103,5" />
-      <scope id="3967682250601942857" at="61,71,78,9">
-        <var name="modelIterator" id="3967682250602161103" />
-      </scope>
-      <scope id="3967682250602480617" at="88,0,105,0">
-        <var name="modelChildrenIterator" id="3967682250602501473" />
-      </scope>
-      <scope id="3967682250601896392" at="59,38,79,7">
-        <var name="currentModule" id="3967682250601930155" />
-      </scope>
-      <scope id="3967682250601872721" at="55,42,81,17">
-        <var name="fileName" id="3967682250601877707" />
-        <var name="moduleIterator" id="463327157193931876" />
-      </scope>
-      <scope id="3967682250601872718" at="55,0,83,0" />
-      <unit id="3967682250601691810" at="20,0,113,0" name="MPSListener.plugin.synchronise.MPS_synchroniseWithEMF" />
+      <scope id="3967682250602480620" at="58,33,72,0" />
+      <scope id="3967682250602480617" at="58,0,74,0" />
+      <unit id="3967682250601691810" at="17,0,79,0" name="MPSListener.plugin.synchronise.SynchroniseWithEMF" />
     </file>
   </root>
   <root nodeRef="r:ed1962b8-0c77-4d15-b4f0-5ab74ab2241c(MPSListener.plugin.synchronise)/6983184702452245602">
     <file name="Mapper.java">
-      <node id="6983184702455387548" at="8,0,10,0" concept="0" trace="Mapper#(LMPSListener/plugin/dataClasses/emf/fileData;LMPSListener/plugin/dataClasses/mps/fileData;)V" />
-      <scope id="6983184702455387551" at="8,96,8,96" />
-      <scope id="6983184702455387548" at="8,0,10,0">
+      <node id="6983184702455387548" at="9,0,11,0" concept="0" trace="Mapper#(LMPSListener/plugin/dataClasses/emf/fileData;Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <scope id="6983184702455387551" at="9,60,9,60" />
+      <scope id="6983184702455387548" at="9,0,11,0">
         <var name="emfFileData" id="6983184702455388405" />
-        <var name="mpsFileData" id="6983184702455388446" />
+        <var name="modelInstance" id="6983184702455388446" />
       </scope>
-      <unit id="6983184702452245602" at="7,0,11,0" name="MPSListener.plugin.synchronise.Mapper" />
+      <unit id="6983184702452245602" at="8,0,12,0" name="MPSListener.plugin.synchronise.Mapper" />
     </file>
   </root>
 </debug-info>

@@ -6,6 +6,8 @@ import jetbrains.mps.plugins.applicationplugins.BaseApplicationPlugin;
 import com.intellij.openapi.extensions.PluginId;
 import org.jetbrains.annotations.NotNull;
 import jetbrains.mps.ide.actions.NodeActions_ActionGroup;
+import java.util.List;
+import jetbrains.mps.plugins.part.ApplicationPluginPart;
 
 public class MPSListener_ApplicationPlugin extends BaseApplicationPlugin {
   private final PluginId myId = PluginId.getId("MPSListener");
@@ -27,5 +29,9 @@ public class MPSListener_ApplicationPlugin extends BaseApplicationPlugin {
   }
   public void adjustRegularGroups() {
     insertGroupIntoAnother(Collaboration_ActionGroup.ID, NodeActions_ActionGroup.ID, null);
+  }
+  @Override
+  public void fillCustomParts(List<ApplicationPluginPart> parts) {
+    parts.add(new plugin_AppPluginPart());
   }
 }

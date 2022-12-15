@@ -8,11 +8,11 @@ import jetbrains.mps.workbench.action.ActionAccess;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import java.util.Map;
-import MPSListener.plugin.specifyModel.StartPlugin;
+import MPSListener.plugin.initiate.StartPlugin;
 import jetbrains.mps.ide.actions.MPSCommonDataKeys;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import org.jetbrains.mps.openapi.model.SNode;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 
 public class Enable_Collaboration_Action extends BaseAction {
   private static final Icon ICON = null;
@@ -28,7 +28,7 @@ public class Enable_Collaboration_Action extends BaseAction {
   }
   @Override
   public void doUpdate(@NotNull AnActionEvent event, final Map<String, Object> _params) {
-    event.getPresentation().setEnabledAndVisible(StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE)).isRunning() == false);
+    event.getPresentation().setEnabledAndVisible(StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(CommonDataKeys.PROJECT)).isRunning() == false);
   }
   @Override
   protected boolean collectActionData(AnActionEvent event, final Map<String, Object> _params) {
@@ -56,12 +56,16 @@ public class Enable_Collaboration_Action extends BaseAction {
   private void startCollaboration(final AnActionEvent event) {
     StartPlugin pluginLauncher = StartPlugin.getInstance();
     if (pluginLauncher != null) {
+      // Plugin already running, change target.
       pluginLauncher.setTarget(event.getData(MPSCommonDataKeys.NODE));
     }
     if (pluginLauncher == null) {
-      pluginLauncher = StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE));
+      // Plugin not started yet, launch plugin.
+      pluginLauncher = StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(CommonDataKeys.PROJECT));
     }
+    Enable_Collaboration_Action.this.changeName(event);
     pluginLauncher.start();
-
+  }
+  public void changeName(final AnActionEvent event) {
   }
 }

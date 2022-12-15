@@ -8,9 +8,11 @@ import jetbrains.mps.workbench.action.ActionAccess;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import java.util.Map;
-import MPSListener.plugin.specifyModel.StartPlugin;
+import MPSListener.plugin.initiate.StartPlugin;
 import jetbrains.mps.ide.actions.MPSCommonDataKeys;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import org.jetbrains.mps.openapi.model.SNode;
+import com.intellij.openapi.project.Project;
 
 public class Disable_Collaboration_Action extends BaseAction {
   private static final Icon ICON = null;
@@ -26,7 +28,7 @@ public class Disable_Collaboration_Action extends BaseAction {
   }
   @Override
   public void doUpdate(@NotNull AnActionEvent event, final Map<String, Object> _params) {
-    event.getPresentation().setEnabledAndVisible(StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE)).isRunning());
+    event.getPresentation().setEnabledAndVisible(StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(CommonDataKeys.PROJECT)).isRunning());
   }
   @Override
   protected boolean collectActionData(AnActionEvent event, final Map<String, Object> _params) {
@@ -39,10 +41,16 @@ public class Disable_Collaboration_Action extends BaseAction {
         return false;
       }
     }
+    {
+      Project p = event.getData(CommonDataKeys.PROJECT);
+      if (p == null) {
+        return false;
+      }
+    }
     return true;
   }
   @Override
   public void doExecute(@NotNull final AnActionEvent event, final Map<String, Object> _params) {
-    StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE)).stop();
+    StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(CommonDataKeys.PROJECT)).stop();
   }
 }

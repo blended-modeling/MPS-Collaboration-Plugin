@@ -44,9 +44,6 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
 
 
 
-
-
-
   public void stop() {
     myActive = false;
     instanceRepository.getModelAccess().runReadAction(() -> {
@@ -100,15 +97,6 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   }
   @Override
   public void nodeAdded(@NotNull SNodeAddEvent event) {
-    if (LOG.isInfoEnabled()) {
-      LOG.info("node added");
-    }
-    if (LOG.isInfoEnabled()) {
-      LOG.info(event.getParent().getName());
-    }
-    if (LOG.isInfoEnabled()) {
-      LOG.info(event.getChild().getName());
-    }
   }
   @Override
   public void nodeRemoved(@NotNull SNodeRemoveEvent event) {
