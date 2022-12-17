@@ -6,15 +6,9 @@ import org.jetbrains.mps.openapi.model.SNode;
 import MPSListener.plugin.emfModelServer.Client;
 import MPSListener.plugin.listener.MyListener;
 import MPSListener.plugin.synchronise.SynchroniseWithEMF;
-import MPSListener.plugin.parsers.emf.Parser;
+import MPSListener.plugin.emfModelServer.parsers.Parser;
 import java.util.logging.Logger;
 import com.intellij.openapi.project.Project;
-import org.jetbrains.mps.openapi.model.SModel;
-import jetbrains.mps.internal.collections.runtime.ListSequence;
-import org.jetbrains.mps.openapi.language.SProperty;
-import jetbrains.mps.internal.collections.runtime.Sequence;
-import javax.swing.SwingUtilities;
-import jetbrains.mps.ide.project.ProjectHelper;
 
 public class StartPlugin {
   private ConfirmationPopUp frame;
@@ -31,11 +25,10 @@ public class StartPlugin {
   private StartPlugin(SNode startingNode, Project project) {
     this.frame = new ConfirmationPopUp(startingNode);
     this.startingNode = startingNode;
-    this.emfClient = new Client(startingNode.getName());
+    this.emfClient = Client.getInstance(startingNode);
     this.mylistener = MyListener.getInstance(startingNode);
     this.logger = Logger.getLogger(StartPlugin.class.getSimpleName());
-    this.emfParser = new Parser();
-    this.synchronise = new SynchroniseWithEMF(emfParser.parseFileData(emfClient.getModel("StateMachine.xmi")), startingNode);
+    this.synchronise = new SynchroniseWithEMF(Parser.parseFileData(this.emfClient.getModel("StateMachine.xmi")), startingNode);
     this.currentProject = project;
   }
   public static StartPlugin getInstance(SNode startingNode, Project project) {
@@ -64,45 +57,12 @@ public class StartPlugin {
       isRunning = true;
       MPS_LocalRepo localRepo = MPS_LocalRepo.getInstance(this.startingNode);
       localRepo.initialise();
-      for (SModel model : ListSequence.fromList(localRepo.findAllModels(localRepo.findModule("StateMachines")))) {
-        if (model.getName().getSimpleName().equals("structure")) {
-          for (SNode node : ListSequence.fromList(localRepo.findAllInstances(model))) {
-            if (node.getName().equals("Input")) {
-              SNode newmodel = new jetbrains.mps.smodel.SNode(node.getConcept(), node.getNodeId());
-              logger.info("Concept name: " + node.getConcept().getName());
-              for (SProperty property : Sequence.fromIterable(node.getProperties())) {
-                logger.info(property.getName());
-                if (property.getName().equals("name")) {
-                  logger.info("Found name property");
-                  logger.info(property.getOwner().getName());
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 
-  private void runCommand(String name, final Runnable runnable) {
-    if (SwingUtilities.isEventDispatchThread()) {
-      ProjectHelper.getModelAccess(this.currentProject).executeCommand(runnable);
-    } else {
-      try {
-        SwingUtilities.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            ProjectHelper.getModelAccess(currentProject).executeCommand(runnable);
-          }
-        });
-      } catch (InterruptedException e) {
-      } catch (Exception e) {
-      }
-    }
-  }
   public void stop() {
+    this.emfClient.stop();
     this.mylistener.stop();
     this.isRunning = false;
-
   }
 }

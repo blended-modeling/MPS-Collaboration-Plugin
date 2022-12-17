@@ -181,130 +181,74 @@
   </root>
   <root nodeRef="r:87dec0ad-34d0-45ca-8dce-7033d7ccd32e(MPSListener.plugin.initiate)/6791411149814282756">
     <file name="StartPlugin.java">
-      <node id="9193325234835989372" at="20,0,21,0" concept="3" trace="frame" />
-      <node id="2045416040693063224" at="21,0,22,0" concept="3" trace="startingNode" />
-      <node id="7669344100845407623" at="22,0,23,0" concept="10" trace="instance" />
-      <node id="9025882246152527061" at="23,0,24,0" concept="3" trace="emfClient" />
-      <node id="8948441842688973474" at="24,0,25,0" concept="3" trace="mylistener" />
-      <node id="3013854040803506421" at="25,0,26,0" concept="10" trace="isRunning" />
-      <node id="8948441842689306586" at="26,0,27,0" concept="3" trace="synchronise" />
-      <node id="8948441842689358650" at="27,0,28,0" concept="3" trace="emfParser" />
-      <node id="8997022533975340212" at="28,0,29,0" concept="3" trace="logger" />
-      <node id="5516998270198512638" at="29,0,30,0" concept="3" trace="currentProject" />
-      <node id="9193325234835996148" at="31,60,32,53" concept="2" />
-      <node id="2045416040693067214" at="32,53,33,37" concept="2" />
-      <node id="8948441842688831580" at="33,37,34,56" concept="2" />
-      <node id="8948441842688977173" at="34,56,35,59" concept="2" />
-      <node id="8997022533975342445" at="35,59,36,70" concept="2" />
-      <node id="8948441842689362126" at="36,70,37,34" concept="2" />
-      <node id="8948441842689310751" at="37,34,38,125" concept="2" />
-      <node id="5516998270198515834" at="38,125,39,34" concept="2" />
-      <node id="7669344100845419723" at="42,27,43,56" concept="2" />
-      <node id="7669344100845518636" at="44,5,45,20" concept="8" />
-      <node id="7669344100845566538" at="48,43,49,20" concept="8" />
-      <node id="3013854040804000230" at="52,39,53,31" concept="2" />
-      <node id="3013854040803793879" at="55,37,56,21" concept="8" />
-      <node id="8948441842688939726" at="60,15,61,29" concept="2" />
-      <node id="8948441842688991440" at="61,29,62,30" concept="2" />
-      <node id="7257994476021747947" at="62,30,63,120" concept="7" />
-      <node id="8997022533941306403" at="63,120,64,23" concept="2" />
-      <node id="7257994476020032816" at="64,23,65,77" concept="7" />
-      <node id="7257994476020453395" at="65,77,66,29" concept="2" />
-      <node id="7257994476021707137" at="70,49,71,99" concept="7" />
-      <node id="4015856154936646998" at="71,99,72,74" concept="2" />
-      <node id="7257994476025227824" at="73,86,74,48" concept="2" />
-      <node id="7257994476025196234" at="75,56,76,53" concept="2" />
-      <node id="7257994476028219639" at="76,53,77,61" concept="2" />
-      <node id="7257994476025324511" at="88,49,89,81" concept="2" />
-      <node id="7257994476025348278" at="94,29,95,82" concept="2" />
-      <node id="3013854040803182533" at="103,22,104,27" concept="2" />
-      <node id="3013854040803849266" at="104,27,105,27" concept="2" />
-      <node id="3013854040803898828" at="105,27,106,0" concept="9" />
-      <node id="7669344100845409759" at="41,78,44,5" concept="5" />
-      <node id="7669344100845562442" at="48,0,51,0" concept="11" trace="getInstance#()LMPSListener/plugin/initiate/StartPlugin;" />
-      <node id="3013854040803989507" at="52,0,55,0" concept="6" trace="setTarget#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
-      <node id="3013854040803793876" at="55,0,58,0" concept="11" trace="isRunning#()Z" />
-      <node id="7257994476021810383" at="74,48,78,17" concept="5" />
-      <node id="7257994476025346503" at="93,0,97,0" concept="6" trace="run#()V" />
-      <node id="3013854040803148753" at="103,0,108,0" concept="6" trace="stop#()V" />
-      <node id="7669344100845394584" at="41,0,47,0" concept="11" trace="getInstance#(Lorg/jetbrains/mps/openapi/model/SNode;Lcom/intellij/openapi/project/Project;)LMPSListener/plugin/initiate/StartPlugin;" />
-      <node id="7257994476025335357" at="91,11,97,11" concept="2" />
-      <node id="7257994476020932522" at="72,74,79,15" concept="4" />
-      <node id="6791411149815035574" at="31,0,41,0" concept="1" trace="StartPlugin#(Lorg/jetbrains/mps/openapi/model/SNode;Lcom/intellij/openapi/project/Project;)V" />
-      <node id="7257994476025335026" at="90,12,100,7" concept="12" />
-      <node id="7257994476021317557" at="69,87,80,13" concept="5" />
-      <node id="7257994476025334358" at="90,10,101,5" concept="0" />
-      <node id="7257994476020721878" at="68,66,81,11" concept="4" />
-      <node id="7257994476025313762" at="87,65,101,5" concept="5" />
-      <node id="7257994476020527793" at="67,114,82,9" concept="5" />
-      <node id="7257994476025312073" at="87,0,103,0" concept="6" trace="runCommand#(Ljava/lang/String;Ljava/lang/Runnable;)V" />
-      <node id="7257994476020058920" at="66,29,83,7" concept="4" />
-      <node id="8948441842688698021" at="59,23,84,5" concept="5" />
-      <node id="2211371676055738262" at="59,0,86,0" concept="6" trace="start#()V" />
-      <scope id="7257994476025363564" at="98,40,98,40" />
-      <scope id="7257994476025364108" at="99,29,99,29" />
-      <scope id="7669344100845409761" at="42,27,43,56" />
-      <scope id="7669344100845562445" at="48,43,49,20" />
-      <scope id="3013854040803989510" at="52,39,53,31" />
-      <scope id="3013854040803793878" at="55,37,56,21" />
-      <scope id="7257994476025313764" at="88,49,89,81" />
-      <scope id="7257994476025346507" at="94,29,95,82" />
-      <scope id="7257994476025363561" at="98,7,99,7">
-        <var name="e" id="7257994476025363562" />
-      </scope>
-      <scope id="7257994476025364105" at="99,7,100,7">
-        <var name="e" id="7257994476025364106" />
-      </scope>
-      <scope id="7257994476021810385" at="75,56,77,61" />
-      <scope id="7669344100845562442" at="48,0,51,0" />
-      <scope id="3013854040803989507" at="52,0,55,0">
+      <node id="9193325234835989372" at="14,0,15,0" concept="3" trace="frame" />
+      <node id="2045416040693063224" at="15,0,16,0" concept="3" trace="startingNode" />
+      <node id="7669344100845407623" at="16,0,17,0" concept="10" trace="instance" />
+      <node id="9025882246152527061" at="17,0,18,0" concept="3" trace="emfClient" />
+      <node id="8948441842688973474" at="18,0,19,0" concept="3" trace="mylistener" />
+      <node id="3013854040803506421" at="19,0,20,0" concept="10" trace="isRunning" />
+      <node id="8948441842689306586" at="20,0,21,0" concept="3" trace="synchronise" />
+      <node id="8948441842689358650" at="21,0,22,0" concept="3" trace="emfParser" />
+      <node id="8997022533975340212" at="22,0,23,0" concept="3" trace="logger" />
+      <node id="5516998270198512638" at="23,0,24,0" concept="3" trace="currentProject" />
+      <node id="9193325234835996148" at="25,60,26,53" concept="2" />
+      <node id="2045416040693067214" at="26,53,27,37" concept="2" />
+      <node id="8948441842688831580" at="27,37,28,54" concept="2" />
+      <node id="8948441842688977173" at="28,54,29,59" concept="2" />
+      <node id="8997022533975342445" at="29,59,30,70" concept="2" />
+      <node id="1922997039580062178" at="30,70,31,127" concept="2" />
+      <node id="5516998270198515834" at="31,127,32,34" concept="2" />
+      <node id="7669344100845419723" at="35,27,36,56" concept="2" />
+      <node id="7669344100845518636" at="37,5,38,20" concept="8" />
+      <node id="7669344100845566538" at="41,43,42,20" concept="8" />
+      <node id="3013854040804000230" at="45,39,46,31" concept="2" />
+      <node id="3013854040803793879" at="48,37,49,21" concept="8" />
+      <node id="8948441842688939726" at="53,15,54,29" concept="2" />
+      <node id="8948441842688991440" at="54,29,55,30" concept="2" />
+      <node id="7257994476021747947" at="55,30,56,120" concept="7" />
+      <node id="8997022533941306403" at="56,120,57,23" concept="2" />
+      <node id="7257994476020032816" at="57,23,58,77" concept="7" />
+      <node id="7257994476020453395" at="58,77,59,29" concept="2" />
+      <node id="8948441842689090263" at="63,22,64,26" concept="2" />
+      <node id="3013854040803182533" at="64,26,65,27" concept="2" />
+      <node id="3013854040803849266" at="65,27,66,27" concept="2" />
+      <node id="7669344100845409759" at="34,78,37,5" concept="5" />
+      <node id="7669344100845562442" at="41,0,44,0" concept="11" trace="getInstance#()LMPSListener/plugin/initiate/StartPlugin;" />
+      <node id="3013854040803989507" at="45,0,48,0" concept="6" trace="setTarget#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <node id="3013854040803793876" at="48,0,51,0" concept="11" trace="isRunning#()Z" />
+      <node id="3013854040803148753" at="63,0,68,0" concept="6" trace="stop#()V" />
+      <node id="7669344100845394584" at="34,0,40,0" concept="11" trace="getInstance#(Lorg/jetbrains/mps/openapi/model/SNode;Lcom/intellij/openapi/project/Project;)LMPSListener/plugin/initiate/StartPlugin;" />
+      <node id="8948441842688698021" at="52,23,60,5" concept="5" />
+      <node id="6791411149815035574" at="25,0,34,0" concept="1" trace="StartPlugin#(Lorg/jetbrains/mps/openapi/model/SNode;Lcom/intellij/openapi/project/Project;)V" />
+      <node id="2211371676055738262" at="52,0,62,0" concept="6" trace="start#()V" />
+      <scope id="7669344100845409761" at="35,27,36,56" />
+      <scope id="7669344100845562445" at="41,43,42,20" />
+      <scope id="3013854040803989510" at="45,39,46,31" />
+      <scope id="3013854040803793878" at="48,37,49,21" />
+      <scope id="7669344100845562442" at="41,0,44,0" />
+      <scope id="3013854040803989507" at="45,0,48,0">
         <var name="target" id="3013854040803993859" />
       </scope>
-      <scope id="3013854040803793876" at="55,0,58,0" />
-      <scope id="3013854040803148756" at="103,22,106,0" />
-      <scope id="7669344100845394586" at="41,78,45,20" />
-      <scope id="7257994476025346503" at="93,0,97,0" />
-      <scope id="7257994476020932528" at="73,86,78,17" />
-      <scope id="3013854040803148753" at="103,0,108,0" />
-      <scope id="7669344100845394584" at="41,0,47,0">
+      <scope id="3013854040803793876" at="48,0,51,0" />
+      <scope id="3013854040803148756" at="63,22,66,27" />
+      <scope id="7669344100845394586" at="34,78,38,20" />
+      <scope id="3013854040803148753" at="63,0,68,0" />
+      <scope id="7669344100845394584" at="34,0,40,0">
         <var name="project" id="5516998270198507767" />
         <var name="startingNode" id="7669344100845506718" />
       </scope>
-      <scope id="7257994476025335027" at="91,11,97,11" />
-      <scope id="7257994476020932522" at="72,74,79,15">
-        <var name="property" id="7257994476020932524" />
-      </scope>
-      <scope id="6791411149815035577" at="31,60,39,34" />
-      <scope id="7257994476021317559" at="70,49,79,15">
-        <var name="newmodel" id="7257994476021707138" />
-      </scope>
-      <scope id="6791411149815035574" at="31,0,41,0">
-        <var name="project" id="5516998270198521065" />
-        <var name="startingNode" id="2045416040689959490" />
-      </scope>
-      <scope id="7257994476025334359" at="90,12,100,7" />
-      <scope id="7257994476020721884" at="69,87,80,13" />
-      <scope id="7257994476020527795" at="68,66,81,11" />
-      <scope id="7257994476020721878" at="68,66,81,11">
-        <var name="node" id="7257994476020721880" />
-      </scope>
-      <scope id="7257994476025312076" at="87,65,101,5" />
-      <scope id="7257994476020058926" at="67,114,82,9" />
-      <scope id="7257994476025312073" at="87,0,103,0">
-        <var name="name" id="7257994476025312587" />
-        <var name="runnable" id="7257994476025312591" />
-      </scope>
-      <scope id="7257994476020058920" at="66,29,83,7">
-        <var name="model" id="7257994476020058922" />
-      </scope>
-      <scope id="8948441842688698023" at="60,15,83,7">
+      <scope id="8948441842688698023" at="53,15,59,29">
         <var name="localRepo" id="7257994476020032819" />
         <var name="newInstance" id="7257994476021747948" />
       </scope>
-      <scope id="2211371676055738265" at="59,23,84,5" />
-      <scope id="2211371676055738262" at="59,0,86,0" />
-      <unit id="7257994476025346488" at="92,41,97,9" name="MPSListener.plugin.initiate.StartPlugin$1" />
-      <unit id="6791411149814282756" at="19,0,109,0" name="MPSListener.plugin.initiate.StartPlugin" />
+      <scope id="6791411149815035577" at="25,60,32,34" />
+      <scope id="2211371676055738265" at="52,23,60,5" />
+      <scope id="6791411149815035574" at="25,0,34,0">
+        <var name="project" id="5516998270198521065" />
+        <var name="startingNode" id="2045416040689959490" />
+      </scope>
+      <scope id="2211371676055738262" at="52,0,62,0" />
+      <unit id="6791411149814282756" at="13,0,69,0" name="MPSListener.plugin.initiate.StartPlugin" />
     </file>
   </root>
   <root nodeRef="r:87dec0ad-34d0-45ca-8dce-7033d7ccd32e(MPSListener.plugin.initiate)/9193325234833863926">

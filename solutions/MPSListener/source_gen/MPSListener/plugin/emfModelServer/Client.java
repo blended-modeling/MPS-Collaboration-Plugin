@@ -5,13 +5,10 @@ package MPSListener.plugin.emfModelServer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.eclipse.emfcloud.modelserver.client.ModelServerClient;
+import org.jetbrains.mps.openapi.model.SNode;
 import java.net.MalformedURLException;
-import org.eclipse.emfcloud.modelserver.client.EObjectSubscriptionListener;
-import org.eclipse.emfcloud.modelserver.emf.common.codecs.JsonCodecV2;
+import org.eclipse.emfcloud.modelserver.client.JsonToStringSubscriptionListener;
 import org.eclipse.emfcloud.modelserver.client.ModelServerNotification;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emfcloud.modelserver.jsonpatch.JsonPatch;
-import org.eclipse.emfcloud.modelserver.command.CCommandExecutionResult;
 import java.util.Optional;
 import org.eclipse.emfcloud.modelserver.client.Response;
 import org.springframework.http.HttpHeaders;
@@ -29,43 +26,40 @@ public class Client {
   private String subscribedModel;
   private String models;
   private java.util.logging.Logger log;
-  public Client(String subscriptionID) {
+  private SNode selectedInstance;
+  private PatchOperations patchOpeartions;
+  private static Client instance;
+
+  private Client(SNode selectedInstance) {
     this.webSocketAddress = "http://localhost:8081/api/v2/";
     // TODO: fix subscribedmodel
     this.subscribedModel = "StateMachine.xmi";
+    this.selectedInstance = selectedInstance;
     this.models = "models";
+    this.patchOpeartions = PatchOperations.getInstance(this.selectedInstance, getModel(this.subscribedModel));
     this.log = java.util.logging.Logger.getLogger(Client.class.getName());
-    log.info("Subscribed model: " + subscriptionID);
     try {
       this.modelServerClient = new ModelServerClient(this.webSocketAddress);
     } catch (MalformedURLException e) {
     }
   }
 
-  public void start() {
-    this.modelServerClient.subscribe(this.subscribedModel, new EObjectSubscriptionListener(new JsonCodecV2()) {
+  public static Client getInstance(SNode selectedInstance) {
+    if (instance == null) {
+      instance = new Client(selectedInstance);
+    }
+    return instance;
+  }
 
+  public void start() {
+    this.modelServerClient.subscribe(this.subscribedModel, new JsonToStringSubscriptionListener() {
       @Override
       public void onNotification(ModelServerNotification notification) {
-        log.info("Notificaiton recieved:" + notification.getData().get());
         super.onNotification(notification);
       }
       @Override
-      public void onIncrementalUpdate(EObject incrementalUpdate) {
-        log.info("Incremental update recieved in eobject");
-      }
-      @Override
-      public void onIncrementalUpdate(JsonPatch patch) {
-        log.info("Incremental update recieved: " + patch.toString());
-      }
-      @Override
-      public void onIncrementalUpdate(CCommandExecutionResult commandExecutionResult) {
-        log.info("Incremental update recieved in commandExecutionResult");
-
-      }
-      @Override
       public void onSuccess(Optional<String> message) {
-        log.info("Success!" + message.get());
+        log.info("Connected to the server succesfully");
       }
       @Override
       public void onError(Optional<String> message) {
@@ -76,24 +70,31 @@ public class Client {
         super.onDirtyChange(isDirty);
       }
       @Override
-      public void onFullUpdate(EObject fullUpdate) {
-        log.info("Full update recieved:" + fullUpdate.toString());
+      public void onFullUpdate(String fullUpdate) {
+        super.onFullUpdate(fullUpdate);
+      }
+      @Override
+      public void onIncrementalUpdate(String incrementalUpdate) {
+        log.info("Patch received:\n" + incrementalUpdate);
+        patchOpeartions.executePatch(incrementalUpdate);
       }
       @Override
       public void onUnknown(ModelServerNotification notification) {
-        log.info("Unknown...." + notification.getData().get());
+        super.onUnknown(notification);
       }
       @Override
       public void onOpen(Response<String> response) {
-        log.info("Connected!" + response.getMessage());
+        super.onOpen(response);
       }
       @Override
       public void onClosing(int code, String reason) {
         super.onClosing(code, reason);
+        log.info("Connection closed");
       }
       @Override
       public void onClosed(int code, String reason) {
         super.onClosed(code, reason);
+        log.info("Connection closed");
       }
       @Override
       public void onFailure(Throwable throwable, Response<String> response) {
