@@ -6,7 +6,12 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.eclipse.emfcloud.modelserver.client.ModelServerClient;
 import org.jetbrains.mps.openapi.model.SNode;
+import jetbrains.mps.project.Project;
+import MPSListener.plugin.synchronise.validation.PerformEcoreValidation;
+import MPSListener.plugin.synchronise.ContentSynchroniser;
 import java.net.MalformedURLException;
+import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
+import org.apache.log4j.Level;
 import org.eclipse.emfcloud.modelserver.client.JsonToStringSubscriptionListener;
 import org.eclipse.emfcloud.modelserver.client.ModelServerNotification;
 import java.util.Optional;
@@ -15,9 +20,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
-import org.apache.log4j.Level;
 import org.apache.http.client.utils.URIBuilder;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 public class Client {
   private static final Logger LOG = LogManager.getLogger(Client.class);
@@ -29,29 +34,58 @@ public class Client {
   private SNode selectedInstance;
   private PatchOperations patchOpeartions;
   private static Client instance;
+  private Project project;
+  private PerformEcoreValidation eCoreValidator;
+  private ContentSynchroniser contentSynchroniser;
 
-  private Client(SNode selectedInstance) {
+  private Client(SNode selectedInstance, Project project) {
     this.webSocketAddress = "http://localhost:8081/api/v2/";
+    this.eCoreValidator = new PerformEcoreValidation(selectedInstance);
     // TODO: fix subscribedmodel
-    this.subscribedModel = "StateMachine.xmi";
+    this.subscribedModel = selectedInstance.getName() + "." + selectedInstance.getConcept().getName().toLowerCase();
     this.selectedInstance = selectedInstance;
     this.models = "models";
-    this.patchOpeartions = PatchOperations.getInstance(this.selectedInstance, getModel(this.subscribedModel));
     this.log = java.util.logging.Logger.getLogger(Client.class.getName());
+    this.project = project;
+    this.patchOpeartions = PatchOperations.getInstance(this.selectedInstance, this.project);
     try {
       this.modelServerClient = new ModelServerClient(this.webSocketAddress);
     } catch (MalformedURLException e) {
     }
   }
 
-  public static Client getInstance(SNode selectedInstance) {
+  public static Client getInstance(SNode selectedInstance, Project project) {
     if (instance == null) {
-      instance = new Client(selectedInstance);
+      instance = new Client(selectedInstance, project);
     }
     return instance;
   }
 
   public void start() {
+    // TODO: 
+    // 1. Get statemachine.ecore by extracting it from eClass of the model
+    // 2. Finalise mapper checks to ensure ecoreIsMatchLocally returns true
+    // 3. Add logic to shut down plugin if issue occurs. 
+    this.eCoreValidator.ecoreIsMatchLocally(getModel("statemachine.ecore", "json"));
+    this.contentSynchroniser = ContentSynchroniser.getInstance(this.eCoreValidator.getEcoreToMPS(), this.selectedInstance);
+
+    if (this.contentSynchroniser.synchroniseContent(getModel(subscribedModel, "xmi"))) {
+      LoggingRuntime.logMsgView(Level.INFO, "Synchronisation successful", Client.class, null, null);
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Synchronisation successful");
+      }
+    } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Synchronisation unsuccessful, exiting application", Client.class, null, null);
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Synchronisation unsuccessful");
+      }
+    }
+    this.patchOpeartions.start(this.contentSynchroniser.getStructuralMap());
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Client started successfully..");
+    }
+    LoggingRuntime.logMsgView(Level.INFO, "Client started successfully..", Client.class, null, null);
+
     this.modelServerClient.subscribe(this.subscribedModel, new JsonToStringSubscriptionListener() {
       @Override
       public void onNotification(ModelServerNotification notification) {
@@ -60,6 +94,7 @@ public class Client {
       @Override
       public void onSuccess(Optional<String> message) {
         log.info("Connected to the server succesfully");
+        LoggingRuntime.logMsgView(Level.INFO, "Connected to the server successfully!", Client.class, null, null);
       }
       @Override
       public void onError(Optional<String> message) {
@@ -75,7 +110,7 @@ public class Client {
       }
       @Override
       public void onIncrementalUpdate(String incrementalUpdate) {
-        log.info("Patch received:\n" + incrementalUpdate);
+        LoggingRuntime.logMsgView(Level.INFO, "Patch received: " + incrementalUpdate, Client.class, null, null);
         patchOpeartions.executePatch(incrementalUpdate);
       }
       @Override
@@ -89,12 +124,12 @@ public class Client {
       @Override
       public void onClosing(int code, String reason) {
         super.onClosing(code, reason);
-        log.info("Connection closed");
+        log.info("Connection closed!");
       }
       @Override
       public void onClosed(int code, String reason) {
         super.onClosed(code, reason);
-        log.info("Connection closed");
+        LoggingRuntime.logMsgView(Level.INFO, "Disconnected from server, reason: " + reason, Client.class, null, null);
       }
       @Override
       public void onFailure(Throwable throwable, Response<String> response) {
@@ -109,12 +144,14 @@ public class Client {
 
   public void stop() {
     this.modelServerClient.unsubscribe(this.subscribedModel);
+    this.eCoreValidator.stop();
+    this.contentSynchroniser.stop();
+  }
+
+  public void sendUpdateNotification() {
   }
 
   public String getAllModels() {
-    if (LOG.isInfoEnabled()) {
-      LOG.info("Getting all models....");
-    }
     HttpHeaders headers = new HttpHeaders();
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity responseEntity = null;
@@ -128,21 +165,30 @@ public class Client {
     return responseEntity.getBody().toString();
   }
 
-  public String getModel(String modelUri) {
-    if (LOG.isInfoEnabled()) {
-      LOG.info("Attempting to retrieve model:" + modelUri);
-    }
+  public String getModel(String modelUri, String format) {
     HttpHeaders headers = new HttpHeaders();
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity responseEntity = null;
     try {
-      String queryAddress = new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).build().toString();
+      String queryAddress = new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).addParameter("format", format).toString();
       responseEntity = restTemplate.getForEntity(queryAddress, String.class);
     } catch (URISyntaxException se) {
-      if (LOG.isInfoEnabled()) {
-        LOG.info(se.getMessage());
-      }
     }
     return responseEntity.getBody().toString();
+  }
+
+  public String patchModel(String modelUri, String patch) {
+    HttpHeaders headers = new HttpHeaders();
+    String serverResponse = null;
+    try {
+      String queryAddress = new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).toString();
+      LoggingRuntime.logMsgView(Level.INFO, "prepared the following query: " + queryAddress, Client.class, null, null);
+    } catch (URISyntaxException se) {
+    }
+    return serverResponse;
+  }
+
+  public Map<SNode, Integer> getStructuralMapping() {
+    return this.contentSynchroniser.getStructuralMap();
   }
 }

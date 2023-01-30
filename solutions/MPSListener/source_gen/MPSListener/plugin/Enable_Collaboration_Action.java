@@ -10,9 +10,8 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import java.util.Map;
 import MPSListener.plugin.initiate.StartPlugin;
 import jetbrains.mps.ide.actions.MPSCommonDataKeys;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
 import org.jetbrains.mps.openapi.model.SNode;
-import com.intellij.openapi.project.Project;
+import jetbrains.mps.project.MPSProject;
 
 public class Enable_Collaboration_Action extends BaseAction {
   private static final Icon ICON = null;
@@ -28,7 +27,7 @@ public class Enable_Collaboration_Action extends BaseAction {
   }
   @Override
   public void doUpdate(@NotNull AnActionEvent event, final Map<String, Object> _params) {
-    event.getPresentation().setEnabledAndVisible(StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(CommonDataKeys.PROJECT)).isRunning() == false);
+    event.getPresentation().setEnabledAndVisible(StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(MPSCommonDataKeys.MPS_PROJECT)).isRunning() == false);
   }
   @Override
   protected boolean collectActionData(AnActionEvent event, final Map<String, Object> _params) {
@@ -42,7 +41,7 @@ public class Enable_Collaboration_Action extends BaseAction {
       }
     }
     {
-      Project p = event.getData(CommonDataKeys.PROJECT);
+      MPSProject p = event.getData(MPSCommonDataKeys.MPS_PROJECT);
       if (p == null) {
         return false;
       }
@@ -61,11 +60,8 @@ public class Enable_Collaboration_Action extends BaseAction {
     }
     if (pluginLauncher == null) {
       // Plugin not started yet, launch plugin.
-      pluginLauncher = StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(CommonDataKeys.PROJECT));
+      pluginLauncher = StartPlugin.getInstance(event.getData(MPSCommonDataKeys.NODE), event.getData(MPSCommonDataKeys.MPS_PROJECT));
     }
-    Enable_Collaboration_Action.this.changeName(event);
     pluginLauncher.start();
-  }
-  public void changeName(final AnActionEvent event) {
   }
 }

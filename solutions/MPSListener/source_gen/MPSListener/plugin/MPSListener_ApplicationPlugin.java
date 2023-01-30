@@ -32,6 +32,6 @@ public class MPSListener_ApplicationPlugin extends BaseApplicationPlugin {
   }
   @Override
   public void fillCustomParts(List<ApplicationPluginPart> parts) {
-    parts.add(new plugin_AppPluginPart());
+    parts.add(new appPlugin_AppPluginPart());
   }
 }

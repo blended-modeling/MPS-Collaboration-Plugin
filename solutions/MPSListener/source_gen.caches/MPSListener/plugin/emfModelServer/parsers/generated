@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<product version="3" modelHash="9ftqwmq7iui5pw12juuk9798tg0vdv">
-  <files names="Parser.java:PatchParser.java" />
+<product version="3" modelHash="8kj0ncwc35f6egi62woh58elzkekvvj">
+  <files names="PatchParser.java" />
 </product>
 

@@ -4,45 +4,70 @@ package MPSListener.plugin.listener;
 
 import org.jetbrains.mps.openapi.model.SModelListener;
 import org.jetbrains.mps.openapi.model.SNodeChangeListener;
+import org.jetbrains.mps.openapi.module.SRepositoryListener;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.jetbrains.mps.openapi.module.SRepository;
 import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SModel;
 import org.jetbrains.mps.openapi.module.SModule;
+import jetbrains.mps.project.Project;
+import MPSListener.plugin.emfModelServer.Client;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
+import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
+import MPSListener.plugin.dataClasses.emf.patches.Patch;
+import java.util.List;
+import java.util.ArrayList;
+import MPSListener.plugin.dataClasses.emf.patches.Root;
+import MPSListener.plugin.dataClasses.emf.patches.Data;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jetbrains.mps.openapi.event.SReferenceChangeEvent;
 import org.jetbrains.mps.openapi.event.SNodeAddEvent;
 import org.jetbrains.mps.openapi.event.SNodeRemoveEvent;
 
-public class GlobalSModelListener implements SModelListener, SNodeChangeListener {
+public class GlobalSModelListener implements SModelListener, SNodeChangeListener, SRepositoryListener {
   private static final Logger LOG = LogManager.getLogger(GlobalSModelListener.class);
 
   protected SRepository instanceRepository;
   protected boolean myActive;
 
-
   private SNode selectedInstance;
   private SModel instanceModel;
   private SModule instanceModule;
+  private Project project;
+  private Client client;
+  private boolean lastChangeIsExternal;
+  private static GlobalSModelListener instance;
+  private ObjectMapper om;
 
-  public GlobalSModelListener(SNode selectedInstance) {
+  private GlobalSModelListener(SNode selectedInstance, Project project) {
     this.selectedInstance = selectedInstance;
     this.instanceModel = this.selectedInstance.getModel();
     this.instanceModule = this.instanceModel.getModule();
     this.instanceRepository = this.instanceModule.getRepository();
+    this.project = project;
+    this.client = Client.getInstance(selectedInstance, project);
+    this.lastChangeIsExternal = false;
+    this.om = new ObjectMapper();
+  }
+
+  public static GlobalSModelListener getInstance(SNode selectedInstance, Project project) {
+    if (instance == null) {
+      instance = new GlobalSModelListener(selectedInstance, project);
+    }
+    return instance;
   }
 
 
   public void start() {
     this.instanceModel.addModelListener(this);
     this.instanceModel.addChangeListener(this);
+    this.instanceRepository.addRepositoryListener(this);
+    LoggingRuntime.logMsgView(Level.INFO, "Listener started successfully repo started successfully..", GlobalSModelListener.class, null, null);
   }
-
-
-
-
 
   public void stop() {
     myActive = false;
@@ -52,11 +77,9 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     });
   }
 
-
-
-
-
-
+  public void setLastChangeIsExternal(boolean lastChangeIsExternal) {
+    this.lastChangeIsExternal = lastChangeIsExternal;
+  }
 
   @Override
   public void modelLoaded(SModel model, boolean partially) {
@@ -73,6 +96,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   @Override
   public void modelSaved(SModel model) {
   }
+
   @Override
   public void modelAttached(SModel model, SRepository repository) {
   }
@@ -86,20 +110,53 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   public void problemsDetected(SModel model, Iterable<SModel.Problem> iterable) {
   }
 
-
-
-
   @Override
   public void propertyChanged(@NotNull SPropertyChangeEvent event) {
+    LoggingRuntime.logMsgView(Level.INFO, "Property changed: for " + event.getNode().getConcept().getName() + " from " + event.getOldValue() + " to " + event.getNewValue(), GlobalSModelListener.class, null, null);
+    if (lastChangeIsExternal) {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
+      this.lastChangeIsExternal = false;
+    } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
+      String path = event.getNode().getContainmentLink().getName() + "/" + this.client.getStructuralMapping().get(event.getNode()) + "/" + event.getProperty().getName();
+      Patch patch = new Patch("replace", path, null, event.getNewValue());
+      List<Patch> patchList = new ArrayList<>();
+      patchList.add(patch);
+      try {
+        LoggingRuntime.logMsgView(Level.INFO, "Sending patch: " + om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))), GlobalSModelListener.class, null, null);
+      } catch (JsonProcessingException e) {
+      }
+    }
   }
   @Override
   public void referenceChanged(@NotNull SReferenceChangeEvent event) {
+    LoggingRuntime.logMsgView(Level.INFO, "Reference changed: for " + event.getNode().getConcept().getName() + " from " + event.getOldValue().describeTarget().toString() + " to " + event.getNewValue().describeTarget().toString(), GlobalSModelListener.class, null, null);
+    if (lastChangeIsExternal) {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
+      this.lastChangeIsExternal = false;
+    } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
+    }
   }
   @Override
   public void nodeAdded(@NotNull SNodeAddEvent event) {
+    LoggingRuntime.logMsgView(Level.INFO, "Node added for: " + event.getAggregationLink().getName(), GlobalSModelListener.class, null, null);
+    if (lastChangeIsExternal) {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
+      this.lastChangeIsExternal = false;
+    } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
+    }
   }
   @Override
   public void nodeRemoved(@NotNull SNodeRemoveEvent event) {
+    LoggingRuntime.logMsgView(Level.INFO, "Node removed from: " + event.getParent().getName(), GlobalSModelListener.class, null, null);
+    if (lastChangeIsExternal) {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
+      this.lastChangeIsExternal = false;
+    } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
+    }
   }
 
   public SRepository getRepositary() {

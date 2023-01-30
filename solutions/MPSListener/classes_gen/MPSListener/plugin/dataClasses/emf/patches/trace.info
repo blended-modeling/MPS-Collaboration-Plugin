@@ -5,41 +5,107 @@
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068390468200:jetbrains.mps.baseLanguage.structure.FieldDeclaration" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123165:jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242878:jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1070475587102:jetbrains.mps.baseLanguage.structure.SuperConstructorInvocation" />
+  <root nodeRef="r:e645d0bf-7179-4947-b42b-b4fcb9504eec(MPSListener.plugin.dataClasses.emf.patches)/1652983518569850189">
+    <file name="Data.java">
+      <node id="1652983518569850246" at="9,0,10,0" concept="2" trace="type" />
+      <node id="1652983518569857074" at="13,47,14,12" concept="5" />
+      <node id="1652983518569856446" at="14,12,15,21" concept="1" />
+      <node id="1652983518569856458" at="15,21,16,22" concept="1" />
+      <node id="1652983518569852628" at="20,27,21,21" concept="4" />
+      <node id="1652983518569852633" at="23,36,24,21" concept="1" />
+      <node id="1652983518569852648" at="26,32,27,21" concept="4" />
+      <node id="1652983518569852653" at="29,42,30,22" concept="1" />
+      <node id="1652983518569850885" at="10,0,12,0" concept="2" trace="data" />
+      <node id="1652983518569855330" at="18,0,20,0" concept="0" trace="Data#()V" />
+      <node id="1652983518569852624" at="20,0,23,0" concept="3" trace="getType#()Ljava/lang/String;" />
+      <node id="1652983518569852629" at="23,0,26,0" concept="3" trace="setType#(Ljava/lang/String;)V" />
+      <node id="1652983518569852644" at="26,0,29,0" concept="3" trace="getData#()Ljava/util/List;" />
+      <node id="1652983518569852649" at="29,0,32,0" concept="3" trace="setData#(Ljava/util/List;)V" />
+      <node id="1652983518569856438" at="13,0,18,0" concept="0" trace="Data#(Ljava/lang/String;Ljava/util/List;)V" />
+      <scope id="1652983518569855334" at="18,17,18,17" />
+      <scope id="1652983518569852627" at="20,27,21,21" />
+      <scope id="1652983518569852632" at="23,36,24,21" />
+      <scope id="1652983518569852647" at="26,32,27,21" />
+      <scope id="1652983518569852652" at="29,42,30,22" />
+      <scope id="1652983518569855330" at="18,0,20,0" />
+      <scope id="1652983518569856442" at="13,47,16,22" />
+      <scope id="1652983518569852624" at="20,0,23,0" />
+      <scope id="1652983518569852629" at="23,0,26,0">
+        <var name="type" id="1652983518569852636" />
+      </scope>
+      <scope id="1652983518569852644" at="26,0,29,0" />
+      <scope id="1652983518569852649" at="29,0,32,0">
+        <var name="patch" id="1652983518569852656" />
+      </scope>
+      <scope id="1652983518569856438" at="13,0,18,0">
+        <var name="patch" id="1652983518569856457" />
+        <var name="type" id="1652983518569856445" />
+      </scope>
+      <unit id="1652983518569850189" at="8,0,33,0" name="MPSListener.plugin.dataClasses.emf.patches.Data" />
+    </file>
+  </root>
   <root nodeRef="r:e645d0bf-7179-4947-b42b-b4fcb9504eec(MPSListener.plugin.dataClasses.emf.patches)/1922997039577469644">
     <file name="Patch.java">
-      <node id="1922997039577471622" at="8,0,9,0" concept="2" trace="op" />
-      <node id="1922997039577471683" at="9,0,10,0" concept="2" trace="path" />
-      <node id="1922997039577471827" at="14,0,15,0" concept="2" trace="from" />
-      <node id="1922997039577471923" at="15,0,16,0" concept="2" trace="value" />
-      <node id="1922997039577472722" at="16,67,17,17" concept="1" />
-      <node id="1922997039577472734" at="17,17,18,21" concept="1" />
-      <node id="1922997039577472747" at="18,21,19,42" concept="1" />
-      <node id="1922997039577472760" at="19,42,20,44" concept="1" />
-      <node id="1922997039577474005" at="22,25,23,19" concept="4" />
-      <node id="1922997039577474013" at="25,27,26,21" concept="4" />
-      <node id="1922997039577474022" at="29,37,30,21" concept="4" />
-      <node id="1922997039577474031" at="32,38,33,22" concept="4" />
-      <node id="1922997039577474001" at="22,0,25,0" concept="3" trace="getOp#()Ljava/lang/String;" />
-      <node id="1922997039577474009" at="25,0,28,0" concept="3" trace="getPath#()Ljava/lang/String;" />
-      <node id="1922997039577474017" at="29,0,32,0" concept="3" trace="getFrom#()Ljava/util/Optional;" />
-      <node id="1922997039577474026" at="32,0,35,0" concept="3" trace="getValue#()Ljava/util/Optional;" />
-      <node id="1922997039577472714" at="16,0,22,0" concept="0" trace="Patch#(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" />
-      <scope id="1922997039577474004" at="22,25,23,19" />
-      <scope id="1922997039577474012" at="25,27,26,21" />
-      <scope id="1922997039577474021" at="29,37,30,21" />
-      <scope id="1922997039577474030" at="32,38,33,22" />
-      <scope id="1922997039577474001" at="22,0,25,0" />
-      <scope id="1922997039577474009" at="25,0,28,0" />
-      <scope id="1922997039577474017" at="29,0,32,0" />
-      <scope id="1922997039577474026" at="32,0,35,0" />
-      <scope id="1922997039577472718" at="16,67,20,44" />
-      <scope id="1922997039577472714" at="16,0,22,0">
+      <node id="1922997039577471622" at="9,0,10,0" concept="2" trace="op" />
+      <node id="1922997039577471683" at="10,0,11,0" concept="2" trace="path" />
+      <node id="1922997039577471827" at="15,0,16,0" concept="2" trace="from" />
+      <node id="1922997039577471923" at="17,0,18,0" concept="2" trace="value" />
+      <node id="1922997039577472722" at="19,67,20,17" concept="1" />
+      <node id="1922997039577472734" at="20,17,21,21" concept="1" />
+      <node id="1922997039577472747" at="21,21,22,21" concept="1" />
+      <node id="1922997039577472760" at="22,21,23,23" concept="1" />
+      <node id="1922997039577474005" at="25,25,26,19" concept="4" />
+      <node id="1922997039577474013" at="28,27,29,21" concept="4" />
+      <node id="1922997039577474022" at="32,27,33,21" concept="4" />
+      <node id="1922997039577474031" at="35,28,36,22" concept="4" />
+      <node id="1922997039577474001" at="25,0,28,0" concept="3" trace="getOp#()Ljava/lang/String;" />
+      <node id="1922997039577474009" at="28,0,31,0" concept="3" trace="getPath#()Ljava/lang/String;" />
+      <node id="1922997039577474017" at="32,0,35,0" concept="3" trace="getFrom#()Ljava/lang/String;" />
+      <node id="1922997039577474026" at="35,0,38,0" concept="3" trace="getValue#()Ljava/lang/String;" />
+      <node id="1922997039577472714" at="19,0,25,0" concept="0" trace="Patch#(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" />
+      <scope id="1922997039577474004" at="25,25,26,19" />
+      <scope id="1922997039577474012" at="28,27,29,21" />
+      <scope id="1922997039577474021" at="32,27,33,21" />
+      <scope id="1922997039577474030" at="35,28,36,22" />
+      <scope id="1922997039577474001" at="25,0,28,0" />
+      <scope id="1922997039577474009" at="28,0,31,0" />
+      <scope id="1922997039577474017" at="32,0,35,0" />
+      <scope id="1922997039577474026" at="35,0,38,0" />
+      <scope id="1922997039577472718" at="19,67,23,23" />
+      <scope id="1922997039577472714" at="19,0,25,0">
         <var name="from" id="1922997039577472746" />
         <var name="op" id="1922997039577472721" />
         <var name="path" id="1922997039577472733" />
         <var name="value" id="1922997039577472759" />
       </scope>
-      <unit id="1922997039577469644" at="7,0,36,0" name="MPSListener.plugin.dataClasses.emf.patches.Patch" />
+      <unit id="1922997039577469644" at="7,0,39,0" name="MPSListener.plugin.dataClasses.emf.patches.Patch" />
+    </file>
+  </root>
+  <root nodeRef="r:e645d0bf-7179-4947-b42b-b4fcb9504eec(MPSListener.plugin.dataClasses.emf.patches)/8697016609823274523">
+    <file name="Root.java">
+      <node id="8697016609823274603" at="7,0,8,0" concept="2" trace="data" />
+      <node id="8697016609823280324" at="10,26,11,12" concept="5" />
+      <node id="8697016609823278711" at="11,12,12,21" concept="1" />
+      <node id="8697016609823276195" at="14,25,15,21" concept="4" />
+      <node id="8697016609823276200" at="17,34,18,21" concept="1" />
+      <node id="8697016609823279733" at="8,0,10,0" concept="0" trace="Root#()V" />
+      <node id="8697016609823276191" at="14,0,17,0" concept="3" trace="getData#()LMPSListener/plugin/dataClasses/emf/patches/Data;" />
+      <node id="8697016609823276196" at="17,0,20,0" concept="3" trace="setData#(LMPSListener/plugin/dataClasses/emf/patches/Data;)V" />
+      <node id="8697016609823278703" at="10,0,14,0" concept="0" trace="Root#(LMPSListener/plugin/dataClasses/emf/patches/Data;)V" />
+      <scope id="8697016609823279737" at="8,17,8,17" />
+      <scope id="8697016609823276194" at="14,25,15,21" />
+      <scope id="8697016609823276199" at="17,34,18,21" />
+      <scope id="8697016609823279733" at="8,0,10,0" />
+      <scope id="8697016609823278707" at="10,26,12,21" />
+      <scope id="8697016609823276191" at="14,0,17,0" />
+      <scope id="8697016609823276196" at="17,0,20,0">
+        <var name="data" id="8697016609823276203" />
+      </scope>
+      <scope id="8697016609823278703" at="10,0,14,0">
+        <var name="data" id="8697016609823278710" />
+      </scope>
+      <unit id="8697016609823274523" at="6,0,21,0" name="MPSListener.plugin.dataClasses.emf.patches.Root" />
     </file>
   </root>
 </debug-info>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<product version="3" modelHash="cmiv09syj0va6vkvnw1nh05kaxoaeqh">
-  <files names="Collaboration_ActionGroup.java:Disable_Collaboration_Action.java:Enable_Collaboration_Action.java:MPSListener_ApplicationPlugin.java:plugin_AppPluginPart.java" />
+<product version="3" modelHash="bjoicwf0g0jg63iac492qhk2s429899">
+  <files names="Collaboration_ActionGroup.java:Disable_Collaboration_Action.java:Enable_Collaboration_Action.java:MPSListener_ApplicationPlugin.java:appPlugin_AppPluginPart.java" />
 </product>
 

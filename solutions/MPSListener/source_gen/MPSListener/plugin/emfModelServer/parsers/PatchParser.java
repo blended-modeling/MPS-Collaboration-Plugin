@@ -37,5 +37,4 @@ public class PatchParser {
   private static Patch parseToPatch(HashMap<String, String> readValue) {
     return new Patch(readValue.get("op"), readValue.get("path"), readValue.get("from"), readValue.get("value"));
   }
-
 }

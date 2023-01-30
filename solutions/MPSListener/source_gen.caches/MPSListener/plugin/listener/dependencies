@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dependenciesRoot>
   <uses language="l:f3061a53-9226-4cc5-a443-f952ceaf5816:jetbrains.mps.baseLanguage" />
-  <uses language="l:83888646-71ce-4f1c-9c53-c54016f6ad4f:jetbrains.mps.baseLanguage.collections" />
   <uses language="l:760a0a8c-eabb-4521-8bfd-65db761a9ba3:jetbrains.mps.baseLanguage.logging" />
   <uses language="l:df345b11-b8c7-4213-ac66-48d2a9b75d88:jetbrains.mps.baseLanguageInternal" />
   <uses language="l:63650c59-16c8-498a-99c8-005c7ee9515d:jetbrains.mps.lang.access" />
@@ -13,13 +12,24 @@
   <uses module="8865b7a8-5271-43d3-884c-6fd1d9cfdd34(MPS.OpenAPI)" kind="dp" />
   <uses module="9aa8175d-5e61-44db-afaf-94a7e3f58777(MPSListener)" kind="dp" />
   <uses module="4c6a28d1-2c60-478d-b36e-db9b3cbb21fb(closures.runtime)" kind="rt" />
-  <uses module="9b80526e-f0bf-4992-bdf5-cee39c1833f3(collections.runtime)" kind="rt" />
-  <uses module="a3e4657f-a76c-45bb-bbda-c764596ecc65(jetbrains.mps.baseLanguage.logging.runtime)" kind="rt" />
+  <uses module="a3e4657f-a76c-45bb-bbda-c764596ecc65(jetbrains.mps.baseLanguage.logging.runtime)" kind="rt+dp" />
   <uses module="52b81ac7-93fd-4e9e-b972-4995882da6d4(jetbrains.mps.baseLanguage.references.runtime)" kind="rt" />
   <uses module="2d3c70e9-aab2-4870-8d8d-6036800e4103(jetbrains.mps.kernel)" kind="rt" />
   <dependency className="MPSListener.plugin.listener.GlobalSModelListener">
+    <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Data" />
+    <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Patch" />
+    <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Root" />
+    <classNode dependClassName="MPSListener.plugin.emfModelServer.Client" />
+    <classNode dependClassName="com.fasterxml.jackson.core.JsonProcessingException" />
+    <classNode dependClassName="com.fasterxml.jackson.databind.ObjectMapper" />
     <classNode dependClassName="java.lang.Iterable" />
     <classNode dependClassName="java.lang.Override" />
+    <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.ArrayList" />
+    <classNode dependClassName="java.util.List" />
+    <classNode dependClassName="jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime" />
+    <classNode dependClassName="jetbrains.mps.project.Project" />
+    <classNode dependClassName="org.apache.log4j.Level" />
     <classNode dependClassName="org.apache.log4j.LogManager" />
     <classNode dependClassName="org.apache.log4j.Logger" />
     <classNode dependClassName="org.jetbrains.annotations.NotNull" />
@@ -33,18 +43,7 @@
     <classNode dependClassName="org.jetbrains.mps.openapi.module.SRepository" />
     <classNode extendsClassName="org.jetbrains.mps.openapi.model.SModelListener" />
     <classNode extendsClassName="org.jetbrains.mps.openapi.model.SNodeChangeListener" />
-  </dependency>
-  <dependency className="MPSListener.plugin.listener.MyListener">
-    <classNode dependClassName="MPSListener.plugin.dataClasses.mps.PropertyChanged" />
-    <classNode dependClassName="java.lang.Override" />
-    <classNode dependClassName="org.apache.log4j.LogManager" />
-    <classNode dependClassName="org.apache.log4j.Logger" />
-    <classNode dependClassName="org.jetbrains.annotations.NotNull" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.event.SPropertyChangeEvent" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.model.SModel" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode dependClassName="org.jetbrains.mps.openapi.module.SModule" />
-    <classNode extendsClassName="MPSListener.plugin.listener.GlobalSModelListener" />
+    <classNode extendsClassName="org.jetbrains.mps.openapi.module.SRepositoryListener" />
   </dependency>
 </dependenciesRoot>
 
