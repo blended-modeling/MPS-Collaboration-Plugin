@@ -15,6 +15,8 @@ import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import jetbrains.mps.internal.collections.runtime.Sequence;
+import org.jetbrains.mps.openapi.language.SReferenceLink;
+import org.jetbrains.mps.openapi.model.SReference;
 
 public class NodeFactory {
   private static final Logger LOG = LogManager.getLogger(NodeFactory.class);
@@ -48,6 +50,16 @@ public class NodeFactory {
     for (SNode rootNode : Sequence.fromIterable(rootNodes)) {
       if (rootNode.getName().equals(name)) {
         return (SNode) rootNode;
+      }
+    }
+    return null;
+  }
+
+  public static SReferenceLink getSReferenceLink(SNode node, String referenceLinkName) {
+    for (SReference sReference : Sequence.fromIterable(node.getReferences())) {
+      LoggingRuntime.logMsgView(Level.INFO, "Current reference link name: " + sReference.getLink().getName(), NodeFactory.class, null, null);
+      if (sReference.getLink().getName().equals(referenceLinkName)) {
+        return sReference.getLink();
       }
     }
     return null;

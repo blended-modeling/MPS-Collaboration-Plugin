@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solution name="MPSListener" uuid="9aa8175d-5e61-44db-afaf-94a7e3f58777" moduleVersion="0" pluginKind="PLUGIN_OTHER" compileInMPS="true">
   <models>
+    <modelRoot contentPath="${module}" type="default">
+      <sourceRoot location="models" />
+    </modelRoot>
+    <modelRoot contentPath="${module}/libs" type="java_classes">
+      <sourceRoot location="spring-jcl-5.3.19.jar" />
+      <sourceRoot location="commons-codec-1.11.jar" />
+      <sourceRoot location="httpclient-4.5.13.jar" />
+      <sourceRoot location="spring-beans-5.3.19.jar" />
+      <sourceRoot location="jackson-core-2.13.2.jar" />
+      <sourceRoot location="spring-expression-5.3.19.jar" />
+      <sourceRoot location="jackson-databind-2.13.2.1.jar" />
+      <sourceRoot location="jackson-annotations-2.13.2.jar" />
+      <sourceRoot location="spring-context-5.3.19.jar" />
+      <sourceRoot location="httpcore-4.4.13.jar" />
+      <sourceRoot location="logback-classic-1.2.11.jar" />
+      <sourceRoot location="logback-core-1.2.11.jar" />
+      <sourceRoot location="commons-logging-1.2.jar" />
+      <sourceRoot location="spring-core-5.3.19.jar" />
+      <sourceRoot location="." />
+      <sourceRoot location="spring-web-5.3.19.jar" />
+    </modelRoot>
     <modelRoot contentPath="${module}" type="java_classes">
       <sourceRoot location="." />
       <sourceRoot location="libs/org.eclipse.emfcloud.modelserver.client-0.7.0-SNAPSHOT.jar" />
@@ -19,29 +40,13 @@
       <sourceRoot location="libs/emf-jars/kotlin-stdlib-common-1.4.10.jar" />
       <sourceRoot location="libs/emf-jars/kotlin-stdlib-jdk7-1.5.31.jar" />
       <sourceRoot location="libs/emf-jars/kotlin-stdlib-jdk8-1.5.31.jar" />
-      <sourceRoot location="libs/kotlin-reflect-1.2.31.jar" />
       <sourceRoot location="libs/org.eclipse.emfcloud.modelserver.example-0.7.0-SNAPSHOT.jar" />
-    </modelRoot>
-    <modelRoot contentPath="${module}" type="default">
-      <sourceRoot location="models" />
-    </modelRoot>
-    <modelRoot contentPath="${module}/libs" type="java_classes">
-      <sourceRoot location="spring-jcl-5.3.19.jar" />
-      <sourceRoot location="commons-codec-1.11.jar" />
-      <sourceRoot location="httpclient-4.5.13.jar" />
-      <sourceRoot location="spring-beans-5.3.19.jar" />
-      <sourceRoot location="spring-web-5.3.19.jar" />
-      <sourceRoot location="jackson-core-2.13.2.jar" />
-      <sourceRoot location="spring-expression-5.3.19.jar" />
-      <sourceRoot location="jackson-databind-2.13.2.1.jar" />
-      <sourceRoot location="jackson-annotations-2.13.2.jar" />
-      <sourceRoot location="spring-context-5.3.19.jar" />
-      <sourceRoot location="httpcore-4.4.13.jar" />
-      <sourceRoot location="logback-classic-1.2.11.jar" />
-      <sourceRoot location="logback-core-1.2.11.jar" />
-      <sourceRoot location="commons-logging-1.2.jar" />
-      <sourceRoot location="spring-core-5.3.19.jar" />
-      <sourceRoot location="." />
+      <sourceRoot location="libs/spring-aop-5.3.19.jar" />
+      <sourceRoot location="libs/spring-beans-5.3.19.jar" />
+      <sourceRoot location="libs/spring-context-5.3.19.jar" />
+      <sourceRoot location="libs/spring-core-5.3.19.jar" />
+      <sourceRoot location="libs/spring-expression-5.3.19.jar" />
+      <sourceRoot location="libs/spring-jcl-5.3.19.jar" />
     </modelRoot>
   </models>
   <facets>
@@ -60,7 +65,6 @@
     <stubModelEntry path="${module}/libs/jackson-databind-2.13.2.1.jar" />
     <stubModelEntry path="${module}/libs/logback-classic-1.2.11.jar" />
     <stubModelEntry path="${module}/libs/logback-core-1.2.11.jar" />
-    <stubModelEntry path="${module}/libs/org.springframework.web-3.0.6.release.jar" />
     <stubModelEntry path="${module}/libs/slf4j-api-1.7.32.jar" />
     <stubModelEntry path="${module}/libs/spring-aop-5.3.19.jar" />
     <stubModelEntry path="${module}/libs/spring-beans-5.3.19.jar" />
@@ -68,7 +72,6 @@
     <stubModelEntry path="${module}/libs/spring-core-5.3.19.jar" />
     <stubModelEntry path="${module}/libs/spring-expression-5.3.19.jar" />
     <stubModelEntry path="${module}/libs/spring-jcl-5.3.19.jar" />
-    <stubModelEntry path="${module}/libs/spring-web-5.3.19.jar" />
     <stubModelEntry path="${module}/libs/org.eclipse.emfcloud.modelserver.client-0.7.0-SNAPSHOT.jar" />
     <stubModelEntry path="${module}/libs/org.eclipse.emfcloud.modelserver.emf-0.7.0-SNAPSHOT.jar" />
     <stubModelEntry path="${module}/libs/org.eclipse.emfcloud.modelserver.common-0.7.0-SNAPSHOT.jar" />
@@ -258,6 +261,7 @@
     <stubModelEntry path="${module}/libs/jackson-databind-2.10.0.jar" />
     <stubModelEntry path="${module}/libs/org.eclipse.emf.common-2.16.0.jar" />
     <stubModelEntry path="${module}/libs/org.eclipse.emf.ecore-2.19.0.jar" />
+    <stubModelEntry path="${module}/libs/spring-web-5.3.19.jar" />
   </stubModelEntries>
   <sourcePath />
   <dependencies>

@@ -16,12 +16,14 @@ import org.eclipse.emfcloud.modelserver.client.JsonToStringSubscriptionListener;
 import org.eclipse.emfcloud.modelserver.client.ModelServerNotification;
 import java.util.Optional;
 import org.eclipse.emfcloud.modelserver.client.Response;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpServerErrorException;
 import org.apache.http.client.utils.URIBuilder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.net.URISyntaxException;
+import java.io.IOException;
 import java.util.Map;
 
 public class Client {
@@ -120,6 +122,7 @@ public class Client {
       @Override
       public void onOpen(Response<String> response) {
         super.onOpen(response);
+        LoggingRuntime.logMsgView(Level.INFO, "Recieved open message response from server: " + response.getMessage(), Client.class, null, null);
       }
       @Override
       public void onClosing(int code, String reason) {
@@ -148,42 +151,45 @@ public class Client {
     this.contentSynchroniser.stop();
   }
 
-  public void sendUpdateNotification() {
-  }
-
   public String getAllModels() {
-    HttpHeaders headers = new HttpHeaders();
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity responseEntity = null;
+    String serverResponse = null;
     try {
-      responseEntity = restTemplate.getForEntity(this.webSocketAddress + this.models, String.class);
+      serverResponse = new RestTemplate().getForEntity(this.webSocketAddress + this.models, String.class).getBody().toString();
     } catch (HttpServerErrorException su) {
       if (LOG.isEnabledFor(Level.WARN)) {
         LOG.warn("Error getting all models");
       }
     }
-    return responseEntity.getBody().toString();
+    return serverResponse;
   }
 
   public String getModel(String modelUri, String format) {
-    HttpHeaders headers = new HttpHeaders();
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity responseEntity = null;
+    String serverResponse = null;
     try {
       String queryAddress = new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).addParameter("format", format).toString();
-      responseEntity = restTemplate.getForEntity(queryAddress, String.class);
+      HttpClient httpClient = HttpClient.newHttpClient();
+      HttpRequest httpRequest = HttpRequest.newBuilder(new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).addParameter("format", format).build()).GET().build();
+
+      HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+      serverResponse = httpResponse.body();
+      LoggingRuntime.logMsgView(Level.INFO, "Got " + serverResponse, Client.class, null, null);
     } catch (URISyntaxException se) {
+    } catch (IOException e) {
+    } catch (InterruptedException e) {
     }
-    return responseEntity.getBody().toString();
+    return serverResponse;
   }
 
   public String patchModel(String modelUri, String patch) {
-    HttpHeaders headers = new HttpHeaders();
     String serverResponse = null;
     try {
-      String queryAddress = new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).toString();
-      LoggingRuntime.logMsgView(Level.INFO, "prepared the following query: " + queryAddress, Client.class, null, null);
+      HttpClient httpClient = HttpClient.newHttpClient();
+      HttpRequest httpRequest = HttpRequest.newBuilder(new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).build()).method("PATCH", HttpRequest.BodyPublishers.ofString(patch)).header("Content-Type", "application/json").build();
+      serverResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+      LoggingRuntime.logMsgView(Level.INFO, "Sending patch: " + patch, Client.class, null, null);
     } catch (URISyntaxException se) {
+    } catch (IOException e) {
+    } catch (InterruptedException e) {
     }
     return serverResponse;
   }

@@ -8,14 +8,12 @@ import java.util.Map;
 import MPSListener.plugin.dataClasses.emf.ecore.EClassifier;
 import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SModel;
-import java.util.Set;
+import java.util.List;
 import org.jdom.Element;
-import jetbrains.mps.internal.collections.runtime.SetSequence;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.jdom.Document;
 import java.util.Iterator;
-import jetbrains.mps.internal.collections.runtime.IVisitor;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import jetbrains.mps.util.JDOMUtil;
@@ -44,7 +42,7 @@ public class ContentSynchroniser {
   private java.util.logging.Logger logger;
   private SNode selectedInstance;
   private SModel currentModel;
-  private Set<Element> elementsThatContainReferences;
+  private List<Element> elementsThatContainReferences;
   private Map<SNode, Integer> structuralMap;
   private boolean isSynced;
   private Map<String, Integer> conceptCounterMap;
@@ -55,7 +53,7 @@ public class ContentSynchroniser {
     this.logger = java.util.logging.Logger.getLogger(ContentSynchroniser.class.getSimpleName());
     this.ecoreToMPSLangMap = ecoreToMPSLangMap;
     this.selectedInstance = selectedInstance;
-    this.elementsThatContainReferences = SetSequence.fromSet(new HashSet<Element>());
+    this.elementsThatContainReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
     this.isSynced = false;
@@ -78,17 +76,14 @@ public class ContentSynchroniser {
       while (elementIterator.hasNext()) {
         Element currElement = elementIterator.next();
         if (referenceLinkPresent(currElement, mainEClassifier)) {
-          SetSequence.fromSet(elementsThatContainReferences).addElement(currElement);
+          LoggingRuntime.logMsgView(Level.INFO, currElement.getAttributes().get(0).getValue(), ContentSynchroniser.class, null, null);
+          elementsThatContainReferences.add(currElement);
         } else {
           addChild(currElement, mainEClassifier, false);
         }
       }
       // Now add elements that have references to other items 
-      SetSequence.fromSet(this.elementsThatContainReferences).visitAll(new IVisitor<Element>() {
-        public void visit(Element element) {
-          addChild(element, mainEClassifier, true);
-        }
-      });
+      this.elementsThatContainReferences.forEach((Element element) -> addChild(element, mainEClassifier, true));
       isSynced = true;
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Map initialised with is empty", ContentSynchroniser.class, null, null);
@@ -225,7 +220,6 @@ public class ContentSynchroniser {
 
     incrementConceptCounter(child.getConcept().getName());
     this.structuralMap.put(child, this.conceptCounterMap.get(child.getConcept().getName()));
-
   }
 
   private Map<SReferenceLink, SNode> getReferenceToTargetNodeMap(Element element, final SConcept childConcept, final EClassifier mainEClassifier) {
@@ -256,6 +250,7 @@ public class ContentSynchroniser {
     } else {
       this.conceptCounterMap.put(conceptName, this.conceptCounterMap.get(conceptName) + 1);
     }
+
   }
 
   public Map<SNode, Integer> getStructuralMap() {
@@ -263,7 +258,7 @@ public class ContentSynchroniser {
   }
 
   public void stop() {
-    this.elementsThatContainReferences = SetSequence.fromSet(new HashSet<Element>());
+    this.elementsThatContainReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
     this.isSynced = false;

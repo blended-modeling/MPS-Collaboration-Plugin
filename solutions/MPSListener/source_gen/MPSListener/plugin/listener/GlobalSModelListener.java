@@ -18,8 +18,8 @@ import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
-import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import java.util.List;
+import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import java.util.ArrayList;
 import MPSListener.plugin.dataClasses.emf.patches.Root;
 import MPSListener.plugin.dataClasses.emf.patches.Data;
@@ -27,6 +27,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jetbrains.mps.openapi.event.SReferenceChangeEvent;
 import org.jetbrains.mps.openapi.event.SNodeAddEvent;
 import org.jetbrains.mps.openapi.event.SNodeRemoveEvent;
+import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
+import org.jetbrains.mps.openapi.language.SContainmentLink;
+import org.jetbrains.mps.openapi.language.SProperty;
 
 public class GlobalSModelListener implements SModelListener, SNodeChangeListener, SRepositoryListener {
   private static final Logger LOG = LogManager.getLogger(GlobalSModelListener.class);
@@ -42,6 +45,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   private boolean lastChangeIsExternal;
   private static GlobalSModelListener instance;
   private ObjectMapper om;
+  private String modelName;
 
   private GlobalSModelListener(SNode selectedInstance, Project project) {
     this.selectedInstance = selectedInstance;
@@ -52,6 +56,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     this.client = Client.getInstance(selectedInstance, project);
     this.lastChangeIsExternal = false;
     this.om = new ObjectMapper();
+    this.modelName = selectedInstance.getName() + "." + selectedInstance.getConcept().getName().toLowerCase();
   }
 
   public static GlobalSModelListener getInstance(SNode selectedInstance, Project project) {
@@ -113,30 +118,40 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   @Override
   public void propertyChanged(@NotNull SPropertyChangeEvent event) {
     LoggingRuntime.logMsgView(Level.INFO, "Property changed: for " + event.getNode().getConcept().getName() + " from " + event.getOldValue() + " to " + event.getNewValue(), GlobalSModelListener.class, null, null);
-    if (lastChangeIsExternal) {
-      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
-      this.lastChangeIsExternal = false;
-    } else {
-      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
-      String path = event.getNode().getContainmentLink().getName() + "/" + this.client.getStructuralMapping().get(event.getNode()) + "/" + event.getProperty().getName();
-      Patch patch = new Patch("replace", path, null, event.getNewValue());
+    if (!(this.lastChangeIsExternal)) {
+      String path = getCorrectNaming(event.getNode().getContainmentLink().getName()) + "/" + this.client.getStructuralMapping().get(event.getNode()) + "/" + event.getProperty().getName();
       List<Patch> patchList = new ArrayList<>();
-      patchList.add(patch);
+      patchList.add(new Patch("replace", path, null, event.getNewValue()));
       try {
-        LoggingRuntime.logMsgView(Level.INFO, "Sending patch: " + om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))), GlobalSModelListener.class, null, null);
+        this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
       } catch (JsonProcessingException e) {
+        if (LOG.isInfoEnabled()) {
+          LOG.info(e.getMessage());
+        }
       }
     }
+    this.lastChangeIsExternal = false;
+  }
+
+  private String getCorrectNaming(String name) {
+    String correctName = null;
+    switch (name) {
+      case "inputs":
+        correctName = "input";
+        break;
+      case "outputs":
+        correctName = "output";
+        break;
+      case "transitions":
+        correctName = "transition";
+        break;
+      default:
+        return name;
+    }
+    return correctName;
   }
   @Override
   public void referenceChanged(@NotNull SReferenceChangeEvent event) {
-    LoggingRuntime.logMsgView(Level.INFO, "Reference changed: for " + event.getNode().getConcept().getName() + " from " + event.getOldValue().describeTarget().toString() + " to " + event.getNewValue().describeTarget().toString(), GlobalSModelListener.class, null, null);
-    if (lastChangeIsExternal) {
-      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
-      this.lastChangeIsExternal = false;
-    } else {
-      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
-    }
   }
   @Override
   public void nodeAdded(@NotNull SNodeAddEvent event) {
@@ -149,14 +164,39 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     }
   }
   @Override
-  public void nodeRemoved(@NotNull SNodeRemoveEvent event) {
-    LoggingRuntime.logMsgView(Level.INFO, "Node removed from: " + event.getParent().getName(), GlobalSModelListener.class, null, null);
-    if (lastChangeIsExternal) {
-      LoggingRuntime.logMsgView(Level.INFO, "Change received externally", GlobalSModelListener.class, null, null);
-      this.lastChangeIsExternal = false;
-    } else {
-      LoggingRuntime.logMsgView(Level.INFO, "Change received internally", GlobalSModelListener.class, null, null);
+  public void nodeRemoved(@NotNull final SNodeRemoveEvent event) {
+    LoggingRuntime.logMsgView(Level.INFO, "Node removed.", GlobalSModelListener.class, null, null);
+    // Nodes that are removed have a null containment link, so need to find that again to notify the server.
+    if (!(this.lastChangeIsExternal)) {
+      final Wrappers._T<SContainmentLink> containmentLinkOfRemovedNode = new Wrappers._T<SContainmentLink>(null);
+      event.getParent().getConcept().getContainmentLinks().forEach((SContainmentLink containmentLink) -> {
+        if (containmentLink.getTargetConcept().getName().equals(event.getChild().getConcept().getName())) {
+          containmentLinkOfRemovedNode.value = containmentLink;
+        }
+      });
+      String path = getCorrectNaming(containmentLinkOfRemovedNode.value.getName()) + "/" + this.client.getStructuralMapping().get(event.getChild());
+
+      // Read me: So in order to remove input, one has to do input/[index]/name. But if i want to remove transition, I can do transition/[index]. So you notice I HAVE to mention a property for input, but not for removing transition. So my guess is nodes which only have one property and no other references, you have to include that in the path for removing the node, so for input: input/[index]/name, but for those which have property(s) and reference links, you can just remove them by their name and index.
+      final Wrappers._int numOfProperties = new Wrappers._int(0);
+      event.getChild().getProperties().forEach((SProperty property) -> numOfProperties.value += 1);
+      if (numOfProperties.value == 1) {
+        SProperty property = event.getChild().getProperties().iterator().next();
+        path += "/" + property.getName();
+      }
+
+
+      List<Patch> patchList = new ArrayList<>();
+      patchList.add(new Patch("remove", path, null, null));
+
+      try {
+        this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
+      } catch (JsonProcessingException e) {
+        if (LOG.isInfoEnabled()) {
+          LOG.info(e.getMessage());
+        }
+      }
     }
+    this.lastChangeIsExternal = false;
   }
 
   public SRepository getRepositary() {

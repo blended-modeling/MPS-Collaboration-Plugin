@@ -19,16 +19,22 @@
   <uses module="a3e4657f-a76c-45bb-bbda-c764596ecc65(jetbrains.mps.baseLanguage.logging.runtime)" kind="rt+dp" />
   <uses module="52b81ac7-93fd-4e9e-b972-4995882da6d4(jetbrains.mps.baseLanguage.references.runtime)" kind="rt" />
   <uses module="2d3c70e9-aab2-4870-8d8d-6036800e4103(jetbrains.mps.kernel)" kind="rt" />
+  <uses module="9a4afe51-f114-4595-b5df-048ce3c596be(jetbrains.mps.runtime)" kind="dp" />
   <dependency className="MPSListener.plugin.emfModelServer.Client">
     <classNode dependClassName="MPSListener.plugin.emfModelServer.PatchOperations" />
     <classNode dependClassName="MPSListener.plugin.synchronise.ContentSynchroniser" />
     <classNode dependClassName="MPSListener.plugin.synchronise.validation.PerformEcoreValidation" />
+    <classNode dependClassName="java.io.IOException" />
     <classNode dependClassName="java.lang.Integer" />
+    <classNode dependClassName="java.lang.InterruptedException" />
     <classNode dependClassName="java.lang.Override" />
     <classNode dependClassName="java.lang.String" />
     <classNode dependClassName="java.lang.Throwable" />
     <classNode dependClassName="java.net.MalformedURLException" />
     <classNode dependClassName="java.net.URISyntaxException" />
+    <classNode dependClassName="java.net.http.HttpClient" />
+    <classNode dependClassName="java.net.http.HttpRequest" />
+    <classNode dependClassName="java.net.http.HttpResponse" />
     <classNode dependClassName="java.util.Map" />
     <classNode dependClassName="java.util.Optional" />
     <classNode dependClassName="java.util.logging.Logger" />
@@ -43,8 +49,6 @@
     <classNode dependClassName="org.eclipse.emfcloud.modelserver.client.ModelServerNotification" />
     <classNode dependClassName="org.eclipse.emfcloud.modelserver.client.Response" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
-    <classNode dependClassName="org.springframework.http.HttpHeaders" />
-    <classNode dependClassName="org.springframework.http.ResponseEntity" />
     <classNode dependClassName="org.springframework.web.client.HttpServerErrorException" />
     <classNode dependClassName="org.springframework.web.client.RestTemplate" />
   </dependency>
@@ -52,6 +56,7 @@
     <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Patch" />
     <classNode dependClassName="MPSListener.plugin.emfModelServer.parsers.PatchParser" />
     <classNode dependClassName="MPSListener.plugin.listener.GlobalSModelListener" />
+    <classNode dependClassName="MPSListener.plugin.synchronise.NodeFactory" />
     <classNode dependClassName="java.lang.Exception" />
     <classNode dependClassName="java.lang.Integer" />
     <classNode dependClassName="java.lang.InterruptedException" />
@@ -65,10 +70,12 @@
     <classNode dependClassName="jetbrains.mps.baseLanguage.closures.runtime.Wrappers" />
     <classNode dependClassName="jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime" />
     <classNode dependClassName="jetbrains.mps.internal.collections.runtime.SetSequence" />
+    <classNode dependClassName="jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations" />
     <classNode dependClassName="jetbrains.mps.project.Project" />
     <classNode dependClassName="org.apache.log4j.Level" />
     <classNode dependClassName="org.apache.log4j.LogManager" />
     <classNode dependClassName="org.apache.log4j.Logger" />
+    <classNode dependClassName="org.jetbrains.mps.openapi.language.SContainmentLink" />
     <classNode dependClassName="org.jetbrains.mps.openapi.language.SProperty" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
   </dependency>
