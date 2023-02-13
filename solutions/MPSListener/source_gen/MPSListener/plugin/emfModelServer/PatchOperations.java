@@ -100,7 +100,7 @@ public class PatchOperations {
     final String[] referenceLocationTuple = refPathArray[refPathArray.length - 1].split("\\.");
 
     if (!(value.contains("$command.exec.res#"))) {
-      final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, getCorrectNaming(referenceLocationTuple[0]));
+      final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, referenceLocationTuple[0]);
       if (containmentLink != null) {
         this.modelStructuralMap.keySet().forEach((final SNode currentNode) -> {
           if (currentNode.getConcept().getName().equals(containmentLink.getTargetConcept().getName()) && Integer.valueOf(referenceLocationTuple[1]).equals(PatchOperations.this.modelStructuralMap.get(currentNode))) {
@@ -122,24 +122,6 @@ public class PatchOperations {
       });
 
     }
-  }
-
-  private String getCorrectNaming(String name) {
-    String correctName = null;
-    switch (name) {
-      case "input":
-        correctName = "inputs";
-        break;
-      case "output":
-        correctName = "outputs";
-        break;
-      case "transition":
-        correctName = "transitions";
-        break;
-      default:
-        return name;
-    }
-    return correctName;
   }
 
 
@@ -191,7 +173,7 @@ public class PatchOperations {
 
   private SNode getNode(String path) {
     String[] pathSplit = path.split("/");
-    SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, getCorrectNaming(pathSplit[1]));
+    SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, pathSplit[1]);
     Integer index = null;
     // Reason for if statement below is when there is only one element remaining, then it does not return any index.
     if (pathSplit.length == 2) {

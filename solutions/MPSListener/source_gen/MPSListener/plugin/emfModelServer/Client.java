@@ -122,7 +122,6 @@ public class Client {
       @Override
       public void onOpen(Response<String> response) {
         super.onOpen(response);
-        LoggingRuntime.logMsgView(Level.INFO, "Recieved open message response from server: " + response.getMessage(), Client.class, null, null);
       }
       @Override
       public void onClosing(int code, String reason) {
@@ -132,7 +131,6 @@ public class Client {
       @Override
       public void onClosed(int code, String reason) {
         super.onClosed(code, reason);
-        LoggingRuntime.logMsgView(Level.INFO, "Disconnected from server, reason: " + reason, Client.class, null, null);
       }
       @Override
       public void onFailure(Throwable throwable, Response<String> response) {

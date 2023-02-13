@@ -141,21 +141,7 @@ public class ContentSynchroniser {
 
   private SContainmentLink getSContainmentLink(String containmentLinkName) {
     // remove this after ecore is correct
-    String correctName = null;
-    switch (containmentLinkName) {
-      case "input":
-        correctName = "inputs";
-        break;
-      case "output":
-        correctName = "outputs";
-        break;
-      case "transition":
-        correctName = "transitions";
-        break;
-      default:
-        correctName = containmentLinkName;
-    }
-    return NodeFactory.getSContainmentLink(this.selectedInstance, correctName);
+    return NodeFactory.getSContainmentLink(this.selectedInstance, containmentLinkName);
   }
 
   private void removeAllChildrenSNode() {

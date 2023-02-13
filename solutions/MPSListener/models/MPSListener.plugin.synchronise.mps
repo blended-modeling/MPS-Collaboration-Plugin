@@ -168,7 +168,6 @@
         <child id="8276990574895933173" name="catchBody" index="1zc67A" />
         <child id="8276990574895933172" name="throwable" index="1zc67B" />
       </concept>
-      <concept id="1081855346303" name="jetbrains.mps.baseLanguage.structure.BreakStatement" flags="nn" index="3zACq4" />
       <concept id="1178549954367" name="jetbrains.mps.baseLanguage.structure.IVisible" flags="ng" index="1B3ioH">
         <child id="1178549979242" name="visibility" index="1B3o_S" />
       </concept>
@@ -181,15 +180,6 @@
       <concept id="5351203823916750322" name="jetbrains.mps.baseLanguage.structure.TryUniversalStatement" flags="nn" index="3J1_TO">
         <child id="8276990574886367510" name="catchClause" index="1zxBo5" />
         <child id="8276990574886367508" name="body" index="1zxBo7" />
-      </concept>
-      <concept id="1163670490218" name="jetbrains.mps.baseLanguage.structure.SwitchStatement" flags="nn" index="3KaCP$">
-        <child id="1163670592366" name="defaultBlock" index="3Kb1Dw" />
-        <child id="1163670766145" name="expression" index="3KbGdf" />
-        <child id="1163670772911" name="case" index="3KbHQx" />
-      </concept>
-      <concept id="1163670641947" name="jetbrains.mps.baseLanguage.structure.SwitchCase" flags="ng" index="3KbdKl">
-        <child id="1163670677455" name="expression" index="3Kbmr1" />
-        <child id="1163670683720" name="body" index="3Kbo56" />
       </concept>
       <concept id="1208890769693" name="jetbrains.mps.baseLanguage.structure.ArrayLengthOperation" flags="nn" index="1Rwk04" />
       <concept id="6329021646629104954" name="jetbrains.mps.baseLanguage.structure.SingleLineComment" flags="nn" index="3SKdUt">
@@ -2530,86 +2520,6 @@
             </node>
           </node>
         </node>
-        <node concept="3cpWs8" id="6Lar_v4IojG" role="3cqZAp">
-          <node concept="3cpWsn" id="6Lar_v4IojH" role="3cpWs9">
-            <property role="TrG5h" value="correctName" />
-            <node concept="3uibUv" id="6Lar_v4IojI" role="1tU5fm">
-              <ref role="3uigEE" to="wyt6:~String" resolve="String" />
-            </node>
-            <node concept="10Nm6u" id="6Lar_v4JkTi" role="33vP2m" />
-          </node>
-        </node>
-        <node concept="3KaCP$" id="6Lar_v4ItTg" role="3cqZAp">
-          <node concept="37vLTw" id="6Lar_v4IvqL" role="3KbGdf">
-            <ref role="3cqZAo" node="6Lar_v4F18s" resolve="containmentLinkName" />
-          </node>
-          <node concept="3KbdKl" id="6Lar_v4Iwyr" role="3KbHQx">
-            <node concept="Xl_RD" id="6Lar_v4IxtH" role="3Kbmr1">
-              <property role="Xl_RC" value="input" />
-            </node>
-            <node concept="3clFbS" id="6Lar_v4IAFu" role="3Kbo56">
-              <node concept="3clFbF" id="6Lar_v4ICuN" role="3cqZAp">
-                <node concept="37vLTI" id="6Lar_v4IDRK" role="3clFbG">
-                  <node concept="Xl_RD" id="6Lar_v4IERq" role="37vLTx">
-                    <property role="Xl_RC" value="inputs" />
-                  </node>
-                  <node concept="37vLTw" id="6Lar_v4ICuL" role="37vLTJ">
-                    <ref role="3cqZAo" node="6Lar_v4IojH" resolve="correctName" />
-                  </node>
-                </node>
-              </node>
-              <node concept="3zACq4" id="6Lar_v4IJRC" role="3cqZAp" />
-            </node>
-          </node>
-          <node concept="3KbdKl" id="6Lar_v4IQIh" role="3KbHQx">
-            <node concept="Xl_RD" id="6Lar_v4IS1a" role="3Kbmr1">
-              <property role="Xl_RC" value="output" />
-            </node>
-            <node concept="3clFbS" id="6Lar_v4IU0K" role="3Kbo56">
-              <node concept="3clFbF" id="6Lar_v4IV$6" role="3cqZAp">
-                <node concept="37vLTI" id="6Lar_v4IX5J" role="3clFbG">
-                  <node concept="Xl_RD" id="6Lar_v4IXX4" role="37vLTx">
-                    <property role="Xl_RC" value="outputs" />
-                  </node>
-                  <node concept="37vLTw" id="6Lar_v4IV$4" role="37vLTJ">
-                    <ref role="3cqZAo" node="6Lar_v4IojH" resolve="correctName" />
-                  </node>
-                </node>
-              </node>
-              <node concept="3zACq4" id="6Lar_v4Jet5" role="3cqZAp" />
-            </node>
-          </node>
-          <node concept="3KbdKl" id="6Lar_v4J040" role="3KbHQx">
-            <node concept="Xl_RD" id="6Lar_v4J18v" role="3Kbmr1">
-              <property role="Xl_RC" value="transition" />
-            </node>
-            <node concept="3clFbS" id="6Lar_v4J47x" role="3Kbo56">
-              <node concept="3clFbF" id="6Lar_v4J5NG" role="3cqZAp">
-                <node concept="37vLTI" id="6Lar_v4J7cD" role="3clFbG">
-                  <node concept="Xl_RD" id="6Lar_v4J8cj" role="37vLTx">
-                    <property role="Xl_RC" value="transitions" />
-                  </node>
-                  <node concept="37vLTw" id="6Lar_v4J5NE" role="37vLTJ">
-                    <ref role="3cqZAo" node="6Lar_v4IojH" resolve="correctName" />
-                  </node>
-                </node>
-              </node>
-              <node concept="3zACq4" id="6Lar_v4JgIu" role="3cqZAp" />
-            </node>
-          </node>
-          <node concept="3clFbS" id="6Lar_v4JhQa" role="3Kb1Dw">
-            <node concept="3clFbF" id="6Lar_v4Jm$u" role="3cqZAp">
-              <node concept="37vLTI" id="6Lar_v4JnXt" role="3clFbG">
-                <node concept="37vLTw" id="6Lar_v4Jqf1" role="37vLTx">
-                  <ref role="3cqZAo" node="6Lar_v4F18s" resolve="containmentLinkName" />
-                </node>
-                <node concept="37vLTw" id="6Lar_v4Jm$s" role="37vLTJ">
-                  <ref role="3cqZAo" node="6Lar_v4IojH" resolve="correctName" />
-                </node>
-              </node>
-            </node>
-          </node>
-        </node>
         <node concept="3cpWs6" id="6Lar_v4JwVp" role="3cqZAp">
           <node concept="2YIFZM" id="6Lar_v4HTST" role="3cqZAk">
             <ref role="37wK5l" node="1f$T3k0xaPB" resolve="getSContainmentLink" />
@@ -2621,7 +2531,7 @@
               </node>
             </node>
             <node concept="37vLTw" id="6Lar_v4HVaG" role="37wK5m">
-              <ref role="3cqZAo" node="6Lar_v4IojH" resolve="correctName" />
+              <ref role="3cqZAo" node="6Lar_v4F18s" resolve="containmentLinkName" />
             </node>
           </node>
         </node>

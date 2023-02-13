@@ -119,7 +119,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   public void propertyChanged(@NotNull SPropertyChangeEvent event) {
     LoggingRuntime.logMsgView(Level.INFO, "Property changed: for " + event.getNode().getConcept().getName() + " from " + event.getOldValue() + " to " + event.getNewValue(), GlobalSModelListener.class, null, null);
     if (!(this.lastChangeIsExternal)) {
-      String path = getCorrectNaming(event.getNode().getContainmentLink().getName()) + "/" + this.client.getStructuralMapping().get(event.getNode()) + "/" + event.getProperty().getName();
+      String path = event.getNode().getContainmentLink().getName() + "/" + this.client.getStructuralMapping().get(event.getNode()) + "/" + event.getProperty().getName();
       List<Patch> patchList = new ArrayList<>();
       patchList.add(new Patch("replace", path, null, event.getNewValue()));
       try {
@@ -131,24 +131,6 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
       }
     }
     this.lastChangeIsExternal = false;
-  }
-
-  private String getCorrectNaming(String name) {
-    String correctName = null;
-    switch (name) {
-      case "inputs":
-        correctName = "input";
-        break;
-      case "outputs":
-        correctName = "output";
-        break;
-      case "transitions":
-        correctName = "transition";
-        break;
-      default:
-        return name;
-    }
-    return correctName;
   }
   @Override
   public void referenceChanged(@NotNull SReferenceChangeEvent event) {
@@ -174,7 +156,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
           containmentLinkOfRemovedNode.value = containmentLink;
         }
       });
-      String path = getCorrectNaming(containmentLinkOfRemovedNode.value.getName()) + "/" + this.client.getStructuralMapping().get(event.getChild());
+      String path = containmentLinkOfRemovedNode.value.getName() + "/" + this.client.getStructuralMapping().get(event.getChild());
 
       // Read me: So in order to remove input, one has to do input/[index]/name. But if i want to remove transition, I can do transition/[index]. So you notice I HAVE to mention a property for input, but not for removing transition. So my guess is nodes which only have one property and no other references, you have to include that in the path for removing the node, so for input: input/[index]/name, but for those which have property(s) and reference links, you can just remove them by their name and index.
       final Wrappers._int numOfProperties = new Wrappers._int(0);
