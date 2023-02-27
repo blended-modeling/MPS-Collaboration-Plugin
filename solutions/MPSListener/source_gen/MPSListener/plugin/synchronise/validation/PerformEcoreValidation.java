@@ -19,22 +19,22 @@ import jetbrains.mps.lang.smodel.generator.smodelAdapter.SModelOperations;
 import java.util.ArrayList;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import java.util.Set;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import jetbrains.mps.internal.collections.runtime.SetSequence;
 import jetbrains.mps.internal.collections.runtime.IVisitor;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
 import MPSListener.plugin.dataClasses.emf.ecore.ESuperType;
+import jetbrains.mps.internal.collections.runtime.Sequence;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
 import jetbrains.mps.lang.core.behavior.IDeprecatable__BehaviorDescriptor;
 import java.util.Optional;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SEnumOperations;
 import java.util.HashSet;
-import jetbrains.mps.internal.collections.runtime.Sequence;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import org.jetbrains.mps.openapi.language.SProperty;
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
@@ -58,6 +58,7 @@ public class PerformEcoreValidation {
   private SNode selectedInstance;
 
   public PerformEcoreValidation(SNode selectedInstance) {
+    // TODO: Move away from parsing using objectMapper to using Document library, used in ContentSynchroniser.
     this.mpsLocalRepo = MPS_LocalRepo.getInstance(selectedInstance);
     // hard coded the model to look for.
     this.module = "StateMachines";
@@ -82,21 +83,18 @@ public class PerformEcoreValidation {
     SModel structuralModel = this.mpsLocalRepo.findModel(this.module, this.model);
     this.structuralElements = SModelOperations.roots(structuralModel, null);
     ArrayList<EClassifier> eClassifiers = parsedServerSideEcore.getData().getEClassifiers();
-    if (allElementsPresentByName(eClassifiers, structuralElements)) {
-      LoggingRuntime.logMsgView(Level.INFO, "All elements present", PerformEcoreValidation.class, null, null);
+    if (allEClassesPresentInMPS(eClassifiers, structuralElements)) {
+      LoggingRuntime.logMsgView(Level.INFO, "All elements present, continuing comparison", PerformEcoreValidation.class, null, null);
       eClassifiers.forEach((EClassifier eClassifier) -> {
         {
           SNode structuralNode = PerformEcoreValidation.this.ecoreToMPS.get(eClassifier);
           if (isMatchSuperType(eClassifier, structuralNode)) {
-            LoggingRuntime.logMsgView(Level.INFO, "super type same for " + SPropertyOperations.getString(structuralNode, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-            LoggingRuntime.logMsgView(Level.INFO, SPropertyOperations.getString(structuralNode, PROPS.name$MnvL) + " structural features = " + String.valueOf(isMatchStructuralFeatures(eClassifier, structuralNode)), PerformEcoreValidation.class, null, null);
-          } else {
-            LoggingRuntime.logMsgView(Level.INFO, "super type not same for " + SPropertyOperations.getString(structuralNode, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
+            isMatchStructuralFeatures(eClassifier, structuralNode);
           }
         }
       });
     } else {
-      LoggingRuntime.logMsgView(Level.INFO, "Mismatched ecore, all elements not present by name..", PerformEcoreValidation.class, null, null);
+      LoggingRuntime.logMsgView(Level.INFO, "Mismatched ecore, all elements not present by name, discontinuing comparisons", PerformEcoreValidation.class, null, null);
     }
     if (LOG.isInfoEnabled()) {
       LOG.info("Validation complete");
@@ -105,7 +103,7 @@ public class PerformEcoreValidation {
   }
 
 
-  private boolean allElementsPresentByName(ArrayList<EClassifier> eClassifiers, List<SNode> structuralElements) {
+  private boolean allEClassesPresentInMPS(ArrayList<EClassifier> eClassifiers, List<SNode> structuralElements) {
     // This method ensures that all eClassifiers from the eCore file are present in the structure. This method does not ensure all mps structural nodes are present in the ecore file. However, that should be done.
     // TODO: Method seems fishy, might not be checking if all eClasses are present, double check
     final Set<SNode> allStructuralNodes = getAllConcepts(structuralElements);
@@ -130,26 +128,27 @@ public class PerformEcoreValidation {
     return elementPresent.value;
   }
 
+
   private boolean isMatchSuperType(EClassifier eClassifier, SNode nodeToCompare) {
+    LoggingRuntime.logMsgView(Level.INFO, "Comparing super type(s) of " + eClassifier.getName(), PerformEcoreValidation.class, null, null);
     boolean isMatch = false;
     // This if statement is a bit misleading, nonetheless it checks wether the given eClassifier and MPS node have no supertypes or or if they do, then they are the same.
     if (eClassifier.getESuperTypes() == null && ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getImmediateSuperconcepts_idhMuxyK2.invoke(nodeToCompare)).count() == 0) {
+      LoggingRuntime.logMsgView(Level.INFO, "No super concepts detected.", PerformEcoreValidation.class, null, null);
       return true;
     }
     try {
 
       for (ESuperType superConceptEcore : ListSequence.fromList(eClassifier.getESuperTypes())) {
         {
-          // Some native terms of emf differ than that of mps, look at the populateEmfToMpsTerms for the current list. Since they can be different, I noted the ones I observed and replace eCoreSuperType with that of MPS.
           String eCoreSuperType = superConceptEcore.get$ref().split("//")[1];
+
+          // Some native terms of emf differ than that of mps, look at the populateEmfToMpsTerms for the current list. Since they can be different, I noted the ones I observed and replace eCoreSuperType with that of MPS.
           eCoreSuperType = ((this.emfToMpsConceptTerms.containsKey(eCoreSuperType)) ? this.emfToMpsConceptTerms.get(eCoreSuperType) : eCoreSuperType);
-          for (SNode superType : ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getImmediateSuperconcepts_idhMuxyK2.invoke(nodeToCompare))) {
+          for (SNode superType : Sequence.fromIterable(AbstractConceptDeclaration__BehaviorDescriptor.getAllSuperConcepts_id2A8AB0rAWpG.invoke(nodeToCompare, ((boolean) true)))) {
             if (SPropertyOperations.getString(superType, PROPS.name$MnvL).equals(eCoreSuperType)) {
               isMatch = true;
             }
-          }
-          if (!(isMatch)) {
-            break;
           }
         }
       }
@@ -157,159 +156,107 @@ public class PerformEcoreValidation {
       log.info(e.getMessage());
       LoggingRuntime.logMsgView(Level.INFO, "Mismatch super type for " + eClassifier.getName(), PerformEcoreValidation.class, null, null);
     }
+    LoggingRuntime.logMsgView(Level.INFO, "Super type for " + eClassifier.getName() + " = " + isMatch, PerformEcoreValidation.class, null, null);
     return isMatch;
   }
 
   private boolean isMatchStructuralFeatures(EClassifier eClassifier, SNode nodeToCompare) {
+    LoggingRuntime.logMsgView(Level.INFO, "Comparing EStructural features of " + eClassifier.getName(), PerformEcoreValidation.class, null, null);
     // Also compares abstract if present
-    LoggingRuntime.logMsgView(Level.INFO, "Aggergat declaration: ", PerformEcoreValidation.class, null, null);
-    ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f)).visitAll(new IVisitor<SNode>() {
-      public void visit(SNode linkDeclaration) {
-        LoggingRuntime.logMsgView(Level.INFO, SPropertyOperations.getString(linkDeclaration, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-      }
-    });
-    ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).visitAll(new IVisitor<SNode>() {
-      public void visit(SNode it) {
-        LoggingRuntime.logMsgView(Level.INFO, SPropertyOperations.getString(it, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-      }
-    });
-    LoggingRuntime.logMsgView(Level.INFO, "Property declaration size: " + ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).count(), PerformEcoreValidation.class, null, null);
-    final Wrappers._boolean isMatch = new Wrappers._boolean(false);
-    Boolean isCorrectMulticiplicity = null;
+    boolean isMatch = false;
     if (eClassifier.getEStructuralFeatures() == null && ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).count() == 0 && ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f)).count() == 0) {
       LoggingRuntime.logMsgView(Level.INFO, "Empty structure features detected for " + SPropertyOperations.getString(nodeToCompare, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
       return true;
     }
-    for (final EStructuralFeature structuralFeature : ListSequence.fromList(eClassifier.getEStructuralFeatures())) {
+    for (EStructuralFeature structuralFeature : ListSequence.fromList(eClassifier.getEStructuralFeatures())) {
       {
-        isMatch.value = false;
+        isMatch = false;
         String[] eClassSplit = structuralFeature.getEClass().split("//");
-        String[] eTypeClassSplit = structuralFeature.getEType().getEClass().split("//");
         String[] eTypeRefSplit = structuralFeature.getEType().get$ref().split("//");
 
         String eClass = eClassSplit[eClassSplit.length - 1];
-        final Wrappers._T<String> eTypeRef = new Wrappers._T<String>(eTypeRefSplit[eTypeRefSplit.length - 1]);
-        String eTypeClass = eTypeClassSplit[eTypeClassSplit.length - 1];
+        String eTypeRef = eTypeRefSplit[eTypeRefSplit.length - 1];
         if (eClass.equals("EAttribute")) {
-          eTypeRef.value = this.emfToMpsProperties.get(eTypeRef.value);
-          ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).visitAll(new IVisitor<SNode>() {
-            public void visit(SNode property) {
-              // Depreciated properties in this model are not used.
-              if ((boolean) IDeprecatable__BehaviorDescriptor.isDeprecated_idhOwoPtR.invoke(property)) {
-                isMatch.value = true;
-              } else if (SPropertyOperations.getString(property, PROPS.name$MnvL).toLowerCase().equals(structuralFeature.getName().toLowerCase()) && String.valueOf(SLinkOperations.getTarget(property, LINKS.dataType$5j5Y)).toLowerCase().equals(eTypeRef.value.toLowerCase())) {
-                isMatch.value = true;
-              }
-            }
-          });
+          isMatch = eAttributeIsPresent(eTypeRef, nodeToCompare, structuralFeature);
         } else if (eClass.equals("EReference")) {
-          if (eTypeClass.equals("EClass")) {
-            for (SNode concept : SetSequence.fromSet(getAllConcepts(this.structuralElements))) {
-              if (SPropertyOperations.getString(concept, PROPS.name$MnvL).equals(eTypeRef.value)) {
-                isMatch.value = true;
-                LoggingRuntime.logMsgView(Level.INFO, "Match found for " + SPropertyOperations.getString(concept, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-              }
-            }
-          } else {
-            for (SNode linkDeclaration : ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f))) {
-              if (SPropertyOperations.getString(SLinkOperations.getTarget(linkDeclaration, LINKS.target$m40F), PROPS.name$MnvL).equals(eTypeRef.value)) {
-                LoggingRuntime.logMsgView(Level.INFO, "Match found for " + SPropertyOperations.getString(SLinkOperations.getTarget(linkDeclaration, LINKS.target$m40F), PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-                isMatch.value = true;
-              }
-              LoggingRuntime.logMsgView(Level.INFO, "Comparing for " + SPropertyOperations.getString(SLinkOperations.getTarget(linkDeclaration, LINKS.target$m40F), PROPS.name$MnvL) + " and " + eTypeRef.value, PerformEcoreValidation.class, null, null);
-            }
-          }
+          isMatch = eContainmentOrEReferenceIsPresent(eTypeRef, nodeToCompare);
           if (structuralFeature.getLowerBound().isPresent() || structuralFeature.getUpperBound().isPresent()) {
-            isCorrectMulticiplicity = isCorrectMultiplicity(structuralFeature, nodeToCompare);
-            isMatch.value = isCorrectMulticiplicity;
-            LoggingRuntime.logMsgView(Level.INFO, "Multiciplicity for " + structuralFeature.getName() + " = " + isCorrectMulticiplicity, PerformEcoreValidation.class, null, null);
+            isMatch = isCorrectMultiplicity(structuralFeature, nodeToCompare);
           }
-        }
-        if (!(isMatch.value)) {
-          if (isCorrectMulticiplicity == null) {
-            LoggingRuntime.logMsgView(Level.INFO, "No comparison for multiciplicity made for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-          }
-          LoggingRuntime.logMsgView(Level.INFO, "Inconsistencies found for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-          return false;
         }
       }
     }
-    return isMatch.value;
+    LoggingRuntime.logMsgView(Level.INFO, eClassifier.getName() + " structural features " + " = " + isMatch, PerformEcoreValidation.class, null, null);
+    return isMatch;
+  }
+
+  private boolean eContainmentOrEReferenceIsPresent(String eTypeRef, SNode nodeToCompare) {
+    LoggingRuntime.logMsgView(Level.INFO, "Cross checking eContainment or eReference for " + eTypeRef, PerformEcoreValidation.class, null, null);
+    boolean isMatch = false;
+    for (SNode linkDeclaration : ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f))) {
+      if (SPropertyOperations.getString(SLinkOperations.getTarget(linkDeclaration, LINKS.target$m40F), PROPS.name$MnvL).equals(eTypeRef)) {
+        isMatch = true;
+        break;
+      }
+    }
+    LoggingRuntime.logMsgView(Level.INFO, "eContainment or eReference present = " + isMatch, PerformEcoreValidation.class, null, null);
+
+    return isMatch;
+  }
+
+  private boolean eAttributeIsPresent(String eTypeRef, SNode nodeToCompare, final EStructuralFeature structuralFeature) {
+    final Wrappers._T<String> _eTypeRef = new Wrappers._T<String>(eTypeRef);
+    final Wrappers._boolean eAttributeIsPresent = new Wrappers._boolean(false);
+    _eTypeRef.value = this.emfToMpsProperties.get(_eTypeRef.value);
+    ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).visitAll(new IVisitor<SNode>() {
+      public void visit(SNode property) {
+        // Depreciated properties in this model are not used.
+        if ((boolean) IDeprecatable__BehaviorDescriptor.isDeprecated_idhOwoPtR.invoke(property)) {
+          eAttributeIsPresent.value = true;
+        } else if (SPropertyOperations.getString(property, PROPS.name$MnvL).toLowerCase().equals(structuralFeature.getName().toLowerCase()) && String.valueOf(SLinkOperations.getTarget(property, LINKS.dataType$5j5Y)).toLowerCase().equals(_eTypeRef.value.toLowerCase())) {
+          eAttributeIsPresent.value = true;
+        } else {
+          eAttributeIsPresent.value = false;
+        }
+      }
+    });
+    if (!(eAttributeIsPresent.value)) {
+      LoggingRuntime.logMsgView(Level.INFO, "EAttribute for " + structuralFeature.getName() + " not present.", PerformEcoreValidation.class, null, null);
+    }
+    return eAttributeIsPresent.value;
   }
 
   private boolean isCorrectMultiplicity(final EStructuralFeature structuralFeature, SNode nodeToCompare) {
     final Wrappers._boolean isCorrect = new Wrappers._boolean(false);
-    // TODO: Check for upper and lower bounds to confirm
-    LoggingRuntime.logMsgView(Level.INFO, "Comparing for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
+    // TODO: Check if carinalities can be other than -1 or 1. This part is kind of hardcoded for our pet project.
+    // TODO: Parse the cardinalities to compare with upper and lower bounds, for now it just structural feature exists.
+    LoggingRuntime.logMsgView(Level.INFO, "Cross checking multiplicity for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
     Optional<Integer> upperBound = structuralFeature.getUpperBound();
     Optional<Integer> lowerBound = structuralFeature.getLowerBound();
     boolean containment = structuralFeature.isContainment();
     if (containment) {
-      if (upperBound.isPresent()) {
-        // missing use case for lowerbound is also present
-        if (upperBound.get() == -1) {
-          // is a list
-          LoggingRuntime.logMsgView(Level.INFO, "Detected unbounded contained list for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-          ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getAggregationLinkDeclarations_idhEwILLp.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
-            public void visit(SNode aggregLink) {
-              if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
-                LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-                LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
-                isCorrect.value = true;
-              }
-            }
-          });
+      ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getAggregationLinkDeclarations_idhEwILLp.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
+        public void visit(SNode aggregLink) {
+          if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
+            LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
+            LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
+            isCorrect.value = true;
+          }
         }
-      } else if (lowerBound.isPresent()) {
-        // missing use case where upperbound is also present
-        if (lowerBound.get() == 1) {
-          LoggingRuntime.logMsgView(Level.INFO, "Detected atomic containment for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-          ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getAggregationLinkDeclarations_idhEwILLp.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
-            public void visit(SNode aggregLink) {
-              if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
-                LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-                LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
-                isCorrect.value = true;
-              }
-            }
-          });
-        }
-      }
+      });
     } else {
-      if (upperBound.isPresent()) {
-        // missing use case for lowerbound is also present
-        if (upperBound.get() == -1) {
-          // is a list
-          LoggingRuntime.logMsgView(Level.INFO, "Detected unbounded reference list for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-          ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
-            public void visit(SNode aggregLink) {
-              if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
-                LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-                LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
-                isCorrect.value = true;
-              }
-            }
-          });
+      ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
+        public void visit(SNode aggregLink) {
+          if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
+            LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
+            LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
+            isCorrect.value = true;
+          }
         }
-      } else if (lowerBound.isPresent()) {
-        // missing use case where upperbound is also present
-        if (lowerBound.get() == 1) {
-          LoggingRuntime.logMsgView(Level.INFO, "Detected atomic reference for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-          ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
-            public void visit(SNode refLink) {
-              if (SPropertyOperations.getString(refLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
-                LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(refLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-                LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(refLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
-                isCorrect.value = true;
-              }
-            }
-          });
-        }
-      }
+      });
     }
-    if (!(isCorrect.value)) {
-      LoggingRuntime.logMsgView(Level.INFO, "Incorrect source cardinality for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
-    }
+    LoggingRuntime.logMsgView(Level.INFO, "Multiciplicity for " + structuralFeature.getName() + " = " + isCorrect.value, PerformEcoreValidation.class, null, null);
+
     return isCorrect.value;
   }
 
@@ -374,7 +321,7 @@ public class PerformEcoreValidation {
   private static final class LINKS {
     /*package*/ static final SContainmentLink linkDeclaration$YU1f = MetaAdapterFactory.getContainmentLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0x1103553c5ffL, 0xf979c3ba6bL, "linkDeclaration");
     /*package*/ static final SContainmentLink propertyDeclaration$YUgg = MetaAdapterFactory.getContainmentLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0x1103553c5ffL, 0xf979c3ba6cL, "propertyDeclaration");
-    /*package*/ static final SReferenceLink dataType$5j5Y = MetaAdapterFactory.getReferenceLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0xf979bd086bL, 0xfc26f42fe5L, "dataType");
     /*package*/ static final SReferenceLink target$m40F = MetaAdapterFactory.getReferenceLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0xf979bd086aL, 0xf98055fef0L, "target");
+    /*package*/ static final SReferenceLink dataType$5j5Y = MetaAdapterFactory.getReferenceLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0xf979bd086bL, 0xfc26f42fe5L, "dataType");
   }
 }

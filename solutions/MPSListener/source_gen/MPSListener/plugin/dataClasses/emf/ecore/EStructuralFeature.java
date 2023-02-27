@@ -41,6 +41,9 @@ public class EStructuralFeature {
     this.eType = eType;
   }
   public Optional<Integer> getUpperBound() {
+    if (upperBound == null) {
+      return Optional.of(1);
+    }
     return Optional.ofNullable(this.upperBound);
   }
   public void setUpperBound(Integer upperBound) {
@@ -53,7 +56,11 @@ public class EStructuralFeature {
     this.containment = containment;
   }
   public Optional<Integer> getLowerBound() {
-    return Optional.ofNullable(this.lowerBound);
+    if (lowerBound == null) {
+      return Optional.of(0);
+    }
+
+    return Optional.of(this.lowerBound);
   }
   public void setLowerBound(Integer lowerBound) {
     this.lowerBound = lowerBound;

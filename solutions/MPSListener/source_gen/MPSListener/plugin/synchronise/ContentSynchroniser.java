@@ -76,7 +76,6 @@ public class ContentSynchroniser {
       while (elementIterator.hasNext()) {
         Element currElement = elementIterator.next();
         if (referenceLinkPresent(currElement, mainEClassifier)) {
-          LoggingRuntime.logMsgView(Level.INFO, currElement.getAttributes().get(0).getValue(), ContentSynchroniser.class, null, null);
           elementsThatContainReferences.add(currElement);
         } else {
           addChild(currElement, mainEClassifier, false);
@@ -96,7 +95,7 @@ public class ContentSynchroniser {
   private Document getDoc(String modelXML) {
     Document modelDoc = null;
     try {
-
+      LoggingRuntime.logMsgView(Level.INFO, "Received\n" + modelXML, ContentSynchroniser.class, null, null);
       modelDoc = JDOMUtil.loadDocument(new ByteArrayInputStream(new ObjectMapper().readTree(modelXML).get("data").textValue().getBytes()));
     } catch (JDOMException e) {
       LoggingRuntime.logMsgView(Level.INFO, e.getMessage(), ContentSynchroniser.class, null, null);

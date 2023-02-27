@@ -85,7 +85,10 @@ public class PatchOperations {
       runCommand("Replace property", new Runnable() {
         @Override
         public void run() {
+          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
           element.setProperty(propertyToReplace, value);
+          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
+
         }
       });
     } else {
@@ -107,7 +110,10 @@ public class PatchOperations {
             runCommand("replace reference with a new reference", new Runnable() {
               @Override
               public void run() {
+                GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
                 SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentNode);
+                GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
+
               }
             });
           }
@@ -117,7 +123,10 @@ public class PatchOperations {
       runCommand("replace reference with null", new Runnable() {
         @Override
         public void run() {
+          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
           SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), null);
+          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
+
         }
       });
 
@@ -129,7 +138,9 @@ public class PatchOperations {
     runCommand("Remove node", new Runnable() {
       @Override
       public void run() {
+        GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
         startingNode.removeChild(getNode(path));
+        GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
       }
     });
   }
@@ -152,7 +163,6 @@ public class PatchOperations {
 
   private void runCommand(String commandName, final Runnable runnable) {
     LoggingRuntime.logMsgView(Level.INFO, "Running command: " + commandName, PatchOperations.class, null, null);
-    myListener.setLastChangeIsExternal(true);
     if (SwingUtilities.isEventDispatchThread()) {
       project.getModelAccess().executeCommand(runnable);
     } else {

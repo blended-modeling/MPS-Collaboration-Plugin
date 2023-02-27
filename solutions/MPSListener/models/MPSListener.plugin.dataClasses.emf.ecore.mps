@@ -3,6 +3,7 @@
   <persistence version="9" />
   <languages>
     <use id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage" version="12" />
+    <use id="760a0a8c-eabb-4521-8bfd-65db761a9ba3" name="jetbrains.mps.baseLanguage.logging" version="0" />
   </languages>
   <imports>
     <import index="c4fr" ref="9aa8175d-5e61-44db-afaf-94a7e3f58777/java:com.fasterxml.jackson.annotation(MPSListener/)" />
@@ -41,6 +42,7 @@
       <concept id="1081236700937" name="jetbrains.mps.baseLanguage.structure.StaticMethodCall" flags="nn" index="2YIFZM">
         <reference id="1144433194310" name="classConcept" index="1Pybhc" />
       </concept>
+      <concept id="1070534058343" name="jetbrains.mps.baseLanguage.structure.NullLiteral" flags="nn" index="10Nm6u" />
       <concept id="1070534644030" name="jetbrains.mps.baseLanguage.structure.BooleanType" flags="in" index="10P_77" />
       <concept id="1068390468200" name="jetbrains.mps.baseLanguage.structure.FieldDeclaration" flags="ig" index="312cEg" />
       <concept id="1068390468198" name="jetbrains.mps.baseLanguage.structure.ClassConcept" flags="ig" index="312cEu" />
@@ -58,13 +60,25 @@
         <child id="1068580123135" name="body" index="3clF47" />
       </concept>
       <concept id="1068580123165" name="jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" flags="ig" index="3clFb_" />
+      <concept id="1068580123152" name="jetbrains.mps.baseLanguage.structure.EqualsExpression" flags="nn" index="3clFbC" />
       <concept id="1068580123155" name="jetbrains.mps.baseLanguage.structure.ExpressionStatement" flags="nn" index="3clFbF">
         <child id="1068580123156" name="expression" index="3clFbG" />
+      </concept>
+      <concept id="1068580123157" name="jetbrains.mps.baseLanguage.structure.Statement" flags="nn" index="3clFbH" />
+      <concept id="1068580123159" name="jetbrains.mps.baseLanguage.structure.IfStatement" flags="nn" index="3clFbJ">
+        <child id="1068580123160" name="condition" index="3clFbw" />
+        <child id="1068580123161" name="ifTrue" index="3clFbx" />
       </concept>
       <concept id="1068580123136" name="jetbrains.mps.baseLanguage.structure.StatementList" flags="sn" stub="5293379017992965193" index="3clFbS">
         <child id="1068581517665" name="statement" index="3cqZAp" />
       </concept>
       <concept id="1068580123140" name="jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" flags="ig" index="3clFbW" />
+      <concept id="1068580320020" name="jetbrains.mps.baseLanguage.structure.IntegerConstant" flags="nn" index="3cmrfG">
+        <property id="1068580320021" name="value" index="3cmrfH" />
+      </concept>
+      <concept id="1068581242878" name="jetbrains.mps.baseLanguage.structure.ReturnStatement" flags="nn" index="3cpWs6">
+        <child id="1068581517676" name="expression" index="3cqZAk" />
+      </concept>
       <concept id="1068581517677" name="jetbrains.mps.baseLanguage.structure.VoidType" flags="in" index="3cqZAl" />
       <concept id="1204053956946" name="jetbrains.mps.baseLanguage.structure.IMethodCall" flags="ng" index="1ndlxa">
         <reference id="1068499141037" name="baseMethodDeclaration" index="37wK5l" />
@@ -76,6 +90,10 @@
       <concept id="1107535904670" name="jetbrains.mps.baseLanguage.structure.ClassifierType" flags="in" index="3uibUv">
         <reference id="1107535924139" name="classifier" index="3uigEE" />
         <child id="1109201940907" name="parameter" index="11_B2D" />
+      </concept>
+      <concept id="1081773326031" name="jetbrains.mps.baseLanguage.structure.BinaryOperation" flags="nn" index="3uHJSO">
+        <child id="1081773367579" name="rightExpression" index="3uHU7w" />
+        <child id="1081773367580" name="leftExpression" index="3uHU7B" />
       </concept>
       <concept id="1178549954367" name="jetbrains.mps.baseLanguage.structure.IVisible" flags="ng" index="1B3ioH">
         <child id="1178549979242" name="visibility" index="1B3o_S" />
@@ -1069,6 +1087,25 @@
       <property role="TrG5h" value="getUpperBound" />
       <node concept="3Tm1VV" id="5yaq8umHAbb" role="1B3o_S" />
       <node concept="3clFbS" id="5yaq8umHAbc" role="3clF47">
+        <node concept="3clFbJ" id="wwHD8L3G0t" role="3cqZAp">
+          <node concept="3clFbS" id="wwHD8L3G0v" role="3clFbx">
+            <node concept="3cpWs6" id="wwHD8L3I2i" role="3cqZAp">
+              <node concept="2YIFZM" id="wwHD8L3ICa" role="3cqZAk">
+                <ref role="37wK5l" to="33ny:~Optional.of(java.lang.Object)" resolve="of" />
+                <ref role="1Pybhc" to="33ny:~Optional" resolve="Optional" />
+                <node concept="3cmrfG" id="wwHD8L3LoM" role="37wK5m">
+                  <property role="3cmrfH" value="1" />
+                </node>
+              </node>
+            </node>
+          </node>
+          <node concept="3clFbC" id="wwHD8L3Hwr" role="3clFbw">
+            <node concept="10Nm6u" id="wwHD8L3Hx2" role="3uHU7w" />
+            <node concept="37vLTw" id="wwHD8L3GHX" role="3uHU7B">
+              <ref role="3cqZAo" node="5yaq8umH_VM" resolve="upperBound" />
+            </node>
+          </node>
+        </node>
         <node concept="3clFbF" id="_umY4QMWFd" role="3cqZAp">
           <node concept="2YIFZM" id="_umY4QMXO$" role="3clFbG">
             <ref role="37wK5l" to="33ny:~Optional.ofNullable(java.lang.Object)" resolve="ofNullable" />
@@ -1158,13 +1195,33 @@
       <property role="TrG5h" value="getLowerBound" />
       <node concept="3Tm1VV" id="5yaq8umHAbN" role="1B3o_S" />
       <node concept="3clFbS" id="5yaq8umHAbO" role="3clF47">
+        <node concept="3clFbJ" id="wwHD8L3_AP" role="3cqZAp">
+          <node concept="3clFbS" id="wwHD8L3_AR" role="3clFbx">
+            <node concept="3cpWs6" id="wwHD8L3D9u" role="3cqZAp">
+              <node concept="2YIFZM" id="wwHD8L3DXb" role="3cqZAk">
+                <ref role="37wK5l" to="33ny:~Optional.of(java.lang.Object)" resolve="of" />
+                <ref role="1Pybhc" to="33ny:~Optional" resolve="Optional" />
+                <node concept="3cmrfG" id="wwHD8L3M72" role="37wK5m">
+                  <property role="3cmrfH" value="0" />
+                </node>
+              </node>
+            </node>
+          </node>
+          <node concept="3clFbC" id="wwHD8L3As7" role="3clFbw">
+            <node concept="10Nm6u" id="wwHD8L3AMi" role="3uHU7w" />
+            <node concept="37vLTw" id="wwHD8L3_Ox" role="3uHU7B">
+              <ref role="3cqZAo" node="5yaq8umH_Xp" resolve="lowerBound" />
+            </node>
+          </node>
+        </node>
+        <node concept="3clFbH" id="wwHD8L3viS" role="3cqZAp" />
         <node concept="3clFbF" id="_umY4QMR43" role="3cqZAp">
-          <node concept="2YIFZM" id="_umY4QMZJN" role="3clFbG">
-            <ref role="37wK5l" to="33ny:~Optional.ofNullable(java.lang.Object)" resolve="ofNullable" />
+          <node concept="2YIFZM" id="wwHD8L3ESJ" role="3clFbG">
+            <ref role="37wK5l" to="33ny:~Optional.of(java.lang.Object)" resolve="of" />
             <ref role="1Pybhc" to="33ny:~Optional" resolve="Optional" />
-            <node concept="2OqwBi" id="_umY4QN0gY" role="37wK5m">
-              <node concept="Xjq3P" id="_umY4QN00z" role="2Oq$k0" />
-              <node concept="2OwXpG" id="_umY4QN0DC" role="2OqNvi">
+            <node concept="2OqwBi" id="wwHD8L3ESK" role="37wK5m">
+              <node concept="Xjq3P" id="wwHD8L3ESL" role="2Oq$k0" />
+              <node concept="2OwXpG" id="wwHD8L3ESM" role="2OqNvi">
                 <ref role="2Oxat5" node="5yaq8umH_Xp" resolve="lowerBound" />
               </node>
             </node>

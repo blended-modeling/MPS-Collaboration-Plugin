@@ -3,23 +3,25 @@
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123140:jetbrains.mps.baseLanguage.structure.ConstructorDeclaration" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123155:jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068390468200:jetbrains.mps.baseLanguage.structure.FieldDeclaration" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123159:jetbrains.mps.baseLanguage.structure.IfStatement" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123165:jetbrains.mps.baseLanguage.structure.InstanceMethodDeclaration" />
   <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068581242878:jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+  <concept fqn="c:f3061a53-9226-4cc5-a443-f952ceaf5816/1068580123157:jetbrains.mps.baseLanguage.structure.Statement" />
   <root nodeRef="r:0b495fda-d42c-4f82-a2f7-0ed289808a08(MPSListener.plugin.dataClasses.emf.ecore)/6380026753682129749">
     <file name="ESuperType.java">
       <node id="6380026753682129766" at="7,0,8,0" concept="2" trace="eClass" />
       <node id="6380026753682129789" at="8,0,9,0" concept="2" trace="$ref" />
       <node id="6380026753682134720" at="11,49,12,25" concept="1" />
       <node id="6380026753682134732" at="12,25,13,21" concept="1" />
-      <node id="6380026753682132264" at="15,29,16,23" concept="4" />
+      <node id="6380026753682132264" at="15,29,16,23" concept="5" />
       <node id="6380026753682132269" at="18,40,19,25" concept="1" />
-      <node id="6380026753682132284" at="21,27,22,21" concept="4" />
+      <node id="6380026753682132284" at="21,27,22,21" concept="5" />
       <node id="6380026753682132289" at="24,36,25,21" concept="1" />
       <node id="6380026753685626839" at="9,0,11,0" concept="0" trace="ESuperType#()V" />
-      <node id="6380026753682132260" at="15,0,18,0" concept="3" trace="getEClass#()Ljava/lang/String;" />
-      <node id="6380026753682132265" at="18,0,21,0" concept="3" trace="setEClass#(Ljava/lang/String;)V" />
-      <node id="6380026753682132280" at="21,0,24,0" concept="3" trace="get$ref#()Ljava/lang/String;" />
-      <node id="6380026753682132285" at="24,0,27,0" concept="3" trace="set$ref#(Ljava/lang/String;)V" />
+      <node id="6380026753682132260" at="15,0,18,0" concept="4" trace="getEClass#()Ljava/lang/String;" />
+      <node id="6380026753682132265" at="18,0,21,0" concept="4" trace="setEClass#(Ljava/lang/String;)V" />
+      <node id="6380026753682132280" at="21,0,24,0" concept="4" trace="get$ref#()Ljava/lang/String;" />
+      <node id="6380026753682132285" at="24,0,27,0" concept="4" trace="set$ref#(Ljava/lang/String;)V" />
       <node id="6380026753682134712" at="11,0,15,0" concept="0" trace="ESuperType#(Ljava/lang/String;Ljava/lang/String;)V" />
       <scope id="6380026753685626843" at="9,23,9,23" />
       <scope id="6380026753682132263" at="15,29,16,23" />
@@ -55,27 +57,27 @@
       <node id="6380026753685255147" at="17,21,18,23" concept="1" />
       <node id="6380026753685255159" at="18,23,19,29" concept="1" />
       <node id="6380026753685255172" at="19,29,20,37" concept="1" />
-      <node id="6380026753685256164" at="23,29,24,23" concept="4" />
+      <node id="6380026753685256164" at="23,29,24,23" concept="5" />
       <node id="6380026753685256169" at="26,40,27,25" concept="1" />
-      <node id="6380026753685256184" at="29,27,30,21" concept="4" />
+      <node id="6380026753685256184" at="29,27,30,21" concept="5" />
       <node id="6380026753685256189" at="32,36,33,21" concept="1" />
-      <node id="6380026753685256204" at="35,28,36,22" concept="4" />
+      <node id="6380026753685256204" at="35,28,36,22" concept="5" />
       <node id="6380026753685256209" at="38,38,39,23" concept="1" />
-      <node id="6380026753685256224" at="41,31,42,25" concept="4" />
+      <node id="6380026753685256224" at="41,31,42,25" concept="5" />
       <node id="6380026753685256229" at="44,44,45,29" concept="1" />
-      <node id="6380026753685256245" at="47,51,48,29" concept="4" />
+      <node id="6380026753685256245" at="47,51,48,29" concept="5" />
       <node id="6380026753685256250" at="50,68,51,37" concept="1" />
       <node id="6380026753685612226" at="13,0,15,0" concept="0" trace="Data#()V" />
-      <node id="6380026753685256160" at="23,0,26,0" concept="3" trace="getEClass#()Ljava/lang/String;" />
-      <node id="6380026753685256165" at="26,0,29,0" concept="3" trace="setEClass#(Ljava/lang/String;)V" />
-      <node id="6380026753685256180" at="29,0,32,0" concept="3" trace="getName#()Ljava/lang/String;" />
-      <node id="6380026753685256185" at="32,0,35,0" concept="3" trace="setName#(Ljava/lang/String;)V" />
-      <node id="6380026753685256200" at="35,0,38,0" concept="3" trace="getNsURI#()Ljava/lang/String;" />
-      <node id="6380026753685256205" at="38,0,41,0" concept="3" trace="setNsURI#(Ljava/lang/String;)V" />
-      <node id="6380026753685256220" at="41,0,44,0" concept="3" trace="getNsPrefix#()Ljava/lang/String;" />
-      <node id="6380026753685256225" at="44,0,47,0" concept="3" trace="setNsPrefix#(Ljava/lang/String;)V" />
-      <node id="6380026753685256240" at="47,0,50,0" concept="3" trace="getEClassifiers#()Ljava/util/ArrayList;" />
-      <node id="6380026753685256246" at="50,0,53,0" concept="3" trace="setEClassifiers#(Ljava/util/ArrayList;)V" />
+      <node id="6380026753685256160" at="23,0,26,0" concept="4" trace="getEClass#()Ljava/lang/String;" />
+      <node id="6380026753685256165" at="26,0,29,0" concept="4" trace="setEClass#(Ljava/lang/String;)V" />
+      <node id="6380026753685256180" at="29,0,32,0" concept="4" trace="getName#()Ljava/lang/String;" />
+      <node id="6380026753685256185" at="32,0,35,0" concept="4" trace="setName#(Ljava/lang/String;)V" />
+      <node id="6380026753685256200" at="35,0,38,0" concept="4" trace="getNsURI#()Ljava/lang/String;" />
+      <node id="6380026753685256205" at="38,0,41,0" concept="4" trace="setNsURI#(Ljava/lang/String;)V" />
+      <node id="6380026753685256220" at="41,0,44,0" concept="4" trace="getNsPrefix#()Ljava/lang/String;" />
+      <node id="6380026753685256225" at="44,0,47,0" concept="4" trace="setNsPrefix#(Ljava/lang/String;)V" />
+      <node id="6380026753685256240" at="47,0,50,0" concept="4" trace="getEClassifiers#()Ljava/util/ArrayList;" />
+      <node id="6380026753685256246" at="50,0,53,0" concept="4" trace="setEClassifiers#(Ljava/util/ArrayList;)V" />
       <node id="6380026753685255115" at="15,0,22,0" concept="0" trace="Data#(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/ArrayList;)V" />
       <scope id="6380026753685612230" at="13,17,13,17" />
       <scope id="6380026753685256163" at="23,29,24,23" />
@@ -126,15 +128,15 @@
       <node id="6380026753682134936" at="8,0,9,0" concept="2" trace="$ref" />
       <node id="6380026753685581718" at="12,44,13,25" concept="1" />
       <node id="6380026753685581730" at="13,25,14,21" concept="1" />
-      <node id="6380026753682135748" at="16,29,17,23" concept="4" />
+      <node id="6380026753682135748" at="16,29,17,23" concept="5" />
       <node id="6380026753682135753" at="19,40,20,25" concept="1" />
-      <node id="6380026753682135768" at="22,27,23,21" concept="4" />
+      <node id="6380026753682135768" at="22,27,23,21" concept="5" />
       <node id="6380026753682135773" at="25,36,26,21" concept="1" />
       <node id="6380026753685630720" at="10,0,12,0" concept="0" trace="EType#()V" />
-      <node id="6380026753682135744" at="16,0,19,0" concept="3" trace="getEClass#()Ljava/lang/String;" />
-      <node id="6380026753682135749" at="19,0,22,0" concept="3" trace="setEClass#(Ljava/lang/String;)V" />
-      <node id="6380026753682135764" at="22,0,25,0" concept="3" trace="get$ref#()Ljava/lang/String;" />
-      <node id="6380026753682135769" at="25,0,28,0" concept="3" trace="set$ref#(Ljava/lang/String;)V" />
+      <node id="6380026753682135744" at="16,0,19,0" concept="4" trace="getEClass#()Ljava/lang/String;" />
+      <node id="6380026753682135749" at="19,0,22,0" concept="4" trace="setEClass#(Ljava/lang/String;)V" />
+      <node id="6380026753682135764" at="22,0,25,0" concept="4" trace="get$ref#()Ljava/lang/String;" />
+      <node id="6380026753682135769" at="25,0,28,0" concept="4" trace="set$ref#(Ljava/lang/String;)V" />
       <node id="6380026753685581710" at="12,0,16,0" concept="0" trace="EType#(Ljava/lang/String;Ljava/lang/String;)V" />
       <scope id="6380026753685630724" at="10,18,10,18" />
       <scope id="6380026753682135747" at="16,29,17,23" />
@@ -172,31 +174,36 @@
       <node id="6380026753682140409" at="20,23,21,33" concept="1" />
       <node id="6380026753682140421" at="21,33,22,35" concept="1" />
       <node id="6380026753682140433" at="22,35,23,33" concept="1" />
-      <node id="6380026753682137745" at="25,29,26,23" concept="4" />
+      <node id="6380026753682137745" at="25,29,26,23" concept="5" />
       <node id="6380026753682137750" at="28,40,29,25" concept="1" />
-      <node id="6380026753682137765" at="31,27,32,21" concept="4" />
+      <node id="6380026753682137765" at="31,27,32,21" concept="5" />
       <node id="6380026753682137770" at="34,36,35,21" concept="1" />
-      <node id="6380026753682137785" at="37,27,38,22" concept="4" />
+      <node id="6380026753682137785" at="37,27,38,22" concept="5" />
       <node id="6380026753682137790" at="40,37,41,23" concept="1" />
-      <node id="675078016997247693" at="43,44,44,48" concept="4" />
-      <node id="675078016997212525" at="46,49,47,33" concept="1" />
-      <node id="6380026753682137825" at="49,34,50,28" concept="4" />
-      <node id="6380026753682137830" at="52,51,53,35" concept="1" />
-      <node id="675078016997224707" at="55,44,56,48" concept="4" />
-      <node id="675078016997231977" at="58,49,59,33" concept="1" />
+      <node id="585668690562703506" at="44,29,45,28" concept="5" />
+      <node id="675078016997247693" at="46,5,47,48" concept="5" />
+      <node id="675078016997212525" at="49,49,50,33" concept="1" />
+      <node id="6380026753682137825" at="52,34,53,28" concept="5" />
+      <node id="6380026753682137830" at="55,51,56,35" concept="1" />
+      <node id="585668690562683486" at="59,29,60,28" concept="5" />
+      <node id="585668690562643128" at="61,5,62,0" concept="6" />
+      <node id="675078016997224707" at="62,0,63,40" concept="5" />
+      <node id="675078016997231977" at="65,49,66,33" concept="1" />
       <node id="6380026753685623158" at="15,0,17,0" concept="0" trace="EStructuralFeature#()V" />
-      <node id="6380026753682137741" at="25,0,28,0" concept="3" trace="getEClass#()Ljava/lang/String;" />
-      <node id="6380026753682137746" at="28,0,31,0" concept="3" trace="setEClass#(Ljava/lang/String;)V" />
-      <node id="6380026753682137761" at="31,0,34,0" concept="3" trace="getName#()Ljava/lang/String;" />
-      <node id="6380026753682137766" at="34,0,37,0" concept="3" trace="setName#(Ljava/lang/String;)V" />
-      <node id="6380026753682137781" at="37,0,40,0" concept="3" trace="getEType#()LMPSListener/plugin/dataClasses/emf/ecore/EType;" />
-      <node id="6380026753682137786" at="40,0,43,0" concept="3" trace="setEType#(LMPSListener/plugin/dataClasses/emf/ecore/EType;)V" />
-      <node id="6380026753682137801" at="43,0,46,0" concept="3" trace="getUpperBound#()Ljava/util/Optional;" />
-      <node id="6380026753682137806" at="46,0,49,0" concept="3" trace="setUpperBound#(Ljava/lang/Integer;)V" />
-      <node id="6380026753682137821" at="49,0,52,0" concept="3" trace="isContainment#()Z" />
-      <node id="6380026753682137826" at="52,0,55,0" concept="3" trace="setContainment#(Z)V" />
-      <node id="6380026753682137841" at="55,0,58,0" concept="3" trace="getLowerBound#()Ljava/util/Optional;" />
-      <node id="6380026753682137846" at="58,0,61,0" concept="3" trace="setLowerBound#(Ljava/lang/Integer;)V" />
+      <node id="6380026753682137741" at="25,0,28,0" concept="4" trace="getEClass#()Ljava/lang/String;" />
+      <node id="6380026753682137746" at="28,0,31,0" concept="4" trace="setEClass#(Ljava/lang/String;)V" />
+      <node id="6380026753682137761" at="31,0,34,0" concept="4" trace="getName#()Ljava/lang/String;" />
+      <node id="6380026753682137766" at="34,0,37,0" concept="4" trace="setName#(Ljava/lang/String;)V" />
+      <node id="6380026753682137781" at="37,0,40,0" concept="4" trace="getEType#()LMPSListener/plugin/dataClasses/emf/ecore/EType;" />
+      <node id="6380026753682137786" at="40,0,43,0" concept="4" trace="setEType#(LMPSListener/plugin/dataClasses/emf/ecore/EType;)V" />
+      <node id="585668690562695197" at="43,44,46,5" concept="3" />
+      <node id="6380026753682137806" at="49,0,52,0" concept="4" trace="setUpperBound#(Ljava/lang/Integer;)V" />
+      <node id="6380026753682137821" at="52,0,55,0" concept="4" trace="isContainment#()Z" />
+      <node id="6380026753682137826" at="55,0,58,0" concept="4" trace="setContainment#(Z)V" />
+      <node id="585668690562668981" at="58,44,61,5" concept="3" />
+      <node id="6380026753682137846" at="65,0,68,0" concept="4" trace="setLowerBound#(Ljava/lang/Integer;)V" />
+      <node id="6380026753682137801" at="43,0,49,0" concept="4" trace="getUpperBound#()Ljava/util/Optional;" />
+      <node id="6380026753682137841" at="58,0,65,0" concept="4" trace="getLowerBound#()Ljava/util/Optional;" />
       <node id="6380026753682140365" at="17,0,25,0" concept="0" trace="EStructuralFeature#(Ljava/lang/String;Ljava/lang/String;LMPSListener/plugin/dataClasses/emf/ecore/EType;Ljava/lang/Integer;ZLjava/lang/Integer;)V" />
       <scope id="6380026753685623162" at="15,31,15,31" />
       <scope id="6380026753682137744" at="25,29,26,23" />
@@ -205,12 +212,12 @@
       <scope id="6380026753682137769" at="34,36,35,21" />
       <scope id="6380026753682137784" at="37,27,38,22" />
       <scope id="6380026753682137789" at="40,37,41,23" />
-      <scope id="6380026753682137804" at="43,44,44,48" />
-      <scope id="6380026753682137809" at="46,49,47,33" />
-      <scope id="6380026753682137824" at="49,34,50,28" />
-      <scope id="6380026753682137829" at="52,51,53,35" />
-      <scope id="6380026753682137844" at="55,44,56,48" />
-      <scope id="6380026753682137849" at="58,49,59,33" />
+      <scope id="585668690562695199" at="44,29,45,28" />
+      <scope id="6380026753682137809" at="49,49,50,33" />
+      <scope id="6380026753682137824" at="52,34,53,28" />
+      <scope id="6380026753682137829" at="55,51,56,35" />
+      <scope id="585668690562668983" at="59,29,60,28" />
+      <scope id="6380026753682137849" at="65,49,66,33" />
       <scope id="6380026753685623158" at="15,0,17,0" />
       <scope id="6380026753682137741" at="25,0,28,0" />
       <scope id="6380026753682137746" at="28,0,31,0">
@@ -224,19 +231,21 @@
       <scope id="6380026753682137786" at="40,0,43,0">
         <var name="eType" id="6380026753682137793" />
       </scope>
-      <scope id="6380026753682137801" at="43,0,46,0" />
-      <scope id="6380026753682137806" at="46,0,49,0">
+      <scope id="6380026753682137806" at="49,0,52,0">
         <var name="upperBound" id="6380026753682137813" />
       </scope>
-      <scope id="6380026753682137821" at="49,0,52,0" />
-      <scope id="6380026753682137826" at="52,0,55,0">
+      <scope id="6380026753682137821" at="52,0,55,0" />
+      <scope id="6380026753682137826" at="55,0,58,0">
         <var name="containment" id="6380026753682137833" />
       </scope>
-      <scope id="6380026753682137841" at="55,0,58,0" />
-      <scope id="6380026753682137846" at="58,0,61,0">
+      <scope id="6380026753682137846" at="65,0,68,0">
         <var name="lowerBound" id="6380026753682137853" />
       </scope>
+      <scope id="6380026753682137804" at="43,44,47,48" />
+      <scope id="6380026753682137844" at="58,44,63,40" />
       <scope id="6380026753682140369" at="17,131,23,33" />
+      <scope id="6380026753682137801" at="43,0,49,0" />
+      <scope id="6380026753682137841" at="58,0,65,0" />
       <scope id="6380026753682140365" at="17,0,25,0">
         <var name="containment" id="6380026753682140420" />
         <var name="eClass" id="6380026753682140372" />
@@ -245,7 +254,7 @@
         <var name="name" id="6380026753682140384" />
         <var name="upperBound" id="6380026753682140408" />
       </scope>
-      <unit id="6380026753682136718" at="7,0,62,0" name="MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature" />
+      <unit id="6380026753682136718" at="7,0,69,0" name="MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature" />
     </file>
   </root>
   <root nodeRef="r:0b495fda-d42c-4f82-a2f7-0ed289808a08(MPSListener.plugin.dataClasses.emf.ecore)/6380026753682140772">
@@ -259,28 +268,28 @@
       <node id="6380026753685252043" at="21,21,22,33" concept="1" />
       <node id="6380026753685252056" at="22,33,23,51" concept="1" />
       <node id="6380026753685252069" at="23,51,24,35" concept="1" />
-      <node id="6380026753685253066" at="27,29,28,23" concept="4" />
+      <node id="6380026753685253066" at="27,29,28,23" concept="5" />
       <node id="6380026753685253071" at="30,40,31,25" concept="1" />
-      <node id="6380026753685253086" at="33,27,34,21" concept="4" />
+      <node id="6380026753685253086" at="33,27,34,21" concept="5" />
       <node id="6380026753685253091" at="36,36,37,21" concept="1" />
-      <node id="6380026753685253106" at="39,33,40,27" concept="4" />
+      <node id="6380026753685253106" at="39,33,40,27" concept="5" />
       <node id="6380026753685253111" at="42,49,43,33" concept="1" />
-      <node id="6380026753685253127" at="45,65,46,36" concept="4" />
+      <node id="6380026753685253127" at="45,65,46,36" concept="5" />
       <node id="6380026753685253132" at="48,89,49,51" concept="1" />
-      <node id="6380026753685253149" at="51,49,52,28" concept="4" />
+      <node id="6380026753685253149" at="51,49,52,28" concept="5" />
       <node id="6380026753685253154" at="54,65,55,35" concept="1" />
       <node id="6380026753685231460" at="12,0,14,0" concept="2" trace="myAbstract" />
       <node id="6380026753685617145" at="17,0,19,0" concept="0" trace="EClassifier#()V" />
-      <node id="6380026753685253062" at="27,0,30,0" concept="3" trace="getEClass#()Ljava/lang/String;" />
-      <node id="6380026753685253067" at="30,0,33,0" concept="3" trace="setEClass#(Ljava/lang/String;)V" />
-      <node id="6380026753685253082" at="33,0,36,0" concept="3" trace="getName#()Ljava/lang/String;" />
-      <node id="6380026753685253087" at="36,0,39,0" concept="3" trace="setName#(Ljava/lang/String;)V" />
-      <node id="6380026753685253102" at="39,0,42,0" concept="3" trace="isMyAbstract#()Z" />
-      <node id="6380026753685253107" at="42,0,45,0" concept="3" trace="setMyAbstract#(Z)V" />
-      <node id="6380026753685253122" at="45,0,48,0" concept="3" trace="getEStructuralFeatures#()Ljava/util/ArrayList;" />
-      <node id="6380026753685253128" at="48,0,51,0" concept="3" trace="setEStructuralFeatures#(Ljava/util/ArrayList;)V" />
-      <node id="6380026753685253144" at="51,0,54,0" concept="3" trace="getESuperTypes#()Ljava/util/ArrayList;" />
-      <node id="6380026753685253150" at="54,0,57,0" concept="3" trace="setESuperTypes#(Ljava/util/ArrayList;)V" />
+      <node id="6380026753685253062" at="27,0,30,0" concept="4" trace="getEClass#()Ljava/lang/String;" />
+      <node id="6380026753685253067" at="30,0,33,0" concept="4" trace="setEClass#(Ljava/lang/String;)V" />
+      <node id="6380026753685253082" at="33,0,36,0" concept="4" trace="getName#()Ljava/lang/String;" />
+      <node id="6380026753685253087" at="36,0,39,0" concept="4" trace="setName#(Ljava/lang/String;)V" />
+      <node id="6380026753685253102" at="39,0,42,0" concept="4" trace="isMyAbstract#()Z" />
+      <node id="6380026753685253107" at="42,0,45,0" concept="4" trace="setMyAbstract#(Z)V" />
+      <node id="6380026753685253122" at="45,0,48,0" concept="4" trace="getEStructuralFeatures#()Ljava/util/ArrayList;" />
+      <node id="6380026753685253128" at="48,0,51,0" concept="4" trace="setEStructuralFeatures#(Ljava/util/ArrayList;)V" />
+      <node id="6380026753685253144" at="51,0,54,0" concept="4" trace="getESuperTypes#()Ljava/util/ArrayList;" />
+      <node id="6380026753685253150" at="54,0,57,0" concept="4" trace="setESuperTypes#(Ljava/util/ArrayList;)V" />
       <node id="6380026753685252011" at="19,0,26,0" concept="0" trace="EClassifier#(Ljava/lang/String;Ljava/lang/String;ZLjava/util/ArrayList;Ljava/util/ArrayList;)V" />
       <scope id="6380026753685617149" at="17,24,17,24" />
       <scope id="6380026753685253065" at="27,29,28,23" />
@@ -331,15 +340,15 @@
       <node id="6380026753685256454" at="8,0,9,0" concept="2" trace="data" />
       <node id="6380026753685394558" at="12,40,13,21" concept="1" />
       <node id="6380026753685394570" at="13,21,14,21" concept="1" />
-      <node id="6380026753685397892" at="16,27,17,21" concept="4" />
+      <node id="6380026753685397892" at="16,27,17,21" concept="5" />
       <node id="6380026753685397897" at="19,36,20,21" concept="1" />
-      <node id="6380026753685397912" at="22,25,23,21" concept="4" />
+      <node id="6380026753685397912" at="22,25,23,21" concept="5" />
       <node id="6380026753685397917" at="25,34,26,21" concept="1" />
       <node id="6380026753685593476" at="10,0,12,0" concept="0" trace="Ecore#()V" />
-      <node id="6380026753685397888" at="16,0,19,0" concept="3" trace="getType#()Ljava/lang/String;" />
-      <node id="6380026753685397893" at="19,0,22,0" concept="3" trace="setType#(Ljava/lang/String;)V" />
-      <node id="6380026753685397908" at="22,0,25,0" concept="3" trace="getData#()LMPSListener/plugin/dataClasses/emf/ecore/Data;" />
-      <node id="6380026753685397913" at="25,0,28,0" concept="3" trace="setData#(LMPSListener/plugin/dataClasses/emf/ecore/Data;)V" />
+      <node id="6380026753685397888" at="16,0,19,0" concept="4" trace="getType#()Ljava/lang/String;" />
+      <node id="6380026753685397893" at="19,0,22,0" concept="4" trace="setType#(Ljava/lang/String;)V" />
+      <node id="6380026753685397908" at="22,0,25,0" concept="4" trace="getData#()LMPSListener/plugin/dataClasses/emf/ecore/Data;" />
+      <node id="6380026753685397913" at="25,0,28,0" concept="4" trace="setData#(LMPSListener/plugin/dataClasses/emf/ecore/Data;)V" />
       <node id="6380026753685394550" at="12,0,16,0" concept="0" trace="Ecore#(Ljava/lang/String;LMPSListener/plugin/dataClasses/emf/ecore/Data;)V" />
       <scope id="6380026753685593480" at="10,18,10,18" />
       <scope id="6380026753685397891" at="16,27,17,21" />

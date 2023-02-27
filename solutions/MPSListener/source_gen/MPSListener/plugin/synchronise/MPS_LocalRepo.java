@@ -91,7 +91,6 @@ public class MPS_LocalRepo {
       final SModule module = Objects.requireNonNull(findModule(moduleToFind));
       this.myRepository.getModelAccess().runReadAction(() -> {
         for (SModel currentModel : Sequence.fromIterable(module.getModels())) {
-          LoggingRuntime.logMsgView(Level.INFO, "Current model: " + currentModel.getName(), MPS_LocalRepo.class, null, null);
           if (currentModel.getName().getSimpleName().equals(modelToFind)) {
             model.value = currentModel;
           }
