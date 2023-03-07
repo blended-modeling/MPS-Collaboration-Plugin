@@ -57,7 +57,7 @@ public class Enable_Collaboration_Action extends BaseAction {
     if (pluginLauncher != null) {
       // Plugin already running, change target.
       // TODO: Fix setting target properly, problem atm is the reference of a given node is stored in all of the other classes, so need to change target there too.
-      pluginLauncher.setTarget(event.getData(MPSCommonDataKeys.NODE));
+      pluginLauncher.changeTargetNode(event.getData(MPSCommonDataKeys.NODE));
     }
     if (pluginLauncher == null) {
       // Plugin not started yet, launch plugin.

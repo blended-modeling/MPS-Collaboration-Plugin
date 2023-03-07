@@ -31,22 +31,23 @@ public class PatchOperations {
   private Project project;
   private GlobalSModelListener myListener;
 
-  private PatchOperations(SNode startingNode, Project project) {
-    this.startingNode = startingNode;
+  private PatchOperations() {
     this.log = java.util.logging.Logger.getLogger(PatchOperations.class.getSimpleName());
     this.patchParser = new PatchParser();
-    this.project = project;
+    this.myListener = GlobalSModelListener.getInstance();
+
   }
 
-  public static PatchOperations getInstance(SNode startingNode, Project project) {
+  public static PatchOperations getInstance() {
     if (instance == null) {
-      instance = new PatchOperations(startingNode, project);
+      instance = new PatchOperations();
     }
     return instance;
   }
-  public void start(Map<SNode, Integer> modelStructuralMap) {
+  public void start(Map<SNode, Integer> modelStructuralMap, SNode startingNode, Project project) {
     this.modelStructuralMap = modelStructuralMap;
-    this.myListener = GlobalSModelListener.getInstance(startingNode, project);
+    this.startingNode = startingNode;
+    this.project = project;
   }
 
   public void executePatch(final String serverPatchResponse) {
@@ -68,7 +69,6 @@ public class PatchOperations {
   }
 
   private void replace(String path, final String value) {
-    final SNode element = getNode(path);
     if (path.contains("$ref")) {
       replaceReference(path, value);
     } else {
@@ -85,9 +85,9 @@ public class PatchOperations {
       runCommand("Replace property", new Runnable() {
         @Override
         public void run() {
-          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
+          myListener.switchOffListener();
           element.setProperty(propertyToReplace, value);
-          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
+          myListener.switchOnListener();
 
         }
       });
@@ -110,9 +110,9 @@ public class PatchOperations {
             runCommand("replace reference with a new reference", new Runnable() {
               @Override
               public void run() {
-                GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
+                myListener.switchOffListener();
                 SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentNode);
-                GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
+                myListener.switchOnListener();
 
               }
             });
@@ -123,10 +123,9 @@ public class PatchOperations {
       runCommand("replace reference with null", new Runnable() {
         @Override
         public void run() {
-          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
+          myListener.switchOffListener();
           SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), null);
-          GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
-
+          myListener.switchOnListener();
         }
       });
 
@@ -138,9 +137,9 @@ public class PatchOperations {
     runCommand("Remove node", new Runnable() {
       @Override
       public void run() {
-        GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).stop();
+        myListener.switchOffListener();
         startingNode.removeChild(getNode(path));
-        GlobalSModelListener.getInstance(PatchOperations.this.startingNode, PatchOperations.this.project).start();
+        myListener.switchOnListener();
       }
     });
   }

@@ -70,7 +70,7 @@ public class ContentSynchroniser {
     if (!(ecoreToMPSLangMap.isEmpty())) {
       Document modelDoc = getDoc(modelXML);
       final EClassifier mainEClassifier = getEClassifier(modelDoc.getRootElement().getName());
-      this.currentModel = MPS_LocalRepo.getInstance(this.selectedInstance).findModel("StateMachines", "structure");
+      this.currentModel = MPS_LocalRepo.getInstance().findModel("StateMachines", "structure");
       Iterator<Element> elementIterator = modelDoc.getRootElement().getChildren().iterator();
       removeAllChildrenSNode();
       while (elementIterator.hasNext()) {

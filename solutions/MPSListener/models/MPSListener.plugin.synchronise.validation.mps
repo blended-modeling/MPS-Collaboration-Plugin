@@ -437,9 +437,6 @@
             <node concept="2YIFZM" id="5yaq8umfrns" role="37vLTx">
               <ref role="37wK5l" to="dnuu:7Ylg9uYUER$" resolve="getInstance" />
               <ref role="1Pybhc" to="dnuu:54LpOhZwAdg" resolve="MPS_LocalRepo" />
-              <node concept="37vLTw" id="5yaq8umfrpJ" role="37wK5m">
-                <ref role="3cqZAo" node="5yaq8umfrbY" resolve="selectedInstance" />
-              </node>
             </node>
           </node>
         </node>

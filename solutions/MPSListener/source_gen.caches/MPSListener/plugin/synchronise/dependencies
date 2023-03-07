@@ -68,9 +68,6 @@
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SModel" />
     <classNode dependClassName="org.jetbrains.mps.openapi.model.SNode" />
   </dependency>
-  <dependency className="MPSListener.plugin.synchronise.IncomingChangeValidator">
-    <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Patch" />
-  </dependency>
   <dependency className="MPSListener.plugin.synchronise.MPS_LocalRepo">
     <classNode dependClassName="java.lang.NullPointerException" />
     <classNode dependClassName="java.lang.String" />

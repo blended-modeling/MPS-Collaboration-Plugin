@@ -368,7 +368,7 @@
                   <ref role="3cqZAo" node="2Bjn4wN0f_2" resolve="pluginLauncher" />
                 </node>
                 <node concept="liA8E" id="2Bjn4wN0kCy" role="2OqNvi">
-                  <ref role="37wK5l" to="qem2:2Bjn4wMZPw3" resolve="setTarget" />
+                  <ref role="37wK5l" to="qem2:2Bjn4wMZPw3" resolve="changeTargetNode" />
                   <node concept="2OqwBi" id="2Bjn4wN0l7v" role="37wK5m">
                     <node concept="2WthIp" id="2Bjn4wN0kOJ" role="2Oq$k0" />
                     <node concept="1DTwFV" id="2Bjn4wN0lBw" role="2OqNvi">

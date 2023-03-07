@@ -5,11 +5,11 @@ package MPSListener.plugin.emfModelServer;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.eclipse.emfcloud.modelserver.client.ModelServerClient;
-import org.jetbrains.mps.openapi.model.SNode;
-import jetbrains.mps.project.Project;
 import MPSListener.plugin.synchronise.validation.PerformEcoreValidation;
 import MPSListener.plugin.synchronise.ContentSynchroniser;
 import java.net.MalformedURLException;
+import org.jetbrains.mps.openapi.model.SNode;
+import jetbrains.mps.project.Project;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import org.eclipse.emfcloud.modelserver.client.JsonToStringSubscriptionListener;
@@ -18,10 +18,11 @@ import java.util.Optional;
 import org.eclipse.emfcloud.modelserver.client.Response;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpServerErrorException;
-import org.apache.http.client.utils.URIBuilder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import org.apache.http.client.utils.URIBuilder;
 import java.net.http.HttpResponse;
+import javax.swing.JOptionPane;
 import java.net.URISyntaxException;
 import java.io.IOException;
 import java.util.Map;
@@ -33,61 +34,62 @@ public class Client {
   private String subscribedModel;
   private String models;
   private java.util.logging.Logger log;
-  private SNode selectedInstance;
   private PatchOperations patchOpeartions;
   private static Client instance;
-  private Project project;
   private PerformEcoreValidation eCoreValidator;
   private ContentSynchroniser contentSynchroniser;
 
-  private Client(SNode selectedInstance, Project project) {
+  private Client() {
     this.webSocketAddress = "http://localhost:8081/api/v2/";
-    this.eCoreValidator = new PerformEcoreValidation(selectedInstance);
-    // TODO: fix subscribedmodel
-    this.subscribedModel = selectedInstance.getName() + "." + selectedInstance.getConcept().getName().toLowerCase();
-    this.selectedInstance = selectedInstance;
     this.models = "models";
     this.log = java.util.logging.Logger.getLogger(Client.class.getName());
-    this.project = project;
-    this.patchOpeartions = PatchOperations.getInstance(this.selectedInstance, this.project);
     try {
       this.modelServerClient = new ModelServerClient(this.webSocketAddress);
     } catch (MalformedURLException e) {
     }
+    this.patchOpeartions = PatchOperations.getInstance();
   }
 
-  public static Client getInstance(SNode selectedInstance, Project project) {
+  public static Client getInstance() {
     if (instance == null) {
-      instance = new Client(selectedInstance, project);
+      instance = new Client();
     }
     return instance;
   }
 
-  public void start() {
+  public void start(SNode selectedInstance, Project project) {
     // TODO: 
     // 1. Get statemachine.ecore by extracting it from eClass of the model
     // 2. Finalise mapper checks to ensure ecoreIsMatchLocally returns true
     // 3. Add logic to shut down plugin if issue occurs. 
+    this.subscribedModel = selectedInstance.getName() + "." + selectedInstance.getConcept().getName().toLowerCase();
+    subscribe();
+
+    this.eCoreValidator = new PerformEcoreValidation(selectedInstance);
+
     this.eCoreValidator.ecoreIsMatchLocally(getModel("statemachine.ecore", "json"));
-    this.contentSynchroniser = ContentSynchroniser.getInstance(this.eCoreValidator.getEcoreToMPS(), this.selectedInstance);
+    this.contentSynchroniser = ContentSynchroniser.getInstance(this.eCoreValidator.getEcoreToMPS(), selectedInstance);
 
     if (this.contentSynchroniser.synchroniseContent(getModel(subscribedModel, "xmi"))) {
       LoggingRuntime.logMsgView(Level.INFO, "Synchronisation successful", Client.class, null, null);
-      if (LOG.isInfoEnabled()) {
-        LOG.info("Synchronisation successful");
-      }
     } else {
-      LoggingRuntime.logMsgView(Level.INFO, "Synchronisation unsuccessful, exiting application", Client.class, null, null);
-      if (LOG.isInfoEnabled()) {
-        LOG.info("Synchronisation unsuccessful");
-      }
+      LoggingRuntime.logMsgView(Level.INFO, "Synchronisation unsuccessful!", Client.class, null, null);
     }
-    this.patchOpeartions.start(this.contentSynchroniser.getStructuralMap());
+
+    this.patchOpeartions.start(this.contentSynchroniser.getStructuralMap(), selectedInstance, project);
     if (LOG.isInfoEnabled()) {
       LOG.info("Client started successfully..");
     }
     LoggingRuntime.logMsgView(Level.INFO, "Client started successfully..", Client.class, null, null);
+  }
 
+  public void stop() {
+    this.modelServerClient.unsubscribe(this.subscribedModel);
+    this.eCoreValidator.stop();
+    this.contentSynchroniser.stop();
+  }
+
+  private void subscribe() {
     this.modelServerClient.subscribe(this.subscribedModel, new JsonToStringSubscriptionListener() {
       @Override
       public void onNotification(ModelServerNotification notification) {
@@ -143,12 +145,6 @@ public class Client {
     });
   }
 
-  public void stop() {
-    this.modelServerClient.unsubscribe(this.subscribedModel);
-    this.eCoreValidator.stop();
-    this.contentSynchroniser.stop();
-  }
-
   public String getAllModels() {
     String serverResponse = null;
     try {
@@ -164,17 +160,24 @@ public class Client {
   public String getModel(String modelUri, String format) {
     String serverResponse = null;
     try {
-      String queryAddress = new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).addParameter("format", format).toString();
       HttpClient httpClient = HttpClient.newHttpClient();
       HttpRequest httpRequest = HttpRequest.newBuilder(new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).addParameter("format", format).build()).GET().build();
 
       HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
       serverResponse = httpResponse.body();
       LoggingRuntime.logMsgView(Level.INFO, "Got " + serverResponse, Client.class, null, null);
+      if (httpResponse.statusCode() == 404) {
+        JOptionPane.showMessageDialog(null, "Model does not exist (by name) in server. Exiting application!");
+        System.exit(2);
+      }
     } catch (URISyntaxException se) {
     } catch (IOException e) {
+      System.exit(2);
+
     } catch (InterruptedException e) {
+      LoggingRuntime.logMsgView(Level.INFO, "Interrupted exception", Client.class, null, null);
     }
+
     return serverResponse;
   }
 

@@ -59,7 +59,7 @@ public class PerformEcoreValidation {
 
   public PerformEcoreValidation(SNode selectedInstance) {
     // TODO: Move away from parsing using objectMapper to using Document library, used in ContentSynchroniser.
-    this.mpsLocalRepo = MPS_LocalRepo.getInstance(selectedInstance);
+    this.mpsLocalRepo = MPS_LocalRepo.getInstance();
     // hard coded the model to look for.
     this.module = "StateMachines";
     this.model = "structure";

@@ -8,12 +8,12 @@ import org.jetbrains.mps.openapi.module.SRepositoryListener;
 import org.apache.log4j.Logger;
 import org.apache.log4j.LogManager;
 import org.jetbrains.mps.openapi.module.SRepository;
-import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SModel;
 import org.jetbrains.mps.openapi.module.SModule;
-import jetbrains.mps.project.Project;
 import MPSListener.plugin.emfModelServer.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jetbrains.mps.openapi.model.SNode;
+import jetbrains.mps.project.Project;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
@@ -37,50 +37,54 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   protected SRepository instanceRepository;
   protected boolean myActive;
 
-  private SNode selectedInstance;
   private SModel instanceModel;
   private SModule instanceModule;
-  private Project project;
   private Client client;
 
   private static GlobalSModelListener instance;
   private ObjectMapper om;
   private String modelName;
 
-  private GlobalSModelListener(SNode selectedInstance, Project project) {
-    this.selectedInstance = selectedInstance;
-    this.instanceModel = this.selectedInstance.getModel();
-    this.instanceModule = this.instanceModel.getModule();
-    this.instanceRepository = this.instanceModule.getRepository();
-    this.project = project;
-    this.client = Client.getInstance(selectedInstance, project);
+  private GlobalSModelListener() {
     this.om = new ObjectMapper();
-    this.modelName = selectedInstance.getName() + "." + selectedInstance.getConcept().getName().toLowerCase();
   }
 
-  public static GlobalSModelListener getInstance(SNode selectedInstance, Project project) {
+  public static GlobalSModelListener getInstance() {
     if (instance == null) {
-      instance = new GlobalSModelListener(selectedInstance, project);
+      instance = new GlobalSModelListener();
     }
     return instance;
   }
 
 
-  public void start() {
+  public void start(SNode newInstance, Project project) {
+    this.client = Client.getInstance();
+    this.modelName = newInstance.getName() + "." + newInstance.getConcept().getName().toLowerCase();
+    this.instanceModel = newInstance.getModel();
+    this.instanceModule = this.instanceModel.getModule();
+    this.instanceRepository = this.instanceModule.getRepository();
+
+    LoggingRuntime.logMsgView(Level.INFO, "Listener activated", GlobalSModelListener.class, null, null);
+  }
+
+  public void switchOnListener() {
     instanceRepository.getModelAccess().runReadAction(() -> {
       GlobalSModelListener.this.instanceModel.addModelListener(GlobalSModelListener.this);
       GlobalSModelListener.this.instanceModel.addChangeListener(GlobalSModelListener.this);
       GlobalSModelListener.this.instanceRepository.addRepositoryListener(GlobalSModelListener.this);
     });
-    LoggingRuntime.logMsgView(Level.INFO, "Listener activated", GlobalSModelListener.class, null, null);
   }
 
-  public void stop() {
+  public void switchOffListener() {
     myActive = false;
     instanceRepository.getModelAccess().runReadAction(() -> {
       GlobalSModelListener.this.instanceModel.removeModelListener(GlobalSModelListener.this);
       GlobalSModelListener.this.instanceModel.removeChangeListener(GlobalSModelListener.this);
     });
+  }
+
+  public void stop() {
+    switchOffListener();
     LoggingRuntime.logMsgView(Level.INFO, "Listener deactivated", GlobalSModelListener.class, null, null);
   }
 

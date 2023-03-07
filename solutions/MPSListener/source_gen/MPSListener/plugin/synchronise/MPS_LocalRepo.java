@@ -29,26 +29,23 @@ public class MPS_LocalRepo {
   private Map<SModule, Map<SModel, List<SNode>>> moduleMap;
   private java.util.logging.Logger logger;
 
-  private MPS_LocalRepo(SNode modelInstance) {
+  private MPS_LocalRepo() {
     this.mymodels = ListSequence.fromList(new ArrayList<SModel>());
     this.myModules = ListSequence.fromList(new ArrayList<SModule>());
-    if (LOG.isInfoEnabled()) {
-      LOG.info("Recieved model instance: " + String.valueOf(modelInstance.getName()));
-    }
     this.moduleMap = new HashMap<>();
     this.logger = java.util.logging.Logger.getLogger(MPS_LocalRepo.class.getSimpleName());
-    this.modelInstanceModule = modelInstance.getModel().getModule();
-    this.myRepository = modelInstance.getModel().getRepository();
   }
 
-  public static MPS_LocalRepo getInstance(SNode modelInstance) {
+  public static MPS_LocalRepo getInstance() {
     if (instance == null) {
-      instance = new MPS_LocalRepo(modelInstance);
+      instance = new MPS_LocalRepo();
     }
     return instance;
   }
 
-  public void initialise() {
+  public void start(SNode modelInstance) {
+    this.modelInstanceModule = modelInstance.getModel().getModule();
+    this.myRepository = modelInstance.getModel().getRepository();
     myRepository.getModelAccess().runReadAction(() -> {
       for (SModule module : Sequence.fromIterable(myRepository.getModules())) {
         for (SModel model : Sequence.fromIterable(module.getModels())) {

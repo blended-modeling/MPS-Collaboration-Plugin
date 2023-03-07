@@ -22,11 +22,11 @@ public class StartPlugin {
 
   private StartPlugin(SNode startingNode, Project project) {
     this.startingNode = startingNode;
-    this.emfClient = Client.getInstance(startingNode, project);
-    this.mylistener = GlobalSModelListener.getInstance(startingNode, project);
+    this.emfClient = Client.getInstance();
+    this.mylistener = GlobalSModelListener.getInstance();
     this.logger = Logger.getLogger(StartPlugin.class.getSimpleName());
     this.currentProject = project;
-    this.mpsLocalRepo = MPS_LocalRepo.getInstance(startingNode);
+    this.mpsLocalRepo = MPS_LocalRepo.getInstance();
   }
   public static StartPlugin getInstance() {
     return instance;
@@ -40,8 +40,9 @@ public class StartPlugin {
     return instance;
   }
 
-  public void setTarget(SNode target) {
+  public void changeTargetNode(SNode target) {
     this.startingNode = target;
+
   }
   public static boolean isRunning() {
     return isRunning;
@@ -50,9 +51,9 @@ public class StartPlugin {
   public void start() {
     if (!(isRunning)) {
       // Ordering of the classes starting up *matter*
-      this.mpsLocalRepo.initialise();
-      this.emfClient.start();
-      this.mylistener.start();
+      this.mpsLocalRepo.start(this.startingNode);
+      this.emfClient.start(this.startingNode, this.currentProject);
+      this.mylistener.start(this.startingNode, this.currentProject);
       isRunning = true;
     }
   }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<product version="3" modelHash="-8qzj0di0eefc6chqt75pcsu9tsys0sw">
-  <files names="ContentSynchroniser.java:IncomingChangeValidator.java:MPS_LocalRepo.java:NodeFactory.java" />
+<product version="3" modelHash="bftqm24o306d9t575wsyt3hgxq5innc">
+  <files names="ContentSynchroniser.java:MPS_LocalRepo.java:NodeFactory.java" />
 </product>
 
