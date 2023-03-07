@@ -32,24 +32,25 @@
       <node id="3013854040804000230" at="43,46,44,31" concept="1" />
       <node id="5809027101383802226" at="44,31,45,0" concept="7" />
       <node id="3013854040803793879" at="47,37,48,21" concept="5" />
-      <node id="3820779710498727293" at="52,23,53,53" concept="6" />
-      <node id="3820779710498527979" at="53,53,54,49" concept="1" />
+      <node id="3820779710498727293" at="52,23,53,55" concept="6" />
+      <node id="3820779710498527979" at="53,55,54,49" concept="1" />
       <node id="8948441842688939726" at="54,49,55,67" concept="1" />
       <node id="8948441842688991440" at="55,67,56,68" concept="1" />
-      <node id="8997022533941306403" at="56,68,57,23" concept="1" />
-      <node id="8948441842689090263" at="61,22,62,26" concept="1" />
-      <node id="3013854040803182533" at="62,26,63,27" concept="1" />
-      <node id="3820779710498537090" at="63,27,64,29" concept="1" />
-      <node id="3013854040803849266" at="64,29,65,27" concept="1" />
+      <node id="2494980492546704834" at="56,68,57,0" concept="7" />
+      <node id="8997022533941306403" at="57,0,58,23" concept="1" />
+      <node id="8948441842689090263" at="62,22,63,26" concept="1" />
+      <node id="3013854040803182533" at="63,26,64,27" concept="1" />
+      <node id="3820779710498537090" at="64,27,65,29" concept="1" />
+      <node id="3013854040803849266" at="65,29,66,27" concept="1" />
       <node id="7669344100845562442" at="31,0,34,0" concept="9" trace="getInstance#()LMPSListener/plugin/initiate/StartPlugin;" />
       <node id="5709704356203095002" at="36,70,39,5" concept="3" />
       <node id="3013854040803793876" at="47,0,50,0" concept="9" trace="isRunning#()Z" />
       <node id="3013854040803989507" at="43,0,47,0" concept="4" trace="changeTargetNode#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
       <node id="5709704356204076401" at="36,0,42,0" concept="9" trace="getInstance#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/project/Project;)LMPSListener/plugin/initiate/StartPlugin;" />
-      <node id="3013854040803148753" at="61,0,67,0" concept="4" trace="stop#()V" />
-      <node id="8948441842688698021" at="51,23,58,5" concept="3" />
+      <node id="3013854040803148753" at="62,0,68,0" concept="4" trace="stop#()V" />
       <node id="6791411149815035574" at="23,0,31,0" concept="0" trace="StartPlugin#(Lorg/jetbrains/mps/openapi/model/SNode;Ljetbrains/mps/project/Project;)V" />
-      <node id="2211371676055738262" at="51,0,60,0" concept="4" trace="start#()V" />
+      <node id="8948441842688698021" at="51,23,59,5" concept="3" />
+      <node id="2211371676055738262" at="51,0,61,0" concept="4" trace="start#()V" />
       <scope id="7669344100845562445" at="31,43,32,20" />
       <scope id="5709704356203095004" at="37,27,38,48" />
       <scope id="3013854040803793878" at="47,37,48,21" />
@@ -60,21 +61,21 @@
       <scope id="3013854040803989507" at="43,0,47,0">
         <var name="target" id="3013854040803993859" />
       </scope>
-      <scope id="3013854040803148756" at="61,22,65,27" />
-      <scope id="8948441842688698023" at="52,23,57,23" />
+      <scope id="3013854040803148756" at="62,22,66,27" />
       <scope id="6791411149815035577" at="23,60,29,52" />
       <scope id="5709704356204076401" at="36,0,42,0">
         <var name="node" id="5709704356204076421" />
         <var name="project" id="5709704356204076423" />
       </scope>
-      <scope id="3013854040803148753" at="61,0,67,0" />
-      <scope id="2211371676055738265" at="51,23,58,5" />
+      <scope id="8948441842688698023" at="52,23,58,23" />
+      <scope id="3013854040803148753" at="62,0,68,0" />
       <scope id="6791411149815035574" at="23,0,31,0">
         <var name="project" id="5516998270198521065" />
         <var name="startingNode" id="2045416040689959490" />
       </scope>
-      <scope id="2211371676055738262" at="51,0,60,0" />
-      <unit id="6791411149814282756" at="12,0,68,0" name="MPSListener.plugin.initiate.StartPlugin" />
+      <scope id="2211371676055738265" at="51,23,59,5" />
+      <scope id="2211371676055738262" at="51,0,61,0" />
+      <unit id="6791411149814282756" at="12,0,69,0" name="MPSListener.plugin.initiate.StartPlugin" />
     </file>
   </root>
 </debug-info>

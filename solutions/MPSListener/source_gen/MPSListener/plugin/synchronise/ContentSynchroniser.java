@@ -235,7 +235,6 @@ public class ContentSynchroniser {
     } else {
       this.conceptCounterMap.put(conceptName, this.conceptCounterMap.get(conceptName) + 1);
     }
-
   }
 
   public Map<SNode, Integer> getStructuralMap() {

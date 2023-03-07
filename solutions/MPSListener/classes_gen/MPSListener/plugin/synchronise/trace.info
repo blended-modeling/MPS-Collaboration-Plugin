@@ -367,16 +367,15 @@
       <node id="70747958787829905" at="228,7,229,36" concept="8" />
       <node id="70747958794285862" at="233,61,234,49" concept="2" />
       <node id="70747958794510841" at="235,12,236,91" concept="2" />
-      <node id="3037999621892515705" at="237,5,238,0" concept="10" />
-      <node id="7180836344832930853" at="241,49,242,30" concept="8" />
-      <node id="3037999621894967583" at="245,22,246,59" concept="2" />
-      <node id="3820779710507233276" at="246,59,247,41" concept="2" />
-      <node id="3820779710507233285" at="247,41,248,45" concept="2" />
-      <node id="3820779710507233294" at="248,45,249,26" concept="2" />
-      <node id="7941135069706409292" at="253,0,254,0" concept="11" trace="uuid$otr" />
-      <node id="7941135069706409292" at="254,0,255,0" concept="11" trace="conceptId$rrGe" />
-      <node id="7941135069706409292" at="255,0,256,0" concept="11" trace="name$MnvL" />
-      <node id="7941135069706409292" at="256,0,257,0" concept="11" trace="abstract$ibpT" />
+      <node id="7180836344832930853" at="240,49,241,30" concept="8" />
+      <node id="3037999621894967583" at="244,22,245,59" concept="2" />
+      <node id="3820779710507233276" at="245,59,246,41" concept="2" />
+      <node id="3820779710507233285" at="246,41,247,45" concept="2" />
+      <node id="3820779710507233294" at="247,45,248,26" concept="2" />
+      <node id="7941135069706409292" at="252,0,253,0" concept="11" trace="uuid$otr" />
+      <node id="7941135069706409292" at="253,0,254,0" concept="11" trace="conceptId$rrGe" />
+      <node id="7941135069706409292" at="254,0,255,0" concept="11" trace="name$MnvL" />
+      <node id="7941135069706409292" at="255,0,256,0" concept="11" trace="abstract$ibpT" />
       <node id="3304649275896337642" at="80,14,82,9" concept="0" />
       <node id="70747958799706678" at="235,10,237,5" concept="0" />
       <node id="7180836344832311005" at="62,116,65,5" concept="5" />
@@ -388,7 +387,7 @@
       <node id="3304649275895699361" at="166,80,169,7" concept="5" />
       <node id="3304649275893157689" at="176,225,179,7" concept="5" />
       <node id="70747958789932884" at="220,87,223,13" concept="5" />
-      <node id="7180836344832887460" at="241,0,244,0" concept="6" trace="getStructuralMap#()Ljava/util/Map;" />
+      <node id="7180836344832887460" at="240,0,243,0" concept="6" trace="getStructuralMap#()Ljava/util/Map;" />
       <node id="3304649275879795972" at="134,10,138,5" concept="0" />
       <node id="7803170627613617963" at="141,0,145,0" concept="6" trace="getSContainmentLink#(Ljava/lang/String;)Lorg/jetbrains/mps/openapi/language/SContainmentLink;" />
       <node id="3304649275876261759" at="192,101,196,7" concept="2" />
@@ -403,11 +402,11 @@
       <node id="70747958794081193" at="232,60,237,5" concept="5" />
       <node id="7180836344832310996" at="62,0,68,0" concept="12" trace="getInstance#(Ljava/util/Map;Lorg/jetbrains/mps/openapi/model/SNode;)LMPSListener/plugin/synchronise/ContentSynchroniser;" />
       <node id="1433521497704777641" at="146,0,152,0" concept="6" trace="removeAllChildrenSNode#()V" />
-      <node id="3820779710507067580" at="245,0,251,0" concept="6" trace="stop#()V" />
+      <node id="3820779710507067580" at="244,0,250,0" concept="6" trace="stop#()V" />
+      <node id="70747958793762968" at="232,0,239,0" concept="6" trace="incrementConceptCounter#(Ljava/lang/String;)V" />
       <node id="7035087974317636126" at="75,31,83,7" concept="14" />
       <node id="7803170627616780442" at="120,0,128,0" concept="6" trace="getEStructuralFeature#(Ljava/lang/String;LMPSListener/plugin/dataClasses/emf/ecore/EClassifier;)LMPSListener/plugin/dataClasses/emf/ecore/EStructuralFeature;" />
       <node id="3304649275879511014" at="130,99,138,5" concept="5" />
-      <node id="70747958793762968" at="232,0,240,0" concept="6" trace="incrementConceptCounter#(Ljava/lang/String;)V" />
       <node id="7035087974321217726" at="110,0,119,0" concept="6" trace="getEClassifier#(Ljava/lang/String;)LMPSListener/plugin/dataClasses/emf/ecore/EClassifier;" />
       <node id="70747958785236718" at="153,0,162,0" concept="6" trace="getPropertyValueMap#(Lorg/jdom/Element;Lorg/jetbrains/mps/openapi/language/SConcept;)Ljava/util/Map;" />
       <node id="3304649275892201345" at="174,0,183,0" concept="6" trace="isReferenceLink#(Lorg/jdom/Attribute;Ljava/lang/String;)Z" />
@@ -435,7 +434,7 @@
       <scope id="70747958789932906" at="221,180,222,75" />
       <scope id="70747958794081195" at="233,61,234,49" />
       <scope id="70747958799706679" at="235,12,236,91" />
-      <scope id="7180836344832887463" at="241,49,242,30" />
+      <scope id="7180836344832887463" at="240,49,241,30" />
       <scope id="70747958805124517" at="87,12,89,23" />
       <scope id="7035087974317323426" at="97,9,99,139" />
       <scope id="7035087974317323429" at="100,31,102,28" />
@@ -466,7 +465,7 @@
       <scope id="3304649275895511605" at="166,80,169,7" />
       <scope id="3304649275892683088" at="176,225,179,7" />
       <scope id="70747958789932875" at="220,87,223,13" />
-      <scope id="7180836344832887460" at="241,0,244,0" />
+      <scope id="7180836344832887460" at="240,0,243,0" />
       <scope id="7180836344832311004" at="62,116,66,20" />
       <scope id="7803170627613617963" at="141,0,145,0">
         <var name="containmentLinkName" id="7803170627613626908" />
@@ -474,7 +473,7 @@
       <scope id="1433521497704777644" at="146,41,150,5">
         <var name="children" id="1433521497704867070" />
       </scope>
-      <scope id="3820779710507067583" at="245,22,249,26" />
+      <scope id="3820779710507067583" at="244,22,248,26" />
       <scope id="7803170627616784563" at="120,90,125,5">
         <var name="eStructuralFeature" id="7803170627616784564" />
       </scope>
@@ -484,6 +483,7 @@
       <scope id="3304649275892683082" at="175,32,180,5">
         <var name="referenceLink" id="3304649275892683084" />
       </scope>
+      <scope id="70747958793762971" at="232,60,237,5" />
       <scope id="7180836344832310996" at="62,0,68,0">
         <var name="ecoreToMPSLangMap" id="7180836344832310998" />
         <var name="selectedInstance" id="7180836344832311002" />
@@ -493,8 +493,7 @@
       </scope>
       <scope id="7803170627616780445" at="120,90,126,16" />
       <scope id="1433521497704777641" at="146,0,152,0" />
-      <scope id="70747958793762971" at="232,60,238,0" />
-      <scope id="3820779710507067580" at="245,0,251,0" />
+      <scope id="3820779710507067580" at="244,0,250,0" />
       <scope id="7035087974321217729" at="110,57,117,29">
         <var name="eClassifier" id="7035087974321508199" />
       </scope>
@@ -504,6 +503,9 @@
       <scope id="3304649275892201348" at="174,76,181,23">
         <var name="isReference" id="3304649275892248226" />
       </scope>
+      <scope id="70747958793762968" at="232,0,239,0">
+        <var name="conceptName" id="70747958793809449" />
+      </scope>
       <scope id="7035087974317062562" at="51,98,59,26" />
       <scope id="7803170627616780442" at="120,0,128,0">
         <var name="eClassifier" id="7803170627616781664" />
@@ -512,9 +514,6 @@
       <scope id="3304649275895296436" at="163,86,171,17">
         <var name="conceptName" id="3304649275895966148" />
         <var name="refArray" id="3304649275895966132" />
-      </scope>
-      <scope id="70747958793762968" at="232,0,240,0">
-        <var name="conceptName" id="70747958793809449" />
       </scope>
       <scope id="7035087974321217726" at="110,0,119,0">
         <var name="name" id="7035087974321527992" />
@@ -584,8 +583,8 @@
         <var name="element" id="7803170627616620637" />
         <var name="mainEClassifier" id="7803170627616776426" />
       </scope>
-      <unit id="7941135069706409292" at="252,0,258,0" name="MPSListener.plugin.synchronise.ContentSynchroniser$PROPS" />
-      <unit id="7941135069706409292" at="39,0,259,0" name="MPSListener.plugin.synchronise.ContentSynchroniser" />
+      <unit id="7941135069706409292" at="251,0,257,0" name="MPSListener.plugin.synchronise.ContentSynchroniser$PROPS" />
+      <unit id="7941135069706409292" at="39,0,258,0" name="MPSListener.plugin.synchronise.ContentSynchroniser" />
     </file>
   </root>
 </debug-info>

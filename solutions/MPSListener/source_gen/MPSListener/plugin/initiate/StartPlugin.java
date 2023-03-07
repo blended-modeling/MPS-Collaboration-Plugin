@@ -50,10 +50,11 @@ public class StartPlugin {
 
   public void start() {
     if (!(isRunning)) {
-      // Ordering of the classes starting up *matter*
+      // Ordering of the classes starting up **matter**
       this.mpsLocalRepo.start(this.startingNode);
       this.emfClient.start(this.startingNode, this.currentProject);
       this.mylistener.start(this.startingNode, this.currentProject);
+
       isRunning = true;
     }
   }

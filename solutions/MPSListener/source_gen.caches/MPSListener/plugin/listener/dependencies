@@ -24,6 +24,7 @@
     <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Patch" />
     <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Root" />
     <classNode dependClassName="MPSListener.plugin.emfModelServer.Client" />
+    <classNode dependClassName="MPSListener.plugin.emfModelServer.PatchOperations" />
     <classNode dependClassName="com.fasterxml.jackson.core.JsonProcessingException" />
     <classNode dependClassName="com.fasterxml.jackson.databind.ObjectMapper" />
     <classNode dependClassName="java.lang.Iterable" />

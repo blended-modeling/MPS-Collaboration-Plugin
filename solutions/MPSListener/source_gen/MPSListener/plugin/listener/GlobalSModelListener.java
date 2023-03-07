@@ -21,6 +21,7 @@ import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
 import java.util.List;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import java.util.ArrayList;
+import MPSListener.plugin.emfModelServer.PatchOperations;
 import MPSListener.plugin.dataClasses.emf.patches.Root;
 import MPSListener.plugin.dataClasses.emf.patches.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,7 +64,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     this.instanceModel = newInstance.getModel();
     this.instanceModule = this.instanceModel.getModule();
     this.instanceRepository = this.instanceModule.getRepository();
-
+    switchOnListener();
     LoggingRuntime.logMsgView(Level.INFO, "Listener activated", GlobalSModelListener.class, null, null);
   }
 
@@ -124,6 +125,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("replace", path, null, event.getNewValue()));
     try {
+      PatchOperations.getInstance().setIgnorePatch(true);
       this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
     } catch (JsonProcessingException e) {
       if (LOG.isInfoEnabled()) {
@@ -137,6 +139,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   }
   @Override
   public void nodeAdded(@NotNull SNodeAddEvent event) {
+    PatchOperations.getInstance().setIgnorePatch(true);
     LoggingRuntime.logMsgView(Level.INFO, "Node added for: " + event.getAggregationLink().getName(), GlobalSModelListener.class, null, null);
   }
   @Override
@@ -164,6 +167,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     patchList.add(new Patch("remove", path, null, null));
 
     try {
+      PatchOperations.getInstance().setIgnorePatch(true);
       this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
     } catch (JsonProcessingException e) {
       if (LOG.isInfoEnabled()) {

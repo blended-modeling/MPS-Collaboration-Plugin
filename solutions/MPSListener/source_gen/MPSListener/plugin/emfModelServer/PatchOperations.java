@@ -9,10 +9,10 @@ import MPSListener.plugin.emfModelServer.parsers.PatchParser;
 import java.util.Map;
 import jetbrains.mps.project.Project;
 import MPSListener.plugin.listener.GlobalSModelListener;
-import java.util.List;
-import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
+import java.util.List;
+import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import org.jetbrains.mps.openapi.language.SProperty;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
@@ -30,12 +30,12 @@ public class PatchOperations {
   private Map<SNode, Integer> modelStructuralMap;
   private Project project;
   private GlobalSModelListener myListener;
+  private boolean ignorePatch;
 
   private PatchOperations() {
     this.log = java.util.logging.Logger.getLogger(PatchOperations.class.getSimpleName());
     this.patchParser = new PatchParser();
     this.myListener = GlobalSModelListener.getInstance();
-
   }
 
   public static PatchOperations getInstance() {
@@ -44,6 +44,11 @@ public class PatchOperations {
     }
     return instance;
   }
+
+  public boolean setIgnorePatch(boolean isIgnore) {
+    return ignorePatch = isIgnore;
+  }
+
   public void start(Map<SNode, Integer> modelStructuralMap, SNode startingNode, Project project) {
     this.modelStructuralMap = modelStructuralMap;
     this.startingNode = startingNode;
@@ -51,8 +56,14 @@ public class PatchOperations {
   }
 
   public void executePatch(final String serverPatchResponse) {
+    // Temporary fix to avoid duplicate operations since server fix is not deployed
+    if (ignorePatch) {
+      LoggingRuntime.logMsgView(Level.INFO, "Ignoring patch request.", PatchOperations.class, null, null);
+      ignorePatch = false;
+      return;
+    }
     List<Patch> serverPatches = patchParser.getPatch(serverPatchResponse);
-
+    myListener.switchOffListener();
     serverPatches.forEach((Patch patch) -> {
       LoggingRuntime.logMsgView(Level.INFO, "Executing patch " + patch.getOp(), PatchOperations.class, null, null);
       switch (patch.getOp()) {
@@ -66,6 +77,7 @@ public class PatchOperations {
           return;
       }
     });
+    myListener.switchOnListener();
   }
 
   private void replace(String path, final String value) {
@@ -85,10 +97,7 @@ public class PatchOperations {
       runCommand("Replace property", new Runnable() {
         @Override
         public void run() {
-          myListener.switchOffListener();
           element.setProperty(propertyToReplace, value);
-          myListener.switchOnListener();
-
         }
       });
     } else {
@@ -131,7 +140,6 @@ public class PatchOperations {
 
     }
   }
-
 
   private void remove(final String path) {
     runCommand("Remove node", new Runnable() {
