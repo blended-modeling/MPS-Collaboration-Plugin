@@ -59,10 +59,9 @@
       <node id="9193325234834628150" at="119,64,120,77" concept="7" />
       <node id="9193325234834880860" at="123,83,124,75" concept="2" />
       <node id="9193325234834929536" at="127,5,128,22" concept="8" />
-      <node id="4015856154932629815" at="131,50,132,16" concept="8" />
-      <node id="3820779710497506553" at="135,22,136,69" concept="2" />
-      <node id="3820779710497743819" at="136,69,137,67" concept="2" />
-      <node id="3820779710498334917" at="137,67,138,37" concept="2" />
+      <node id="3820779710497506553" at="131,22,132,69" concept="2" />
+      <node id="3820779710497743819" at="132,69,133,67" concept="2" />
+      <node id="3820779710498334917" at="133,67,134,37" concept="2" />
       <node id="9193325234834025959" at="39,45,42,5" concept="5" />
       <node id="7359707760125041559" at="50,79,53,9" concept="4" />
       <node id="7941959995805009269" at="64,39,67,7" concept="4" />
@@ -71,11 +70,10 @@
       <node id="3820779710498288148" at="104,76,107,5" concept="4" />
       <node id="3820779710498299792" at="112,77,115,5" concept="4" />
       <node id="9193325234834838618" at="122,75,125,9" concept="4" />
-      <node id="4015856154931997373" at="131,0,134,0" concept="6" trace="findRootNode#(Ljava/lang/String;)Lorg/jetbrains/mps/openapi/model/SNode;" />
       <node id="9193325234836652688" at="75,60,80,7" concept="4" />
       <node id="6380026753674778057" at="89,62,94,9" concept="4" />
       <node id="9193325234834730590" at="121,47,126,7" concept="5" />
-      <node id="3820779710497490752" at="135,0,140,0" concept="6" trace="stop#()V" />
+      <node id="3820779710497490752" at="131,0,136,0" concept="6" trace="stop#()V" />
       <node id="5850570934825698388" at="32,0,38,0" concept="1" trace="MPS_LocalRepo#()V" />
       <node id="9193325234834025956" at="39,0,45,0" concept="12" trace="getInstance#()LMPSListener/plugin/synchronise/MPS_LocalRepo;" />
       <node id="7359707760125041553" at="49,55,55,7" concept="4" />
@@ -100,7 +98,6 @@
       <scope id="3820779710498288155" at="105,68,106,57" />
       <scope id="3820779710498299799" at="113,68,114,59" />
       <scope id="9193325234834838621" at="123,83,124,75" />
-      <scope id="4015856154931997376" at="131,50,132,16" />
       <scope id="6380026753674745702" at="96,38,98,18" />
       <scope id="7359707760125041559" at="50,79,53,9">
         <var name="model" id="7359707760125041560" />
@@ -123,10 +120,7 @@
       <scope id="9193325234834838618" at="122,75,125,9">
         <var name="instance" id="9193325234834838619" />
       </scope>
-      <scope id="4015856154931997373" at="131,0,134,0">
-        <var name="rootNodeName" id="4015856154932011552" />
-      </scope>
-      <scope id="3820779710497490755" at="135,22,138,37" />
+      <scope id="3820779710497490755" at="131,22,134,37" />
       <scope id="5850570934825698391" at="32,27,36,90" />
       <scope id="9193325234834025958" at="39,45,43,20" />
       <scope id="7359707760125041558" at="50,79,54,60" />
@@ -146,7 +140,7 @@
         <var name="allInstances" id="9193325234833655043" />
       </scope>
       <scope id="9193325234837643997" at="121,47,126,7" />
-      <scope id="3820779710497490752" at="135,0,140,0" />
+      <scope id="3820779710497490752" at="131,0,136,0" />
       <scope id="5850570934825698388" at="32,0,38,0" />
       <scope id="9193325234834025956" at="39,0,45,0" />
       <scope id="7359707760125041547" at="49,55,55,7" />
@@ -195,7 +189,7 @@
         <var name="modelToFind" id="6380026753676980963" />
         <var name="moduleToFind" id="6380026753674297831" />
       </scope>
-      <unit id="5850570934825673552" at="22,0,141,0" name="MPSListener.plugin.synchronise.MPS_LocalRepo" />
+      <unit id="5850570934825673552" at="22,0,137,0" name="MPSListener.plugin.synchronise.MPS_LocalRepo" />
     </file>
   </root>
   <root nodeRef="r:ed1962b8-0c77-4d15-b4f0-5ab74ab2241c(MPSListener.plugin.synchronise)/7035087974398312434">

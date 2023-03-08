@@ -119,9 +119,7 @@ public class PatchOperations {
             runCommand("replace reference with a new reference", new Runnable() {
               @Override
               public void run() {
-                myListener.switchOffListener();
                 SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentNode);
-                myListener.switchOnListener();
 
               }
             });
@@ -132,9 +130,7 @@ public class PatchOperations {
       runCommand("replace reference with null", new Runnable() {
         @Override
         public void run() {
-          myListener.switchOffListener();
           SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), null);
-          myListener.switchOnListener();
         }
       });
 
@@ -145,9 +141,7 @@ public class PatchOperations {
     runCommand("Remove node", new Runnable() {
       @Override
       public void run() {
-        myListener.switchOffListener();
         startingNode.removeChild(getNode(path));
-        myListener.switchOnListener();
       }
     });
   }

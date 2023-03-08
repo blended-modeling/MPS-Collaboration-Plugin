@@ -450,12 +450,6 @@
             <ref role="37wK5l" node="53jYhH$BqHN" resolve="switchOnListener" />
           </node>
         </node>
-        <node concept="2xdQw9" id="4fPNTepSfEN" role="3cqZAp">
-          <property role="2xdLsb" value="h1akgim/info" />
-          <node concept="Xl_RD" id="4fPNTepSfEP" role="9lYJi">
-            <property role="Xl_RC" value="Listener activated" />
-          </node>
-        </node>
       </node>
       <node concept="3Tm1VV" id="1LyLKPbm4u3" role="1B3o_S" />
       <node concept="3cqZAl" id="1LyLKPbm4SJ" role="3clF45" />
@@ -521,6 +515,12 @@
                   </node>
                 </node>
               </node>
+              <node concept="2xdQw9" id="4fPNTepSfEN" role="3cqZAp">
+                <property role="2xdLsb" value="h1akgim/info" />
+                <node concept="Xl_RD" id="4fPNTepSfEP" role="9lYJi">
+                  <property role="Xl_RC" value="Listener activated" />
+                </node>
+              </node>
             </node>
           </node>
           <node concept="37vLTw" id="1BNIgeOQX93" role="ukAjM">
@@ -576,6 +576,12 @@
                   </node>
                 </node>
               </node>
+              <node concept="2xdQw9" id="1BNIgeOQB5z" role="3cqZAp">
+                <property role="2xdLsb" value="h1akgim/info" />
+                <node concept="Xl_RD" id="1BNIgeOQGkb" role="9lYJi">
+                  <property role="Xl_RC" value="Listener deactivated" />
+                </node>
+              </node>
             </node>
           </node>
           <node concept="37vLTw" id="1LyLKPbkFMr" role="ukAjM">
@@ -595,12 +601,6 @@
         <node concept="3clFbF" id="53jYhH$BrEi" role="3cqZAp">
           <node concept="1rXfSq" id="53jYhH$BrEg" role="3clFbG">
             <ref role="37wK5l" node="53jYhH$Brth" resolve="switchOffListener" />
-          </node>
-        </node>
-        <node concept="2xdQw9" id="1BNIgeOQB5z" role="3cqZAp">
-          <property role="2xdLsb" value="h1akgim/info" />
-          <node concept="Xl_RD" id="1BNIgeOQGkb" role="9lYJi">
-            <property role="Xl_RC" value="Listener deactivated" />
           </node>
         </node>
       </node>

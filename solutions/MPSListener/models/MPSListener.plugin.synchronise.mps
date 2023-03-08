@@ -1194,25 +1194,6 @@
         </node>
       </node>
     </node>
-    <node concept="2tJIrI" id="3uVbYlvMhSN" role="jymVt" />
-    <node concept="3clFb_" id="3uVbYlvMqEX" role="jymVt">
-      <property role="TrG5h" value="findRootNode" />
-      <node concept="3clFbS" id="3uVbYlvMqF0" role="3clF47">
-        <node concept="3cpWs6" id="3uVbYlvOP4R" role="3cqZAp">
-          <node concept="10Nm6u" id="3uVbYlvORTm" role="3cqZAk" />
-        </node>
-      </node>
-      <node concept="3Tm1VV" id="3uVbYlvMlas" role="1B3o_S" />
-      <node concept="3uibUv" id="3uVbYlvMoVY" role="3clF45">
-        <ref role="3uigEE" to="mhbf:~SNode" resolve="SNode" />
-      </node>
-      <node concept="37vLTG" id="3uVbYlvMu8w" role="3clF46">
-        <property role="TrG5h" value="rootNodeName" />
-        <node concept="3uibUv" id="3uVbYlvMu8v" role="1tU5fm">
-          <ref role="3uigEE" to="wyt6:~String" resolve="String" />
-        </node>
-      </node>
-    </node>
     <node concept="2tJIrI" id="3k68It1e8N6" role="jymVt" />
     <node concept="3clFb_" id="3k68It1egt0" role="jymVt">
       <property role="TrG5h" value="stop" />

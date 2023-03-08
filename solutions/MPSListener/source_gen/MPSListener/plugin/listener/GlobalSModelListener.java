@@ -65,7 +65,6 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     this.instanceModule = this.instanceModel.getModule();
     this.instanceRepository = this.instanceModule.getRepository();
     switchOnListener();
-    LoggingRuntime.logMsgView(Level.INFO, "Listener activated", GlobalSModelListener.class, null, null);
   }
 
   public void switchOnListener() {
@@ -73,6 +72,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
       GlobalSModelListener.this.instanceModel.addModelListener(GlobalSModelListener.this);
       GlobalSModelListener.this.instanceModel.addChangeListener(GlobalSModelListener.this);
       GlobalSModelListener.this.instanceRepository.addRepositoryListener(GlobalSModelListener.this);
+      LoggingRuntime.logMsgView(Level.INFO, "Listener activated", GlobalSModelListener.class, null, null);
     });
   }
 
@@ -81,12 +81,12 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     instanceRepository.getModelAccess().runReadAction(() -> {
       GlobalSModelListener.this.instanceModel.removeModelListener(GlobalSModelListener.this);
       GlobalSModelListener.this.instanceModel.removeChangeListener(GlobalSModelListener.this);
+      LoggingRuntime.logMsgView(Level.INFO, "Listener deactivated", GlobalSModelListener.class, null, null);
     });
   }
 
   public void stop() {
     switchOffListener();
-    LoggingRuntime.logMsgView(Level.INFO, "Listener deactivated", GlobalSModelListener.class, null, null);
   }
 
   @Override

@@ -128,10 +128,6 @@ public class MPS_LocalRepo {
     return modelNames;
   }
 
-  public SNode findRootNode(String rootNodeName) {
-    return null;
-  }
-
   public void stop() {
     this.myModules = ListSequence.fromList(new ArrayList<SModule>());
     this.mymodels = ListSequence.fromList(new ArrayList<SModel>());
