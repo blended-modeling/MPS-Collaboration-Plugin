@@ -154,7 +154,7 @@
     </node>
     <node concept="ftmFs" id="14jW9zxTmZf" role="ftER_">
       <node concept="tCFHf" id="14jW9zxTn1G" role="ftvYc">
-        <ref role="tCJdB" node="1LyLKPb8m5$" resolve="collaborate" />
+        <ref role="tCJdB" node="1LyLKPb8m5$" resolve="Enable Collaboration" />
       </node>
       <node concept="tCFHf" id="2Bjn4wMXdoe" role="ftvYc">
         <ref role="tCJdB" node="2Bjn4wMWSDN" resolve="Disable Collaboration" />

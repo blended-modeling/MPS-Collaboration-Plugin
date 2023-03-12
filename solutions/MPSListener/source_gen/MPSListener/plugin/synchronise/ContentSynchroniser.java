@@ -48,23 +48,27 @@ public class ContentSynchroniser {
   private Map<String, Integer> conceptCounterMap;
   private static ContentSynchroniser instance;
 
-  private ContentSynchroniser(Map<EClassifier, SNode> ecoreToMPSLangMap, SNode selectedInstance) {
+  private ContentSynchroniser() {
     // TODO: Idea of isSynced is to catch any errors and return false if everything does not go smoothly. Look for possible cases where errors might occur to improve reliability of isSynced
     this.logger = java.util.logging.Logger.getLogger(ContentSynchroniser.class.getSimpleName());
-    this.ecoreToMPSLangMap = ecoreToMPSLangMap;
-    this.selectedInstance = selectedInstance;
     this.elementsThatContainReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
-    this.isSynced = false;
   }
 
-  public static ContentSynchroniser getInstance(Map<EClassifier, SNode> ecoreToMPSLangMap, SNode selectedInstance) {
+  public static ContentSynchroniser getInstance() {
     if (instance == null) {
-      instance = new ContentSynchroniser(ecoreToMPSLangMap, selectedInstance);
+      instance = new ContentSynchroniser();
     }
     return instance;
   }
+
+  public void start(Map<EClassifier, SNode> ecoreToMPSLangMap, SNode selectedInstance) {
+    this.ecoreToMPSLangMap = ecoreToMPSLangMap;
+    this.selectedInstance = selectedInstance;
+    this.isSynced = false;
+  }
+
 
   public boolean synchroniseContent(String modelXML) {
     if (!(ecoreToMPSLangMap.isEmpty())) {
@@ -126,7 +130,7 @@ public class ContentSynchroniser {
     return null;
   }
 
-  private SConcept getConcept(String conceptNodeName) {
+  public SConcept getConcept(String conceptNodeName) {
     SNode concept = NodeFactory.getConceptNodeByName(conceptNodeName, currentModel.getRootNodes());
     if (SPropertyOperations.hasValue(concept, PROPS.abstract$ibpT, true)) {
       SNode interfaceConcept = ((SNode) concept);
@@ -139,7 +143,6 @@ public class ContentSynchroniser {
   }
 
   private SContainmentLink getSContainmentLink(String containmentLinkName) {
-    // remove this after ecore is correct
     return NodeFactory.getSContainmentLink(this.selectedInstance, containmentLinkName);
   }
 
@@ -183,7 +186,6 @@ public class ContentSynchroniser {
 
   private void addChild(Element element, EClassifier mainEClassifier, boolean addReferences) {
 
-    // TODO: Add logic to add references
     String[] refArray = getEStructuralFeature(element.getName(), mainEClassifier).getEType().get$ref().split("//");
     String conceptName = refArray[refArray.length - 1];
     final jetbrains.mps.smodel.SNode child = new jetbrains.mps.smodel.SNode(getConcept(conceptName));

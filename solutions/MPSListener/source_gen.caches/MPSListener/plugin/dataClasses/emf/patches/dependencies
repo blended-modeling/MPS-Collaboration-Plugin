@@ -16,8 +16,10 @@
     <classNode dependClassName="java.util.List" />
   </dependency>
   <dependency className="MPSListener.plugin.dataClasses.emf.patches.Patch">
+    <classNode dependClassName="MPSListener.plugin.emfModelServer.parsers.PatchParser" />
     <classNode dependClassName="com.fasterxml.jackson.annotation.JsonInclude" />
     <classNode dependClassName="java.lang.String" />
+    <classNode dependClassName="java.util.List" />
   </dependency>
   <dependency className="MPSListener.plugin.dataClasses.emf.patches.Root">
     <classNode dependClassName="MPSListener.plugin.dataClasses.emf.patches.Data" />

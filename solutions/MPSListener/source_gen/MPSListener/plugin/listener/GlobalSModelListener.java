@@ -10,14 +10,15 @@ import org.apache.log4j.LogManager;
 import org.jetbrains.mps.openapi.module.SRepository;
 import org.jetbrains.mps.openapi.model.SModel;
 import org.jetbrains.mps.openapi.module.SModule;
+import org.jetbrains.mps.openapi.model.SNode;
 import MPSListener.plugin.emfModelServer.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.jetbrains.mps.openapi.model.SNode;
 import jetbrains.mps.project.Project;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import java.util.List;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import MPSListener.plugin.dataClasses.emf.patches.Root;
 import MPSListener.plugin.dataClasses.emf.patches.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.jetbrains.mps.openapi.event.SReferenceChangeEvent;
+import java.util.LinkedHashMap;
 import org.jetbrains.mps.openapi.event.SNodeAddEvent;
 import org.jetbrains.mps.openapi.event.SNodeRemoveEvent;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
@@ -40,6 +42,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
 
   private SModel instanceModel;
   private SModule instanceModule;
+  private SNode rootNode;
   private Client client;
 
   private static GlobalSModelListener instance;
@@ -59,6 +62,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
 
 
   public void start(SNode newInstance, Project project) {
+    this.rootNode = newInstance;
     this.client = Client.getInstance();
     this.modelName = newInstance.getName() + "." + newInstance.getConcept().getName().toLowerCase();
     this.instanceModel = newInstance.getModel();
@@ -121,7 +125,7 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   @Override
   public void propertyChanged(@NotNull SPropertyChangeEvent event) {
     LoggingRuntime.logMsgView(Level.INFO, "Property changed: for " + event.getNode().getConcept().getName() + " from " + event.getOldValue() + " to " + event.getNewValue(), GlobalSModelListener.class, null, null);
-    String path = event.getNode().getContainmentLink().getName() + "/" + this.client.getStructuralMapping().get(event.getNode()) + "/" + event.getProperty().getName();
+    String path = event.getNode().getContainmentLink().getName() + "/" + SNodeOperations.getIndexInParent(((SNode) event.getNode())) + "/" + event.getProperty().getName();
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("replace", path, null, event.getNewValue()));
     try {
@@ -136,15 +140,59 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
   }
   @Override
   public void referenceChanged(@NotNull SReferenceChangeEvent event) {
+    LoggingRuntime.logMsgView(Level.INFO, "Reference change detected..", GlobalSModelListener.class, null, null);
+    if (event.getNewValue().getSourceNode() == null) {
+      return;
+    }
+    SNode newRef = event.getNewValue().getTargetNode();
+    String path = event.getNewValue().getSourceNode().getContainmentLink().getName() + "/" + SNodeOperations.getIndexInParent(((SNode) event.getNode())) + "/" + event.getAssociationLink().getName();
+
+    LinkedHashMap<String, String> values = new LinkedHashMap<>();
+    values.put("$ref", "TrafficSignals.statemachine#//" + "@" + event.getNewValue().getTargetNode().getContainmentLink().getName() + "." + SNodeOperations.getIndexInParent(newRef));
+
+    List<Patch> patchList = new ArrayList<>();
+    patchList.add(new Patch("replace", path, null, values));
+
+    try {
+      PatchOperations.getInstance().setIgnorePatch(true);
+      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
+    } catch (JsonProcessingException e) {
+      if (LOG.isInfoEnabled()) {
+        LOG.info(e.getMessage());
+      }
+    }
+
   }
   @Override
   public void nodeAdded(@NotNull SNodeAddEvent event) {
-    PatchOperations.getInstance().setIgnorePatch(true);
-    LoggingRuntime.logMsgView(Level.INFO, "Node added for: " + event.getAggregationLink().getName(), GlobalSModelListener.class, null, null);
+    // TODO:Check for existing properties to report to the server and move away from hardcoding type value
+    SNode addedNode = event.getChild();
+    String indexToReport = (PatchOperations.getInstance().getLastIndexByConcept(event.getChild().getConcept().getName()) == SNodeOperations.getIndexInParent(addedNode) - 1 ? "-" : String.valueOf(SNodeOperations.getIndexInParent(addedNode)));
+    String path = event.getAggregationLink().getName() + "/" + indexToReport;
+    PatchOperations.getInstance().updateStructuralMap(event.getChild(), SNodeOperations.getIndexInParent(addedNode), Integer.MAX_VALUE, "+");
+
+    LinkedHashMap<String, String> values = new LinkedHashMap<>();
+    values.put("$type", "http://nl.vu.cs.bumble/statemachine#//" + event.getChild().getConcept().getName());
+
+    List<Patch> patchList = new ArrayList<>();
+    patchList.add(new Patch("add", path, null, values));
+
+    try {
+      PatchOperations.getInstance().setIgnorePatch(true);
+      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
+    } catch (JsonProcessingException e) {
+      if (LOG.isInfoEnabled()) {
+        LOG.info(e.getMessage());
+      }
+    }
+
+
+    LoggingRuntime.logMsgView(Level.INFO, "Node addition detected: ", GlobalSModelListener.class, null, null);
+
   }
   @Override
   public void nodeRemoved(@NotNull final SNodeRemoveEvent event) {
-    LoggingRuntime.logMsgView(Level.INFO, "Node removed.", GlobalSModelListener.class, null, null);
+    LoggingRuntime.logMsgView(Level.INFO, "Node removal detected.", GlobalSModelListener.class, null, null);
     // Nodes that are removed have a null containment link, so need to find that again to notify the server.
     final Wrappers._T<SContainmentLink> containmentLinkOfRemovedNode = new Wrappers._T<SContainmentLink>(null);
     event.getParent().getConcept().getContainmentLinks().forEach((SContainmentLink containmentLink) -> {
@@ -152,7 +200,10 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
         containmentLinkOfRemovedNode.value = containmentLink;
       }
     });
-    String path = containmentLinkOfRemovedNode.value.getName() + "/" + this.client.getStructuralMapping().get(event.getChild());
+    String path = containmentLinkOfRemovedNode.value.getName() + "/" + PatchOperations.getInstance().getIndexRespectiveToConcept(event.getChild());
+
+    PatchOperations.getInstance().updateStructuralMap(event.getChild(), PatchOperations.getInstance().getIndexRespectiveToConcept(event.getChild()), Integer.MAX_VALUE, "-");
+
 
     // Read me: So in order to remove input, one has to do input/[index]/name. But if i want to remove transition, I can do transition/[index]. So you notice I HAVE to mention a property for input, but not for removing transition. So my guess is nodes which only have one property and no other references, you have to include that in the path for removing the node, so for input: input/[index]/name, but for those which have property(s) and reference links, you can just remove them by their name and index.
     final Wrappers._int numOfProperties = new Wrappers._int(0);

@@ -68,7 +68,8 @@ public class Client {
     this.eCoreValidator = new PerformEcoreValidation(selectedInstance);
 
     this.eCoreValidator.ecoreIsMatchLocally(getModel("statemachine.ecore", "json"));
-    this.contentSynchroniser = ContentSynchroniser.getInstance(this.eCoreValidator.getEcoreToMPS(), selectedInstance);
+    this.contentSynchroniser = ContentSynchroniser.getInstance();
+    this.contentSynchroniser.start(this.eCoreValidator.getEcoreToMPS(), selectedInstance);
 
     if (this.contentSynchroniser.synchroniseContent(getModel(subscribedModel, "xmi"))) {
       LoggingRuntime.logMsgView(Level.INFO, "Synchronisation successful", Client.class, null, null);
@@ -99,6 +100,7 @@ public class Client {
       public void onSuccess(Optional<String> message) {
         log.info("Connected to the server succesfully");
         LoggingRuntime.logMsgView(Level.INFO, "Connected to the server successfully!", Client.class, null, null);
+
       }
       @Override
       public void onError(Optional<String> message) {
@@ -182,12 +184,13 @@ public class Client {
   }
 
   public String patchModel(String modelUri, String patch) {
+    LoggingRuntime.logMsgView(Level.INFO, "Sending patch: " + patch, Client.class, null, null);
+
     String serverResponse = null;
     try {
       HttpClient httpClient = HttpClient.newHttpClient();
       HttpRequest httpRequest = HttpRequest.newBuilder(new URIBuilder(this.webSocketAddress + this.models).addParameter("modeluri", modelUri).build()).method("PATCH", HttpRequest.BodyPublishers.ofString(patch)).header("Content-Type", "application/json").build();
       serverResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-      LoggingRuntime.logMsgView(Level.INFO, "Sending patch: " + patch, Client.class, null, null);
     } catch (URISyntaxException se) {
     } catch (IOException e) {
     } catch (InterruptedException e) {

@@ -9,13 +9,18 @@ import MPSListener.plugin.emfModelServer.parsers.PatchParser;
 import java.util.Map;
 import jetbrains.mps.project.Project;
 import MPSListener.plugin.listener.GlobalSModelListener;
+import java.util.HashMap;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import java.util.List;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
-import org.jetbrains.mps.openapi.language.SProperty;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
+import MPSListener.plugin.synchronise.ContentSynchroniser;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
+import org.jetbrains.mps.openapi.language.SProperty;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
+import java.util.LinkedHashMap;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import javax.swing.SwingUtilities;
@@ -50,7 +55,7 @@ public class PatchOperations {
   }
 
   public void start(Map<SNode, Integer> modelStructuralMap, SNode startingNode, Project project) {
-    this.modelStructuralMap = modelStructuralMap;
+    this.modelStructuralMap = new HashMap<SNode, Integer>(modelStructuralMap);
     this.startingNode = startingNode;
     this.project = project;
   }
@@ -68,16 +73,55 @@ public class PatchOperations {
       LoggingRuntime.logMsgView(Level.INFO, "Executing patch " + patch.getOp(), PatchOperations.class, null, null);
       switch (patch.getOp()) {
         case "replace":
-          replace(patch.getPath(), patch.getValue());
+          replace(patch.getPath(), ((String) patch.getValue()));
           break;
         case "remove":
           remove(patch.getPath());
           break;
+        case "add":
+          add(patch.getPath(), patch.getValue());
         default:
           return;
       }
     });
     myListener.switchOnListener();
+  }
+
+  private void add(final String path, final Object value) {
+    final String[] pathSplit = path.split("/");
+    final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(startingNode, pathSplit[1]);
+    final Integer index = (pathSplit[2].equals("-") ? getLastIndexByConcept(containmentLink.getTargetConcept().getName()) + 1 : Integer.valueOf(pathSplit[2]));
+
+    runCommand("add", new Runnable() {
+      @Override
+      public void run() {
+        final SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
+        SNode currNode = getNode(path);
+        if (pathSplit[2].equals("0")) {
+          SNodeOperations.insertPrevSiblingChild(currNode, child);
+        } else {
+          SNodeOperations.insertNextSiblingChild(currNode, child);
+        }
+        if (value instanceof String) {
+          child.getConcept().getProperties().forEach((SProperty currentProperty) -> {
+            if (currentProperty.getName().equals(pathSplit[3])) {
+              LoggingRuntime.logMsgView(Level.INFO, "Property found", PatchOperations.class, null, null);
+              SPropertyOperations.set(child, currentProperty, value.toString());
+            }
+          });
+        } else {
+          final LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
+          valueMap.keySet().forEach((final String currentValue) -> child.getConcept().getProperties().forEach((SProperty currentProperty) -> {
+            if (currentProperty.getName().equals(currentValue)) {
+              SPropertyOperations.set(child, currentProperty, valueMap.get(currentValue));
+              LoggingRuntime.logMsgView(Level.INFO, "Value set for property", PatchOperations.class, null, null);
+
+            }
+          }));
+        }
+        updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
+      }
+    });
   }
 
   private void replace(String path, final String value) {
@@ -107,6 +151,7 @@ public class PatchOperations {
 
   private void replaceReference(String path, final String value) {
     final SNode element = getNode(path);
+    LoggingRuntime.logMsgView(Level.INFO, "ref loc: " + this.modelStructuralMap.get(getNode(path)), PatchOperations.class, null, null);
     final String referenceLinkName = path.split("/")[3];
     String[] refPathArray = value.split("//@");
     final String[] referenceLocationTuple = refPathArray[refPathArray.length - 1].split("\\.");
@@ -120,7 +165,6 @@ public class PatchOperations {
               @Override
               public void run() {
                 SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentNode);
-
               }
             });
           }
@@ -141,10 +185,15 @@ public class PatchOperations {
     runCommand("Remove node", new Runnable() {
       @Override
       public void run() {
-        startingNode.removeChild(getNode(path));
+        final String[] pathSplit = path.split("/");
+        final SNode toRemove = getNode(path);
+        final Integer removedNodeIndex = (pathSplit[2].equals("-") ? getLastIndexByConcept(pathSplit[1]) : Integer.valueOf(pathSplit[2]));
+        updateStructuralMap(toRemove, removedNodeIndex, Integer.MAX_VALUE, "-");
+        startingNode.removeChild(toRemove);
       }
     });
   }
+
 
   private SProperty getProperty(final SNode node, final String propertyName) {
     final Wrappers._T<SProperty> property = new Wrappers._T<SProperty>(null);
@@ -164,6 +213,7 @@ public class PatchOperations {
 
   private void runCommand(String commandName, final Runnable runnable) {
     LoggingRuntime.logMsgView(Level.INFO, "Running command: " + commandName, PatchOperations.class, null, null);
+
     if (SwingUtilities.isEventDispatchThread()) {
       project.getModelAccess().executeCommand(runnable);
     } else {
@@ -185,16 +235,20 @@ public class PatchOperations {
   private SNode getNode(String path) {
     String[] pathSplit = path.split("/");
     SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, pathSplit[1]);
-    Integer index = null;
+    Integer index;
+
     // Reason for if statement below is when there is only one element remaining, then it does not return any index.
     if (pathSplit.length == 2) {
       index = 0;
+    } else if (pathSplit[2].equals("-")) {
+      index = getLastIndexByConcept(containmentLink.getTargetConcept().getName());
     } else {
-      index = Integer.parseInt(pathSplit[2]);
+      index = Integer.valueOf(pathSplit[2]);
     }
 
     for (SNode node : SetSequence.fromSet(this.modelStructuralMap.keySet())) {
       if (containmentLink.getTargetConcept().getName().equals(node.getConcept().getName())) {
+
         if (this.modelStructuralMap.get(node) == index) {
           LoggingRuntime.logMsgView(Level.INFO, "Found node!", PatchOperations.class, null, null);
           return node;
@@ -202,5 +256,47 @@ public class PatchOperations {
       }
     }
     return null;
+  }
+
+  public Integer getLastIndexByConcept(final String conceptName) {
+    final Wrappers._T<Integer> highestIndex = new Wrappers._T<Integer>(Integer.MIN_VALUE);
+    this.modelStructuralMap.keySet().forEach((SNode currentNodeConcept) -> {
+      if (currentNodeConcept.getConcept().getName().equals(conceptName)) {
+        if (highestIndex.value < PatchOperations.this.modelStructuralMap.get(currentNodeConcept)) {
+          highestIndex.value = PatchOperations.this.modelStructuralMap.get(currentNodeConcept);
+        }
+      }
+    });
+    return highestIndex.value;
+  }
+
+  private void incrementOrDecrementIndexesByOneByConcept(final String conceptName, final Integer start, final Integer stop, final String op) {
+    this.modelStructuralMap.keySet().forEach((SNode currentNodeConcept) -> {
+      if (currentNodeConcept.getConcept().getName().equals(conceptName)) {
+        Integer currentIndex = PatchOperations.this.modelStructuralMap.get(currentNodeConcept);
+        if (currentIndex > start && currentIndex < stop) {
+
+          LoggingRuntime.logMsgView(Level.INFO, "Performing " + op, PatchOperations.class, null, null);
+          if (op.equals("+")) {
+            PatchOperations.this.modelStructuralMap.put(currentNodeConcept, PatchOperations.this.modelStructuralMap.get(currentNodeConcept) + 1);
+          } else {
+            PatchOperations.this.modelStructuralMap.put(currentNodeConcept, PatchOperations.this.modelStructuralMap.get(currentNodeConcept) - 1);
+          }
+        }
+      }
+    });
+  }
+  public void updateStructuralMap(SNode child, Integer conceptStartIndex, Integer conceptEndIndex, String op) {
+    if (op.equals("+")) {
+      incrementOrDecrementIndexesByOneByConcept(child.getConcept().getName(), conceptStartIndex - 1, Integer.MAX_VALUE, op);
+      modelStructuralMap.put(child, conceptStartIndex);
+    } else {
+      modelStructuralMap.remove(child);
+      incrementOrDecrementIndexesByOneByConcept(child.getConcept().getName(), conceptStartIndex, Integer.MAX_VALUE, op);
+    }
+  }
+
+  public Integer getIndexRespectiveToConcept(SNode node) {
+    return this.modelStructuralMap.get(node);
   }
 }

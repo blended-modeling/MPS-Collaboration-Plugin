@@ -147,7 +147,7 @@
       <property role="TrG5h" value="emfClient" />
       <node concept="3Tm6S6" id="7P2o1jErgmn" role="1B3o_S" />
       <node concept="3uibUv" id="7P2o1jErhMM" role="1tU5fm">
-        <ref role="3uigEE" to="84ge:4$hd4$0Cm0H" resolve="WebSocketClient" />
+        <ref role="3uigEE" to="84ge:4$hd4$0Cm0H" resolve="Client" />
       </node>
     </node>
     <node concept="312cEg" id="7KJg77IHXEy" role="jymVt">
