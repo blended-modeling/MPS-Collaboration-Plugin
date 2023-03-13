@@ -16,16 +16,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jetbrains.mps.project.Project;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import java.util.List;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
-import java.util.ArrayList;
 import MPSListener.plugin.emfModelServer.PatchOperations;
 import MPSListener.plugin.dataClasses.emf.patches.Root;
 import MPSListener.plugin.dataClasses.emf.patches.Data;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.mps.openapi.event.SPropertyChangeEvent;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
+import java.util.ArrayList;
 import org.jetbrains.mps.openapi.event.SReferenceChangeEvent;
 import java.util.LinkedHashMap;
 import org.jetbrains.mps.openapi.event.SNodeAddEvent;
@@ -89,6 +89,17 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     });
   }
 
+  private void sendPatch(List<Patch> patchList) {
+    try {
+      PatchOperations.getInstance().setIgnorePatch(true);
+      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
+    } catch (JsonProcessingException e) {
+      if (LOG.isInfoEnabled()) {
+        LOG.info(e.getMessage());
+      }
+    }
+  }
+
   public void stop() {
     switchOffListener();
   }
@@ -128,14 +139,8 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     String path = event.getNode().getContainmentLink().getName() + "/" + SNodeOperations.getIndexInParent(((SNode) event.getNode())) + "/" + event.getProperty().getName();
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("replace", path, null, event.getNewValue()));
-    try {
-      PatchOperations.getInstance().setIgnorePatch(true);
-      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
-    } catch (JsonProcessingException e) {
-      if (LOG.isInfoEnabled()) {
-        LOG.info(e.getMessage());
-      }
-    }
+
+    sendPatch(patchList);
 
   }
   @Override
@@ -144,24 +149,16 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     if (event.getNewValue().getSourceNode() == null) {
       return;
     }
-    SNode newRef = event.getNewValue().getTargetNode();
+
     String path = event.getNewValue().getSourceNode().getContainmentLink().getName() + "/" + SNodeOperations.getIndexInParent(((SNode) event.getNode())) + "/" + event.getAssociationLink().getName();
 
     LinkedHashMap<String, String> values = new LinkedHashMap<>();
-    values.put("$ref", "TrafficSignals.statemachine#//" + "@" + event.getNewValue().getTargetNode().getContainmentLink().getName() + "." + SNodeOperations.getIndexInParent(newRef));
+    values.put("$ref", "TrafficSignals.statemachine#//" + "@" + event.getNewValue().getTargetNode().getContainmentLink().getName() + "." + SNodeOperations.getIndexInParent(((SNode) event.getNewValue().getTargetNode())));
 
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("replace", path, null, values));
 
-    try {
-      PatchOperations.getInstance().setIgnorePatch(true);
-      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
-    } catch (JsonProcessingException e) {
-      if (LOG.isInfoEnabled()) {
-        LOG.info(e.getMessage());
-      }
-    }
-
+    sendPatch(patchList);
   }
   @Override
   public void nodeAdded(@NotNull SNodeAddEvent event) {
@@ -169,7 +166,6 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     SNode addedNode = event.getChild();
     String indexToReport = (PatchOperations.getInstance().getLastIndexByConcept(event.getChild().getConcept().getName()) == SNodeOperations.getIndexInParent(addedNode) - 1 ? "-" : String.valueOf(SNodeOperations.getIndexInParent(addedNode)));
     String path = event.getAggregationLink().getName() + "/" + indexToReport;
-    PatchOperations.getInstance().updateStructuralMap(event.getChild(), SNodeOperations.getIndexInParent(addedNode), Integer.MAX_VALUE, "+");
 
     LinkedHashMap<String, String> values = new LinkedHashMap<>();
     values.put("$type", "http://nl.vu.cs.bumble/statemachine#//" + event.getChild().getConcept().getName());
@@ -177,17 +173,9 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("add", path, null, values));
 
-    try {
-      PatchOperations.getInstance().setIgnorePatch(true);
-      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
-    } catch (JsonProcessingException e) {
-      if (LOG.isInfoEnabled()) {
-        LOG.info(e.getMessage());
-      }
-    }
-
-
-    LoggingRuntime.logMsgView(Level.INFO, "Node addition detected: ", GlobalSModelListener.class, null, null);
+    PatchOperations.getInstance().updateStructuralMap(event.getChild(), SNodeOperations.getIndexInParent(addedNode), Integer.MAX_VALUE, "+");
+    sendPatch(patchList);
+    LoggingRuntime.logMsgView(Level.INFO, "Node addition detected ", GlobalSModelListener.class, null, null);
 
   }
   @Override
@@ -200,32 +188,24 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
         containmentLinkOfRemovedNode.value = containmentLink;
       }
     });
-    String path = containmentLinkOfRemovedNode.value.getName() + "/" + PatchOperations.getInstance().getIndexRespectiveToConcept(event.getChild());
-
-    PatchOperations.getInstance().updateStructuralMap(event.getChild(), PatchOperations.getInstance().getIndexRespectiveToConcept(event.getChild()), Integer.MAX_VALUE, "-");
-
+    String path = containmentLinkOfRemovedNode.value.getName();
+    Integer lastIndexByConcept = PatchOperations.getInstance().getLastIndexByConcept(event.getChild().getConcept().getName());
+    path = (lastIndexByConcept == 0 ? path : path + "/" + String.valueOf(lastIndexByConcept));
 
     // Read me: So in order to remove input, one has to do input/[index]/name. But if i want to remove transition, I can do transition/[index]. So you notice I HAVE to mention a property for input, but not for removing transition. So my guess is nodes which only have one property and no other references, you have to include that in the path for removing the node, so for input: input/[index]/name, but for those which have property(s) and reference links, you can just remove them by their name and index.
     final Wrappers._int numOfProperties = new Wrappers._int(0);
     event.getChild().getProperties().forEach((SProperty property) -> numOfProperties.value += 1);
-    if (numOfProperties.value == 1) {
+    if (numOfProperties.value >= 1) {
       SProperty property = event.getChild().getProperties().iterator().next();
       path += "/" + property.getName();
     }
 
+    PatchOperations.getInstance().updateStructuralMap(event.getChild(), SNodeOperations.getIndexInParent(((SNode) event.getChild())), Integer.MAX_VALUE, "-");
 
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("remove", path, null, null));
 
-    try {
-      PatchOperations.getInstance().setIgnorePatch(true);
-      this.client.patchModel(this.modelName, om.writeValueAsString(new Root(new Data("modelserver.patch", patchList))));
-    } catch (JsonProcessingException e) {
-      if (LOG.isInfoEnabled()) {
-        LOG.info(e.getMessage());
-      }
-    }
-
+    sendPatch(patchList);
   }
 
   public SRepository getRepositary() {

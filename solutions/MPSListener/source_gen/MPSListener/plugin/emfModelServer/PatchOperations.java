@@ -17,10 +17,10 @@ import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
 import MPSListener.plugin.synchronise.ContentSynchroniser;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import org.jetbrains.mps.openapi.language.SProperty;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import java.util.LinkedHashMap;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import javax.swing.SwingUtilities;
@@ -96,17 +96,12 @@ public class PatchOperations {
       @Override
       public void run() {
         final SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
-        SNode currNode = getNode(path);
-        if (pathSplit[2].equals("0")) {
-          SNodeOperations.insertPrevSiblingChild(currNode, child);
-        } else {
-          SNodeOperations.insertNextSiblingChild(currNode, child);
-        }
-        if (value instanceof String) {
+        final SNode currNode = getNode(path);
+        if (pathSplit.length > 3) {
           child.getConcept().getProperties().forEach((SProperty currentProperty) -> {
             if (currentProperty.getName().equals(pathSplit[3])) {
               LoggingRuntime.logMsgView(Level.INFO, "Property found", PatchOperations.class, null, null);
-              SPropertyOperations.set(child, currentProperty, value.toString());
+              SPropertyOperations.set(currNode, currentProperty, value.toString());
             }
           });
         } else {
@@ -118,8 +113,9 @@ public class PatchOperations {
 
             }
           }));
+          SNodeOperations.insertNextSiblingChild(currNode, child);
+          updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
         }
-        updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
       }
     });
   }
