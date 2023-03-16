@@ -8,23 +8,21 @@ import java.util.Map;
 import MPSListener.plugin.dataClasses.emf.ecore.EClassifier;
 import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SModel;
-import java.util.List;
-import org.jdom.Element;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import org.jdom.Document;
+import org.jdom.Element;
 import java.util.Iterator;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
-import jetbrains.mps.internal.collections.runtime.ListSequence;
-import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
-import org.jetbrains.mps.openapi.language.SReferenceLink;
 import jetbrains.mps.util.JDOMUtil;
 import java.io.ByteArrayInputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jdom.JDOMException;
 import java.io.IOException;
+import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import org.jetbrains.mps.openapi.language.SConcept;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SModelOperations;
@@ -33,7 +31,9 @@ import jetbrains.mps.internal.collections.runtime.Sequence;
 import org.jetbrains.mps.openapi.language.SProperty;
 import org.jdom.Attribute;
 import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
+import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
+import org.jetbrains.mps.openapi.language.SReferenceLink;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
 
@@ -43,7 +43,7 @@ public class ContentSynchroniser {
   private java.util.logging.Logger logger;
   private SNode selectedInstance;
   private SModel currentModel;
-  private List<Element> elementsWithReferences;
+
   private Map<SNode, Integer> structuralMap;
   private boolean isSynced;
   private Map<String, Integer> conceptCounterMap;
@@ -52,7 +52,6 @@ public class ContentSynchroniser {
   private ContentSynchroniser() {
     // TODO: Idea of isSynced is to catch any errors and return false if everything does not go smoothly. Look for possible cases where errors might occur to improve reliability of isSynced
     this.logger = java.util.logging.Logger.getLogger(ContentSynchroniser.class.getSimpleName());
-    this.elementsWithReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
   }
@@ -83,20 +82,26 @@ public class ContentSynchroniser {
       Document modelDoc = getDoc(modelXML);
       EClassifier mainEClassifier = getEClassifier(modelDoc.getRootElement().getName());
       this.currentModel = MPS_LocalRepo.getInstance().findModel("StateMachines", "structure");
-      Iterator<Element> elementIterator = modelDoc.getRootElement().getChildren().iterator();
       removeAllChildrenSNode();
-      // For a given node, this while loop checks if its this node's **concept** contains references.
-      while (elementIterator.hasNext()) {
-        Element currElement = elementIterator.next();
-        // This if statement checks for references in concepts
-        if (referenceLinkPresent(currElement, mainEClassifier)) {
-          elementsWithReferences.add(currElement);
-        } else {
-          addChild(currElement, mainEClassifier, false);
-        }
+      Iterable<Element> modelIterable = modelDoc.getRootElement().getChildren();
+      Iterator<Element> modelIterator = modelIterable.iterator();
+
+      Map<Element, SNode> localMap = new HashMap<>();
+
+      // First run to only add nodes
+      while (modelIterator.hasNext()) {
+        Element currElement = modelIterator.next();
+        localMap.put(currElement, addChild(currElement, mainEClassifier));
       }
-      // Now add elements that have references to other items 
-      addElementsWithReferences(mainEClassifier);
+      modelIterator = modelIterable.iterator();
+
+      // Second run to add properties and references
+      while (modelIterator.hasNext()) {
+        Element currElement = modelIterator.next();
+        setProperties(currElement, localMap.get(currElement));
+        setReferences(currElement, localMap.get(currElement), mainEClassifier);
+      }
+
       isSynced = true;
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Map initialised with is empty", ContentSynchroniser.class, null, null);
@@ -104,44 +109,6 @@ public class ContentSynchroniser {
     }
 
     return isSynced;
-  }
-
-  private void addElementsWithReferences(final EClassifier mainEClassifier) {
-    // Be warned: temp fix ahead. The method below will fail if the list contains two concepts that both refer to each other. So for example, If state refers to output and output refers to state, then both of them will be in the list.
-    List<Element> sortedByConcept = new ArrayList<>();
-    final List<String> allConcepts = new ArrayList<>();
-    for (Element currentElement : ListSequence.fromList(this.elementsWithReferences)) {
-      String[] refArray = getEStructuralFeature(currentElement.getName(), mainEClassifier).getEType().get$ref().split("//");
-      String conceptName = refArray[refArray.length - 1];
-      if (!(allConcepts.contains(conceptName))) {
-        allConcepts.add(conceptName);
-      }
-    }
-    for (int i = 0; i < allConcepts.size(); i++) {
-      final Wrappers._boolean isDependent = new Wrappers._boolean(false);
-      getConcept(allConcepts.get(i)).getReferenceLinks().forEach((SReferenceLink currentReferenceLink) -> {
-
-        if (allConcepts.contains(currentReferenceLink.getTargetConcept().getName())) {
-          LoggingRuntime.logMsgView(Level.INFO, "Dependency detected for " + currentReferenceLink.getName(), ContentSynchroniser.class, null, null);
-          isDependent.value = true;
-        }
-      });
-      for (int j = 0; j < this.elementsWithReferences.size() - 1; j++) {
-        String[] refArray = getEStructuralFeature(this.elementsWithReferences.get(j).getName(), mainEClassifier).getEType().get$ref().split("//");
-        String conceptName = refArray[refArray.length - 1];
-        if (conceptName.equals(allConcepts.get(i))) {
-          if (isDependent.value) {
-            sortedByConcept.add(this.elementsWithReferences.get(j));
-          } else {
-            sortedByConcept.add(0 + i, this.elementsWithReferences.get(j));
-          }
-        }
-
-      }
-
-    }
-    LoggingRuntime.logMsgView(Level.INFO, "concept size" + allConcepts.size(), ContentSynchroniser.class, null, null);
-    sortedByConcept.forEach((Element currentElement) -> addChild(currentElement, mainEClassifier, true));
   }
 
   private Document getDoc(String modelXML) {
@@ -222,29 +189,31 @@ public class ContentSynchroniser {
     return null;
   }
 
-  private void addChild(Element element, EClassifier mainEClassifier, boolean addReferences) {
+  private SNode addChild(Element element, EClassifier mainEClassifier) {
 
     String[] refArray = getEStructuralFeature(element.getName(), mainEClassifier).getEType().get$ref().split("//");
     String conceptName = refArray[refArray.length - 1];
-    final jetbrains.mps.smodel.SNode child = new jetbrains.mps.smodel.SNode(getConcept(conceptName));
-
-    // Set properties
-    final Map<SProperty, String> propertyValueMap = getPropertyValueMap(element, child.getConcept());
-    propertyValueMap.keySet().forEach((SProperty property) -> {
-      child.setProperty(property, propertyValueMap.get(property));
-      SPropertyOperations.set(child, property, propertyValueMap.get(property));
-    });
-
-    // Set References
-    if (addReferences) {
-      final Map<SReferenceLink, SNode> referenceToTargetNodeMap = getReferenceToTargetNodeMap(element, child.getConcept(), mainEClassifier);
-      referenceToTargetNodeMap.keySet().forEach((SReferenceLink currReference) -> SLinkOperations.setTarget(child, currReference, referenceToTargetNodeMap.get(currReference)));
-    }
+    jetbrains.mps.smodel.SNode child = new jetbrains.mps.smodel.SNode(getConcept(conceptName));
     this.selectedInstance.addChild(getSContainmentLink(element.getName()), child);
-    // Increment concept counter and add to structural map
 
+    // Increment concept counter and add to structural map
     incrementConceptCounter(child.getConcept().getName());
     this.structuralMap.put(child, this.conceptCounterMap.get(child.getConcept().getName()));
+
+    return child;
+  }
+
+  private void setProperties(Element element, final SNode nodeToSet) {
+    final Map<SProperty, String> propertyValueMap = getPropertyValueMap(element, nodeToSet.getConcept());
+    propertyValueMap.keySet().forEach((SProperty property) -> {
+      nodeToSet.setProperty(property, propertyValueMap.get(property));
+      SPropertyOperations.set(nodeToSet, property, propertyValueMap.get(property));
+    });
+  }
+
+  private void setReferences(Element element, final SNode nodeToSet, EClassifier mainEClassifier) {
+    final Map<SReferenceLink, SNode> referenceToTargetNodeMap = getReferenceToTargetNodeMap(element, nodeToSet.getConcept(), mainEClassifier);
+    referenceToTargetNodeMap.keySet().forEach((SReferenceLink currReference) -> SLinkOperations.setTarget(nodeToSet, currReference, referenceToTargetNodeMap.get(currReference)));
   }
 
   private Map<SReferenceLink, SNode> getReferenceToTargetNodeMap(Element element, final SConcept childConcept, final EClassifier mainEClassifier) {
@@ -283,7 +252,6 @@ public class ContentSynchroniser {
   }
 
   public void stop() {
-    this.elementsWithReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
     this.isSynced = false;
