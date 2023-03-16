@@ -3817,17 +3817,6 @@
                                               </node>
                                             </node>
                                             <node concept="3clFbS" id="3Vmej8gwtE" role="3clFbx">
-                                              <node concept="2xdQw9" id="5Pcw2$fFIx3" role="3cqZAp">
-                                                <property role="2xdLsb" value="h1akgim/info" />
-                                                <node concept="2OqwBi" id="5Pcw2$fGaL4" role="9lYJi">
-                                                  <node concept="37vLTw" id="5Pcw2$fG6IL" role="2Oq$k0">
-                                                    <ref role="3cqZAo" node="3Vmej89axJ" resolve="currentAttribute" />
-                                                  </node>
-                                                  <node concept="liA8E" id="5Pcw2$fGHBy" role="2OqNvi">
-                                                    <ref role="37wK5l" to="mmaq:~Attribute.getValue()" resolve="getValue" />
-                                                  </node>
-                                                </node>
-                                              </node>
                                               <node concept="3clFbF" id="3Vmej8gwtF" role="3cqZAp">
                                                 <node concept="2OqwBi" id="3Vmej8gwtG" role="3clFbG">
                                                   <node concept="37vLTw" id="3Vmej8gwtH" role="2Oq$k0">

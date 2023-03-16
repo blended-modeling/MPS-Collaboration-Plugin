@@ -22,12 +22,12 @@ import MPSListener.plugin.synchronise.NodeFactory;
 import java.util.LinkedHashMap;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
-import org.jetbrains.mps.openapi.language.SReferenceLink;
-import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import org.jetbrains.mps.openapi.language.SProperty;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import javax.swing.SwingUtilities;
+import org.jetbrains.mps.openapi.language.SReferenceLink;
+import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import jetbrains.mps.internal.collections.runtime.SetSequence;
 
 public class PatchOperations {
@@ -122,12 +122,6 @@ public class PatchOperations {
     }
 
   }
-  private Boolean isLinkDecleration(String toDecipher, SNode node) {
-    if (getReferenceLink(toDecipher, node) == null) {
-      return false;
-    }
-    return true;
-  }
 
   private void handleAddNode(String path, Object value) {
     final String[] pathSplit = path.split("/");
@@ -154,22 +148,6 @@ public class PatchOperations {
     LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
     SNode referenceNode = getReferenceNode(valueMap.get("$ref"));
     SLinkOperations.setTarget(nodeToAddReference, getReferenceLink(referenceName, nodeToAddReference), referenceNode);
-  }
-
-  private SReferenceLink getReferenceLink(String toFind, SNode node) {
-    for (SReferenceLink currentReference : CollectionSequence.fromCollection(node.getConcept().getReferenceLinks())) {
-      if (currentReference.getName().equals(toFind)) {
-        return currentReference;
-      }
-    }
-    return null;
-  }
-
-  private Boolean isProperty(String toDecipher, SNode node) {
-    if (getProperty(node, toDecipher) == null) {
-      return false;
-    }
-    return true;
   }
 
   private void handleAddProperty(String propertyName, SNode nodeToSetProperty, final Object value) {
@@ -272,6 +250,30 @@ public class PatchOperations {
       }
     }
   }
+
+  private Boolean isLinkDecleration(String toDecipher, SNode node) {
+    if (getReferenceLink(toDecipher, node) == null) {
+      return false;
+    }
+    return true;
+  }
+
+  private SReferenceLink getReferenceLink(String toFind, SNode node) {
+    for (SReferenceLink currentReference : CollectionSequence.fromCollection(node.getConcept().getReferenceLinks())) {
+      if (currentReference.getName().equals(toFind)) {
+        return currentReference;
+      }
+    }
+    return null;
+  }
+
+  private Boolean isProperty(String toDecipher, SNode node) {
+    if (getProperty(node, toDecipher) == null) {
+      return false;
+    }
+    return true;
+  }
+
 
   private SNode getNode(String path) {
     // Only applicable when parsing "path" parameter received in patch from server.

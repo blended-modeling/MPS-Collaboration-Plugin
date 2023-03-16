@@ -700,8 +700,28 @@
               <ref role="37wK5l" to="swa9:5yaq8umfsWH" resolve="ecoreIsMatchLocally" />
               <node concept="1rXfSq" id="1f$T3k0AILr" role="37wK5m">
                 <ref role="37wK5l" node="7P2o1jErFZm" resolve="getModel" />
-                <node concept="Xl_RD" id="1f$T3k0AILs" role="37wK5m">
-                  <property role="Xl_RC" value="statemachine.ecore" />
+                <node concept="3cpWs3" id="5Pcw2$htYWl" role="37wK5m">
+                  <node concept="2OqwBi" id="5Pcw2$hudzI" role="3uHU7B">
+                    <node concept="2OqwBi" id="5Pcw2$hu8LK" role="2Oq$k0">
+                      <node concept="2OqwBi" id="5Pcw2$hu3QD" role="2Oq$k0">
+                        <node concept="37vLTw" id="5Pcw2$hu2K5" role="2Oq$k0">
+                          <ref role="3cqZAo" node="53jYhH$$hRU" resolve="selectedInstance" />
+                        </node>
+                        <node concept="liA8E" id="5Pcw2$hu7BE" role="2OqNvi">
+                          <ref role="37wK5l" to="mhbf:~SNode.getConcept()" resolve="getConcept" />
+                        </node>
+                      </node>
+                      <node concept="liA8E" id="5Pcw2$huczI" role="2OqNvi">
+                        <ref role="37wK5l" to="c17a:~SAbstractConcept.getName()" resolve="getName" />
+                      </node>
+                    </node>
+                    <node concept="liA8E" id="5Pcw2$huiVf" role="2OqNvi">
+                      <ref role="37wK5l" to="wyt6:~String.toLowerCase()" resolve="toLowerCase" />
+                    </node>
+                  </node>
+                  <node concept="Xl_RD" id="1f$T3k0AILs" role="3uHU7w">
+                    <property role="Xl_RC" value=".ecore" />
+                  </node>
                 </node>
                 <node concept="Xl_RD" id="1f$T3k0AILt" role="37wK5m">
                   <property role="Xl_RC" value="json" />

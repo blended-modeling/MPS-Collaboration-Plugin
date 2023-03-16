@@ -29,10 +29,12 @@ import java.util.ArrayList;
 import org.jetbrains.mps.openapi.event.SReferenceChangeEvent;
 import java.util.LinkedHashMap;
 import org.jetbrains.mps.openapi.event.SNodeAddEvent;
+import org.jetbrains.mps.openapi.language.SProperty;
+import org.jetbrains.mps.openapi.model.SReference;
+import jetbrains.mps.internal.collections.runtime.Sequence;
 import org.jetbrains.mps.openapi.event.SNodeRemoveEvent;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
-import org.jetbrains.mps.openapi.language.SProperty;
 
 public class GlobalSModelListener implements SModelListener, SNodeChangeListener, SRepositoryListener {
   private static final Logger LOG = LogManager.getLogger(GlobalSModelListener.class);
@@ -153,29 +155,44 @@ public class GlobalSModelListener implements SModelListener, SNodeChangeListener
     String path = event.getNewValue().getSourceNode().getContainmentLink().getName() + "/" + SNodeOperations.getIndexInParent(((SNode) event.getNode())) + "/" + event.getAssociationLink().getName();
 
     LinkedHashMap<String, String> values = new LinkedHashMap<>();
-    values.put("$ref", "TrafficSignals.statemachine#//" + "@" + event.getNewValue().getTargetNode().getContainmentLink().getName() + "." + SNodeOperations.getIndexInParent(((SNode) event.getNewValue().getTargetNode())));
+    values.put("$ref", this.rootNode.getName() + "." + this.rootNode.getConcept().getName().toLowerCase() + "#//" + "@" + event.getNewValue().getTargetNode().getContainmentLink().getName() + "." + SNodeOperations.getIndexInParent(((SNode) event.getNewValue().getTargetNode())));
 
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("replace", path, null, values));
 
     sendPatch(patchList);
   }
+
+
   @Override
-  public void nodeAdded(@NotNull SNodeAddEvent event) {
+  public void nodeAdded(@NotNull final SNodeAddEvent event) {
     // TODO:Check for existing properties to report to the server and move away from hardcoding type value
     SNode addedNode = event.getChild();
     String indexToReport = (PatchOperations.getInstance().getLastIndexByConcept(event.getChild().getConcept().getName()) == SNodeOperations.getIndexInParent(addedNode) - 1 ? "-" : String.valueOf(SNodeOperations.getIndexInParent(addedNode)));
     String path = event.getAggregationLink().getName() + "/" + indexToReport;
 
-    LinkedHashMap<String, String> values = new LinkedHashMap<>();
+    final LinkedHashMap<String, Object> values = new LinkedHashMap<>();
+    // FIXME: Hardcoded the nsURI below, get it from the dataclass
     values.put("$type", "http://nl.vu.cs.bumble/statemachine#//" + event.getChild().getConcept().getName());
+
+    if (event.getChild().getProperties().spliterator().getExactSizeIfKnown() > 0) {
+      event.getChild().getProperties().forEach((SProperty currentProperty) -> values.put(currentProperty.getName(), event.getChild().getProperty(currentProperty)));
+    }
+    if (event.getChild().getReferences().spliterator().getExactSizeIfKnown() > 0) {
+      for (SReference currentReference : Sequence.fromIterable(event.getChild().getReferences())) {
+        LinkedHashMap<String, String> referenceDetails = new LinkedHashMap<>();
+        referenceDetails.put("$type", "http://nl.vu.cs.bumble/statemachine#//" + currentReference.getTargetNode().getConcept().getName());
+        referenceDetails.put("$ref", this.rootNode.getName() + "." + this.rootNode.getConcept().getName().toLowerCase() + "#//" + "@" + currentReference.getTargetNode().getContainmentLink().getName() + "." + SNodeOperations.getIndexInParent(((SNode) currentReference.getTargetNode())));
+        values.put(currentReference.getLink().getName(), referenceDetails);
+      }
+    }
 
     List<Patch> patchList = new ArrayList<>();
     patchList.add(new Patch("add", path, null, values));
 
     PatchOperations.getInstance().updateStructuralMap(event.getChild(), SNodeOperations.getIndexInParent(addedNode), Integer.MAX_VALUE, "+");
     sendPatch(patchList);
-    LoggingRuntime.logMsgView(Level.INFO, "Node addition detected ", GlobalSModelListener.class, null, null);
+    LoggingRuntime.logMsgView(Level.INFO, "Node addition detected", GlobalSModelListener.class, null, null);
 
   }
   @Override

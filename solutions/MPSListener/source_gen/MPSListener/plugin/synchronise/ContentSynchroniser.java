@@ -228,7 +228,6 @@ public class ContentSynchroniser {
           final String refConceptName = refArray[refArray.length - 1];
           ContentSynchroniser.this.structuralMap.keySet().forEach((SNode currNode) -> {
             if (currNode.getConcept().getName().equals(refConceptName) && ContentSynchroniser.this.structuralMap.get(currNode).equals(Integer.valueOf(referenceLocationTuple[1]))) {
-              LoggingRuntime.logMsgView(Level.INFO, currentAttribute.getValue(), ContentSynchroniser.class, null, null);
               referenceToTargetNodeMap.put(currentReferenceLink, currNode);
             }
           });

@@ -67,7 +67,7 @@ public class Client {
 
     this.eCoreValidator = new PerformEcoreValidation(selectedInstance);
 
-    this.eCoreValidator.ecoreIsMatchLocally(getModel("statemachine.ecore", "json"));
+    this.eCoreValidator.ecoreIsMatchLocally(getModel(selectedInstance.getConcept().getName().toLowerCase() + ".ecore", "json"));
     this.contentSynchroniser = ContentSynchroniser.getInstance();
     this.contentSynchroniser.start(this.eCoreValidator.getEcoreToMPS(), selectedInstance);
 
