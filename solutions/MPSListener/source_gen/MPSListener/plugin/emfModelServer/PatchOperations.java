@@ -7,24 +7,28 @@ import org.apache.log4j.LogManager;
 import org.jetbrains.mps.openapi.model.SNode;
 import MPSListener.plugin.emfModelServer.parsers.PatchParser;
 import java.util.Map;
+import java.util.List;
 import jetbrains.mps.project.Project;
 import MPSListener.plugin.listener.GlobalSModelListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import MPSListener.plugin.synchronise.ContentSynchroniser;
+import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
-import java.util.List;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
-import MPSListener.plugin.synchronise.ContentSynchroniser;
 import org.jetbrains.mps.openapi.language.SProperty;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
-import java.util.LinkedHashMap;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
+import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
+import jetbrains.mps.internal.collections.runtime.IVisitor;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import javax.swing.SwingUtilities;
 import jetbrains.mps.internal.collections.runtime.SetSequence;
+import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
 
 public class PatchOperations {
   private static final Logger LOG = LogManager.getLogger(PatchOperations.class);
@@ -33,6 +37,7 @@ public class PatchOperations {
   private static PatchOperations instance;
   private PatchParser patchParser;
   private Map<SNode, Integer> modelStructuralMap;
+  private List<SNode> structuralLanguageConcepts;
   private Project project;
   private GlobalSModelListener myListener;
   private boolean ignorePatch;
@@ -41,6 +46,7 @@ public class PatchOperations {
     this.log = java.util.logging.Logger.getLogger(PatchOperations.class.getSimpleName());
     this.patchParser = new PatchParser();
     this.myListener = GlobalSModelListener.getInstance();
+    this.structuralLanguageConcepts = new ArrayList<>();
   }
 
   public static PatchOperations getInstance() {
@@ -54,8 +60,11 @@ public class PatchOperations {
     return ignorePatch = isIgnore;
   }
 
-  public void start(Map<SNode, Integer> modelStructuralMap, SNode startingNode, Project project) {
-    this.modelStructuralMap = new HashMap<SNode, Integer>(modelStructuralMap);
+  public void start(SNode startingNode, Project project) {
+    this.modelStructuralMap = new HashMap<SNode, Integer>(ContentSynchroniser.getInstance().getStructuralMap());
+    for (SNode currentConcept : ListSequence.fromList(ContentSynchroniser.getInstance().getStructuralLanguageConcepts())) {
+      this.structuralLanguageConcepts.add(currentConcept);
+    }
     this.startingNode = startingNode;
     this.project = project;
   }
@@ -80,11 +89,16 @@ public class PatchOperations {
           break;
         case "add":
           add(patch.getPath(), patch.getValue());
+        case "move":
+          move(patch.getPath(), patch.getValue());
         default:
           return;
       }
     });
     myListener.switchOnListener();
+  }
+
+  private void move(final String path, final Object value) {
   }
 
   private void add(final String path, final Object value) {
@@ -95,9 +109,10 @@ public class PatchOperations {
     runCommand("add", new Runnable() {
       @Override
       public void run() {
-        final SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
+        SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
         final SNode currNode = getNode(path);
         if (pathSplit.length > 3) {
+          LoggingRuntime.logMsgView(Level.INFO, "link delceration: " + isLinkDecleration(pathSplit[3]), PatchOperations.class, null, null);
           child.getConcept().getProperties().forEach((SProperty currentProperty) -> {
             if (currentProperty.getName().equals(pathSplit[3])) {
               LoggingRuntime.logMsgView(Level.INFO, "Property found", PatchOperations.class, null, null);
@@ -105,19 +120,27 @@ public class PatchOperations {
             }
           });
         } else {
-          final LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
-          valueMap.keySet().forEach((final String currentValue) -> child.getConcept().getProperties().forEach((SProperty currentProperty) -> {
-            if (currentProperty.getName().equals(currentValue)) {
-              SPropertyOperations.set(child, currentProperty, valueMap.get(currentValue));
-              LoggingRuntime.logMsgView(Level.INFO, "Value set for property", PatchOperations.class, null, null);
-
-            }
-          }));
           SNodeOperations.insertNextSiblingChild(currNode, child);
           updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
         }
       }
     });
+  }
+
+  private Boolean isLinkDecleration(final String toDecipher) {
+
+    final Wrappers._T<Boolean> isLinkDecleration = new Wrappers._T<Boolean>(false);
+    for (SNode currentConcept : ListSequence.fromList(this.structuralLanguageConcepts)) {
+      ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(currentConcept)).visitAll(new IVisitor<SNode>() {
+        public void visit(SNode currentReferenceLink) {
+          LoggingRuntime.logMsgView(Level.INFO, "current reference: " + SPropertyOperations.getString(currentReferenceLink, PROPS.name$MnvL), PatchOperations.class, null, null);
+          if (SPropertyOperations.getString(currentReferenceLink, PROPS.name$MnvL).equals(toDecipher)) {
+            isLinkDecleration.value = true;
+          }
+        }
+      });
+    }
+    return isLinkDecleration.value;
   }
 
   private void replace(String path, final String value) {
@@ -155,12 +178,12 @@ public class PatchOperations {
     if (!(value.contains("$command.exec.res#"))) {
       final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, referenceLocationTuple[0]);
       if (containmentLink != null) {
-        this.modelStructuralMap.keySet().forEach((final SNode currentNode) -> {
-          if (currentNode.getConcept().getName().equals(containmentLink.getTargetConcept().getName()) && Integer.valueOf(referenceLocationTuple[1]).equals(PatchOperations.this.modelStructuralMap.get(currentNode))) {
+        this.modelStructuralMap.entrySet().forEach((final Map.Entry<SNode, Integer> currentSet) -> {
+          if (currentSet.getKey().getConcept().getName().equals(containmentLink.getTargetConcept().getName()) && Integer.valueOf(referenceLocationTuple[1]).equals(currentSet.getValue())) {
             runCommand("replace reference with a new reference", new Runnable() {
               @Override
               public void run() {
-                SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentNode);
+                SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentSet.getKey());
               }
             });
           }
@@ -294,5 +317,9 @@ public class PatchOperations {
 
   public Integer getIndexRespectiveToConcept(SNode node) {
     return this.modelStructuralMap.get(node);
+  }
+
+  private static final class PROPS {
+    /*package*/ static final SProperty name$MnvL = MetaAdapterFactory.getProperty(0xceab519525ea4f22L, 0x9b92103b95ca8c0cL, 0x110396eaaa4L, 0x110396ec041L, "name");
   }
 }

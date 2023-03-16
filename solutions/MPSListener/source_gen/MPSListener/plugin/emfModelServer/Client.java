@@ -77,7 +77,7 @@ public class Client {
       LoggingRuntime.logMsgView(Level.INFO, "Synchronisation unsuccessful!", Client.class, null, null);
     }
 
-    this.patchOpeartions.start(this.contentSynchroniser.getStructuralMap(), selectedInstance, project);
+    this.patchOpeartions.start(selectedInstance, project);
     if (LOG.isInfoEnabled()) {
       LOG.info("Client started successfully..");
     }

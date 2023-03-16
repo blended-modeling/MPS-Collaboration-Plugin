@@ -12,6 +12,7 @@ import java.util.List;
 import org.jdom.Element;
 import java.util.ArrayList;
 import java.util.HashMap;
+import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import org.jdom.Document;
 import java.util.Iterator;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
@@ -22,8 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jdom.JDOMException;
 import java.io.IOException;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
-import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
-import jetbrains.mps.internal.collections.runtime.ListSequence;
 import org.jetbrains.mps.openapi.language.SConcept;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SModelOperations;
@@ -31,6 +30,9 @@ import org.jetbrains.mps.openapi.language.SContainmentLink;
 import jetbrains.mps.internal.collections.runtime.Sequence;
 import org.jetbrains.mps.openapi.language.SProperty;
 import org.jdom.Attribute;
+import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
+import jetbrains.mps.internal.collections.runtime.ListSequence;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
 import org.jetbrains.mps.openapi.language.SReferenceLink;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
@@ -69,6 +71,13 @@ public class ContentSynchroniser {
     this.isSynced = false;
   }
 
+  public List<SNode> getStructuralLanguageConcepts() {
+    List<SNode> structuralLanguageConcepts = new ArrayList<>();
+    for (SNode currentConcept : CollectionSequence.fromCollection(this.ecoreToMPSLangMap.values())) {
+      structuralLanguageConcepts.add(currentConcept);
+    }
+    return structuralLanguageConcepts;
+  }
 
   public boolean synchroniseContent(String modelXML) {
     if (!(ecoreToMPSLangMap.isEmpty())) {
@@ -80,6 +89,7 @@ public class ContentSynchroniser {
       while (elementIterator.hasNext()) {
         Element currElement = elementIterator.next();
         if (referenceLinkPresent(currElement, mainEClassifier)) {
+          LoggingRuntime.logMsgView(Level.INFO, "true", ContentSynchroniser.class, null, null);
           elementsThatContainReferences.add(currElement);
         } else {
           addChild(currElement, mainEClassifier, false);
@@ -121,15 +131,6 @@ public class ContentSynchroniser {
     return eClassifier.value;
   }
 
-  private EStructuralFeature getEStructuralFeature(String name, EClassifier eClassifier) {
-    for (EStructuralFeature eStructuralFeature : ListSequence.fromList(eClassifier.getEStructuralFeatures())) {
-      if (eStructuralFeature.getName().equals(name)) {
-        return eStructuralFeature;
-      }
-    }
-    return null;
-  }
-
   public SConcept getConcept(String conceptNodeName) {
     SNode concept = NodeFactory.getConceptNodeByName(conceptNodeName, currentModel.getRootNodes());
     if (SPropertyOperations.hasValue(concept, PROPS.abstract$ibpT, true)) {
@@ -164,14 +165,23 @@ public class ContentSynchroniser {
   }
 
   private boolean referenceLinkPresent(Element element, EClassifier mainEClassifier) {
-    String[] refArray = getEStructuralFeature(element.getName(), mainEClassifier).getEType().get$ref().split("//");
+    // This method checks if references are present in the **concept**. So when a model is received, it gets the concept of a given element, and checks if that concept contains references. This method can be more efficient, by flagging concepts if they contain references.
+
+    // Get EStructural feature from main eClassifier, get its type, e.g Transition, Input etc.
+    EStructuralFeature currentStructuralFeature = getEStructuralFeature(element.getName(), mainEClassifier);
+    String[] refArray = currentStructuralFeature.getEType().get$ref().split("//");
     String conceptName = refArray[refArray.length - 1];
-    for (Attribute attribute : ListSequence.fromList(element.getAttributes())) {
-      if (isReferenceLink(attribute, conceptName)) {
-        return true;
+    boolean referenceLinkIsPresent = (ListSequence.fromList(SNodeOperations.getReferences(this.ecoreToMPSLangMap.get(getEClassifier(conceptName)))).count() > 0 ? true : false);
+    return referenceLinkIsPresent;
+  }
+
+  private EStructuralFeature getEStructuralFeature(String name, EClassifier eClassifier) {
+    for (EStructuralFeature eStructuralFeature : ListSequence.fromList(eClassifier.getEStructuralFeatures())) {
+      if (eStructuralFeature.getName().equals(name)) {
+        return eStructuralFeature;
       }
     }
-    return false;
+    return null;
   }
 
   private boolean isReferenceLink(Attribute attribute, String conceptName) {
