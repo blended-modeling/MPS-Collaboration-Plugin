@@ -61,7 +61,8 @@ public class PatchOperations {
   }
 
   public void start(SNode startingNode, Project project) {
-    this.modelStructuralMap = new ConcurrentHashMap<SNode, Integer>(ContentSynchroniser.getInstance().getStructuralMap());
+    this.modelStructuralMap = new ConcurrentHashMap<SNode, Integer>();
+    this.modelStructuralMap.putAll(ContentSynchroniser.getInstance().getStructuralMap());
     for (SNode currentConcept : ListSequence.fromList(ContentSynchroniser.getInstance().getStructuralLanguageConcepts())) {
       this.structuralLanguageConcepts.add(currentConcept);
     }
@@ -110,15 +111,16 @@ public class PatchOperations {
     final String[] pathSplit = path.split("/");
     final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(startingNode, pathSplit[1]);
     final Integer index = (pathSplit[2].equals("-") ? getLastIndexByConcept(containmentLink.getTargetConcept().getName()) + 1 : Integer.valueOf(pathSplit[2]));
-    SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
-    SNode currNode = getNode(path);
     if (pathSplit.length > 3) {
-      if (isLinkDecleration(pathSplit[3], path)) {
-        handleAddReference(pathSplit[3], path, value);
-      } else if (isProperty(pathSplit[3], path)) {
-        handleAddProperty(pathSplit[3], path, value);
+      final String toDecipher = pathSplit[3];
+      if (isLinkDecleration(toDecipher, path)) {
+        handleAddReference(toDecipher, path, value);
+      } else if (isProperty(toDecipher, path)) {
+        handleAddProperty(toDecipher, path, value);
       }
     } else {
+      SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
+      SNode currNode = getNode(path);
       SNodeOperations.insertNextSiblingChild(currNode, child);
       updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
     }
@@ -173,14 +175,11 @@ public class PatchOperations {
     final SNode element = getNode(path);
     // Warning: Obtaining property like below might produce errors for nodes which have a child.
     String property = path.split("/")[3];
-    final SProperty propertyToReplace = getProperty(element, property);
-    element.setProperty(propertyToReplace, value);
-
+    SPropertyOperations.set(element, getProperty(element, property), value);
   }
 
   private void replaceReference(String path, final String value) {
     final SNode element = getNode(path);
-    LoggingRuntime.logMsgView(Level.INFO, "ref loc: " + this.modelStructuralMap.get(getNode(path)), PatchOperations.class, null, null);
     final String referenceLinkName = path.split("/")[3];
     String[] refPathArray = value.split("//@");
     final String[] referenceLocationTuple = refPathArray[refPathArray.length - 1].split("\\.");
@@ -189,8 +188,11 @@ public class PatchOperations {
       final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, referenceLocationTuple[0]);
       if (containmentLink != null) {
         this.modelStructuralMap.entrySet().forEach((final Map.Entry<SNode, Integer> currentSet) -> {
+          LoggingRuntime.logMsgView(Level.INFO, "Current key: " + String.valueOf(currentSet.getKey().getConcept().getName()), PatchOperations.class, null, null);
+          LoggingRuntime.logMsgView(Level.INFO, "Current value: " + String.valueOf(currentSet.getValue()), PatchOperations.class, null, null);
           if (currentSet.getKey().getConcept().getName().equals(containmentLink.getTargetConcept().getName()) && Integer.valueOf(referenceLocationTuple[1]).equals(currentSet.getValue())) {
             SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentSet.getKey());
+            return;
           }
         });
       }
@@ -201,12 +203,23 @@ public class PatchOperations {
 
   private void remove(final String path) {
     final String[] pathSplit = path.split("/");
+    final String toDecipher = pathSplit[3];
     final SNode toRemove = getNode(path);
-    final Integer removedNodeIndex = (pathSplit[2].equals("-") ? getLastIndexByConcept(pathSplit[1]) : Integer.valueOf(pathSplit[2]));
-    updateStructuralMap(toRemove, removedNodeIndex, Integer.MAX_VALUE, "-");
-    startingNode.removeChild(toRemove);
+    if (pathSplit.length > 3) {
+      if (isLinkDecleration(toDecipher, path)) {
+        LoggingRuntime.logMsgView(Level.INFO, "Removing reference", PatchOperations.class, null, null);
+        SLinkOperations.setTarget(getNode(path), getReferenceLink(toDecipher, path), null);
+      } else if (isProperty(toDecipher, path)) {
+        LoggingRuntime.logMsgView(Level.INFO, "Removing property", PatchOperations.class, null, null);
+        SPropertyOperations.set(toRemove, getProperty(getNode(path), toDecipher), null);
+      }
+    } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Removing node...", PatchOperations.class, null, null);
+      final Integer removedNodeIndex = (pathSplit[2].equals("-") ? getLastIndexByConcept(pathSplit[1]) : Integer.valueOf(pathSplit[2]));
+      updateStructuralMap(toRemove, removedNodeIndex, Integer.MAX_VALUE, "-");
+      startingNode.removeChild(toRemove);
+    }
   }
-
 
   private SProperty getProperty(SNode node, final String propertyName) {
     final Wrappers._T<SProperty> property = new Wrappers._T<SProperty>(null);
@@ -264,7 +277,6 @@ public class PatchOperations {
       if (containmentLink.getTargetConcept().getName().equals(node.getConcept().getName())) {
 
         if (this.modelStructuralMap.get(node) == index) {
-          LoggingRuntime.logMsgView(Level.INFO, "Found node!", PatchOperations.class, null, null);
           return node;
         }
       }
@@ -282,9 +294,7 @@ public class PatchOperations {
 
     for (SNode node : SetSequence.fromSet(this.modelStructuralMap.keySet())) {
       if (containmentLink.getTargetConcept().getName().equals(node.getConcept().getName())) {
-
         if (this.modelStructuralMap.get(node) == index) {
-          LoggingRuntime.logMsgView(Level.INFO, "Found node!", PatchOperations.class, null, null);
           return node;
         }
       }

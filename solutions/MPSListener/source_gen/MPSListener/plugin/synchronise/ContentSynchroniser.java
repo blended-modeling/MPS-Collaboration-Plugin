@@ -17,12 +17,14 @@ import org.jdom.Document;
 import java.util.Iterator;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
+import jetbrains.mps.internal.collections.runtime.ListSequence;
+import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
+import org.jetbrains.mps.openapi.language.SReferenceLink;
 import jetbrains.mps.util.JDOMUtil;
 import java.io.ByteArrayInputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jdom.JDOMException;
 import java.io.IOException;
-import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import org.jetbrains.mps.openapi.language.SConcept;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SModelOperations;
@@ -31,9 +33,7 @@ import jetbrains.mps.internal.collections.runtime.Sequence;
 import org.jetbrains.mps.openapi.language.SProperty;
 import org.jdom.Attribute;
 import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
-import jetbrains.mps.internal.collections.runtime.ListSequence;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
-import org.jetbrains.mps.openapi.language.SReferenceLink;
+import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
 
@@ -81,7 +81,7 @@ public class ContentSynchroniser {
   public boolean synchroniseContent(String modelXML) {
     if (!(ecoreToMPSLangMap.isEmpty())) {
       Document modelDoc = getDoc(modelXML);
-      final EClassifier mainEClassifier = getEClassifier(modelDoc.getRootElement().getName());
+      EClassifier mainEClassifier = getEClassifier(modelDoc.getRootElement().getName());
       this.currentModel = MPS_LocalRepo.getInstance().findModel("StateMachines", "structure");
       Iterator<Element> elementIterator = modelDoc.getRootElement().getChildren().iterator();
       removeAllChildrenSNode();
@@ -96,7 +96,7 @@ public class ContentSynchroniser {
         }
       }
       // Now add elements that have references to other items 
-      this.elementsWithReferences.forEach((Element element) -> addChild(element, mainEClassifier, true));
+      addElementsWithReferences(mainEClassifier);
       isSynced = true;
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Map initialised with is empty", ContentSynchroniser.class, null, null);
@@ -104,6 +104,44 @@ public class ContentSynchroniser {
     }
 
     return isSynced;
+  }
+
+  private void addElementsWithReferences(final EClassifier mainEClassifier) {
+    // Be warned: temp fix ahead. The method below will fail if the list contains two concepts that both refer to each other. So for example, If state refers to output and output refers to state, then both of them will be in the list.
+    List<Element> sortedByConcept = new ArrayList<>();
+    final List<String> allConcepts = new ArrayList<>();
+    for (Element currentElement : ListSequence.fromList(this.elementsWithReferences)) {
+      String[] refArray = getEStructuralFeature(currentElement.getName(), mainEClassifier).getEType().get$ref().split("//");
+      String conceptName = refArray[refArray.length - 1];
+      if (!(allConcepts.contains(conceptName))) {
+        allConcepts.add(conceptName);
+      }
+    }
+    for (int i = 0; i < allConcepts.size(); i++) {
+      final Wrappers._boolean isDependent = new Wrappers._boolean(false);
+      getConcept(allConcepts.get(i)).getReferenceLinks().forEach((SReferenceLink currentReferenceLink) -> {
+
+        if (allConcepts.contains(currentReferenceLink.getTargetConcept().getName())) {
+          LoggingRuntime.logMsgView(Level.INFO, "Dependency detected for " + currentReferenceLink.getName(), ContentSynchroniser.class, null, null);
+          isDependent.value = true;
+        }
+      });
+      for (int j = 0; j < this.elementsWithReferences.size() - 1; j++) {
+        String[] refArray = getEStructuralFeature(this.elementsWithReferences.get(j).getName(), mainEClassifier).getEType().get$ref().split("//");
+        String conceptName = refArray[refArray.length - 1];
+        if (conceptName.equals(allConcepts.get(i))) {
+          if (isDependent.value) {
+            sortedByConcept.add(this.elementsWithReferences.get(j));
+          } else {
+            sortedByConcept.add(0 + i, this.elementsWithReferences.get(j));
+          }
+        }
+
+      }
+
+    }
+    LoggingRuntime.logMsgView(Level.INFO, "concept size" + allConcepts.size(), ContentSynchroniser.class, null, null);
+    sortedByConcept.forEach((Element currentElement) -> addChild(currentElement, mainEClassifier, true));
   }
 
   private Document getDoc(String modelXML) {
@@ -171,7 +209,7 @@ public class ContentSynchroniser {
     EStructuralFeature currentStructuralFeature = getEStructuralFeature(element.getName(), mainEClassifier);
     String[] refArray = currentStructuralFeature.getEType().get$ref().split("//");
     String conceptName = refArray[refArray.length - 1];
-    boolean referenceLinkIsPresent = (ListSequence.fromList(SNodeOperations.getReferences(this.ecoreToMPSLangMap.get(getEClassifier(conceptName)))).count() > 0 ? true : false);
+    boolean referenceLinkIsPresent = (ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(this.ecoreToMPSLangMap.get(getEClassifier(conceptName)))).count() > 0 ? true : false);
     return referenceLinkIsPresent;
   }
 
@@ -221,6 +259,7 @@ public class ContentSynchroniser {
           final String refConceptName = refArray[refArray.length - 1];
           ContentSynchroniser.this.structuralMap.keySet().forEach((SNode currNode) -> {
             if (currNode.getConcept().getName().equals(refConceptName) && ContentSynchroniser.this.structuralMap.get(currNode).equals(Integer.valueOf(referenceLocationTuple[1]))) {
+              LoggingRuntime.logMsgView(Level.INFO, currentAttribute.getValue(), ContentSynchroniser.class, null, null);
               referenceToTargetNodeMap.put(currentReferenceLink, currNode);
             }
           });
