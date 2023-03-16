@@ -19,8 +19,8 @@ import org.apache.log4j.Level;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import java.util.LinkedHashMap;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import org.jetbrains.mps.openapi.language.SReferenceLink;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
@@ -109,39 +109,55 @@ public class PatchOperations {
 
   private void add(final String path, final Object value) {
     final String[] pathSplit = path.split("/");
-    final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(startingNode, pathSplit[1]);
-    final Integer index = (pathSplit[2].equals("-") ? getLastIndexByConcept(containmentLink.getTargetConcept().getName()) + 1 : Integer.valueOf(pathSplit[2]));
     if (pathSplit.length > 3) {
       final String toDecipher = pathSplit[3];
-      if (isLinkDecleration(toDecipher, path)) {
-        handleAddReference(toDecipher, path, value);
-      } else if (isProperty(toDecipher, path)) {
-        handleAddProperty(toDecipher, path, value);
+      SNode nodeToAddTo = getNode(path);
+      if (isLinkDecleration(toDecipher, nodeToAddTo)) {
+        handleAddReference(toDecipher, nodeToAddTo, value);
+      } else if (isProperty(toDecipher, nodeToAddTo)) {
+        handleAddProperty(toDecipher, nodeToAddTo, value);
       }
     } else {
-      SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
-      SNode currNode = getNode(path);
-      SNodeOperations.insertNextSiblingChild(currNode, child);
-      updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
+      handleAddNode(path, value);
     }
 
   }
-  private Boolean isLinkDecleration(String toDecipher, String path) {
-    if (getReferenceLink(toDecipher, path) == null) {
+  private Boolean isLinkDecleration(String toDecipher, SNode node) {
+    if (getReferenceLink(toDecipher, node) == null) {
       return false;
     }
     return true;
   }
 
-  private void handleAddReference(String referenceName, final String path, final Object value) {
-    LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
-    SNode nodeToAddReference = getNode(path);
-    SNode referenceNode = getReferenceNode(valueMap.get("$ref"));
-    SLinkOperations.setTarget(nodeToAddReference, getReferenceLink(referenceName, path), referenceNode);
+  private void handleAddNode(String path, Object value) {
+    final String[] pathSplit = path.split("/");
+    final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(startingNode, pathSplit[1]);
+    final SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
+    final Integer index = (pathSplit[2].equals("-") ? getLastIndexByConcept(containmentLink.getTargetConcept().getName()) + 1 : Integer.valueOf(pathSplit[2]));
+
+    SNode currNode = getNode(path);
+
+    final LinkedHashMap<String, Object> valueMap = ((LinkedHashMap<String, Object>) value);
+    valueMap.keySet().forEach((String currentField) -> {
+      if (isLinkDecleration(currentField, child)) {
+        handleAddReference(currentField, child, valueMap.get(currentField));
+      } else if (isProperty(currentField, child)) {
+        handleAddProperty(currentField, child, valueMap.get(currentField));
+      }
+    });
+    SNodeOperations.insertNextSiblingChild(currNode, child);
+    updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
+
   }
 
-  private SReferenceLink getReferenceLink(String toFind, String path) {
-    for (SReferenceLink currentReference : CollectionSequence.fromCollection(getNode(path).getConcept().getReferenceLinks())) {
+  private void handleAddReference(String referenceName, SNode nodeToAddReference, final Object value) {
+    LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
+    SNode referenceNode = getReferenceNode(valueMap.get("$ref"));
+    SLinkOperations.setTarget(nodeToAddReference, getReferenceLink(referenceName, nodeToAddReference), referenceNode);
+  }
+
+  private SReferenceLink getReferenceLink(String toFind, SNode node) {
+    for (SReferenceLink currentReference : CollectionSequence.fromCollection(node.getConcept().getReferenceLinks())) {
       if (currentReference.getName().equals(toFind)) {
         return currentReference;
       }
@@ -149,17 +165,16 @@ public class PatchOperations {
     return null;
   }
 
-  private Boolean isProperty(String toDecipher, String path) {
-    if (getProperty(getNode(path), toDecipher) == null) {
+  private Boolean isProperty(String toDecipher, SNode node) {
+    if (getProperty(node, toDecipher) == null) {
       return false;
     }
     return true;
   }
 
-  private void handleAddProperty(String propertyName, final String path, final Object value) {
-    String valueString = ((String) value);
-    SNode nodeToSetProperty = getNode(path);
+  private void handleAddProperty(String propertyName, SNode nodeToSetProperty, final Object value) {
     LoggingRuntime.logMsgView(Level.INFO, "Setting property", PatchOperations.class, null, null);
+    String valueString = ((String) value);
     SPropertyOperations.set(nodeToSetProperty, getProperty(nodeToSetProperty, propertyName), valueString);
   }
 
@@ -206,10 +221,10 @@ public class PatchOperations {
     final String toDecipher = pathSplit[3];
     final SNode toRemove = getNode(path);
     if (pathSplit.length > 3) {
-      if (isLinkDecleration(toDecipher, path)) {
+      if (isLinkDecleration(toDecipher, toRemove)) {
         LoggingRuntime.logMsgView(Level.INFO, "Removing reference", PatchOperations.class, null, null);
-        SLinkOperations.setTarget(getNode(path), getReferenceLink(toDecipher, path), null);
-      } else if (isProperty(toDecipher, path)) {
+        SLinkOperations.setTarget(getNode(path), getReferenceLink(toDecipher, toRemove), null);
+      } else if (isProperty(toDecipher, toRemove)) {
         LoggingRuntime.logMsgView(Level.INFO, "Removing property", PatchOperations.class, null, null);
         SPropertyOperations.set(toRemove, getProperty(getNode(path), toDecipher), null);
       }
