@@ -33,7 +33,6 @@ import org.jdom.Attribute;
 import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
-import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
 import org.jetbrains.mps.openapi.language.SReferenceLink;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
@@ -44,7 +43,7 @@ public class ContentSynchroniser {
   private java.util.logging.Logger logger;
   private SNode selectedInstance;
   private SModel currentModel;
-  private List<Element> elementsThatContainReferences;
+  private List<Element> elementsWithReferences;
   private Map<SNode, Integer> structuralMap;
   private boolean isSynced;
   private Map<String, Integer> conceptCounterMap;
@@ -53,7 +52,7 @@ public class ContentSynchroniser {
   private ContentSynchroniser() {
     // TODO: Idea of isSynced is to catch any errors and return false if everything does not go smoothly. Look for possible cases where errors might occur to improve reliability of isSynced
     this.logger = java.util.logging.Logger.getLogger(ContentSynchroniser.class.getSimpleName());
-    this.elementsThatContainReferences = new ArrayList<>();
+    this.elementsWithReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
   }
@@ -86,17 +85,18 @@ public class ContentSynchroniser {
       this.currentModel = MPS_LocalRepo.getInstance().findModel("StateMachines", "structure");
       Iterator<Element> elementIterator = modelDoc.getRootElement().getChildren().iterator();
       removeAllChildrenSNode();
+      // For a given node, this while loop checks if its this node's **concept** contains references.
       while (elementIterator.hasNext()) {
         Element currElement = elementIterator.next();
+        // This if statement checks for references in concepts
         if (referenceLinkPresent(currElement, mainEClassifier)) {
-          LoggingRuntime.logMsgView(Level.INFO, "true", ContentSynchroniser.class, null, null);
-          elementsThatContainReferences.add(currElement);
+          elementsWithReferences.add(currElement);
         } else {
           addChild(currElement, mainEClassifier, false);
         }
       }
       // Now add elements that have references to other items 
-      this.elementsThatContainReferences.forEach((Element element) -> addChild(element, mainEClassifier, true));
+      this.elementsWithReferences.forEach((Element element) -> addChild(element, mainEClassifier, true));
       isSynced = true;
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Map initialised with is empty", ContentSynchroniser.class, null, null);
@@ -165,7 +165,7 @@ public class ContentSynchroniser {
   }
 
   private boolean referenceLinkPresent(Element element, EClassifier mainEClassifier) {
-    // This method checks if references are present in the **concept**. So when a model is received, it gets the concept of a given element, and checks if that concept contains references. This method can be more efficient, by flagging concepts if they contain references.
+    // This method checks if references are present in the **concept**. So for this given node/element, it checks if that concept contains references. This method can be more efficient, by flagging concepts if they contain references, instead of repeatedly checking if a node's concept contains references.
 
     // Get EStructural feature from main eClassifier, get its type, e.g Transition, Input etc.
     EStructuralFeature currentStructuralFeature = getEStructuralFeature(element.getName(), mainEClassifier);
@@ -182,16 +182,6 @@ public class ContentSynchroniser {
       }
     }
     return null;
-  }
-
-  private boolean isReferenceLink(Attribute attribute, String conceptName) {
-    boolean isReference = false;
-    for (SNode referenceLink : ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(NodeFactory.getConceptNodeByName(conceptName, currentModel.getRootNodes())))) {
-      if (attribute.getName().equals(SPropertyOperations.getString(referenceLink, PROPS.name$MnvL))) {
-        isReference = true;
-      }
-    }
-    return isReference;
   }
 
   private void addChild(Element element, EClassifier mainEClassifier, boolean addReferences) {
@@ -254,7 +244,7 @@ public class ContentSynchroniser {
   }
 
   public void stop() {
-    this.elementsThatContainReferences = new ArrayList<>();
+    this.elementsWithReferences = new ArrayList<>();
     this.structuralMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
     this.isSynced = false;

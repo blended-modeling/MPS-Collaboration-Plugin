@@ -19,16 +19,16 @@ import org.apache.log4j.Level;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
-import org.jetbrains.mps.openapi.language.SProperty;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
-import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
-import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
-import jetbrains.mps.internal.collections.runtime.IVisitor;
+import java.util.LinkedHashMap;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
+import org.jetbrains.mps.openapi.language.SReferenceLink;
+import jetbrains.mps.internal.collections.runtime.CollectionSequence;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
+import org.jetbrains.mps.openapi.language.SProperty;
+import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import javax.swing.SwingUtilities;
 import jetbrains.mps.internal.collections.runtime.SetSequence;
-import jetbrains.mps.smodel.adapter.structure.MetaAdapterFactory;
 
 public class PatchOperations {
   private static final Logger LOG = LogManager.getLogger(PatchOperations.class);
@@ -110,15 +110,13 @@ public class PatchOperations {
       @Override
       public void run() {
         SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
-        final SNode currNode = getNode(path);
+        SNode currNode = getNode(path);
         if (pathSplit.length > 3) {
-          LoggingRuntime.logMsgView(Level.INFO, "link delceration: " + isLinkDecleration(pathSplit[3]), PatchOperations.class, null, null);
-          child.getConcept().getProperties().forEach((SProperty currentProperty) -> {
-            if (currentProperty.getName().equals(pathSplit[3])) {
-              LoggingRuntime.logMsgView(Level.INFO, "Property found", PatchOperations.class, null, null);
-              SPropertyOperations.set(currNode, currentProperty, value.toString());
-            }
-          });
+          if (isLinkDecleration(pathSplit[3], path)) {
+            handleAddReference(pathSplit[3], path, value);
+          } else if (isProperty(pathSplit[3], path)) {
+            handleAddProperty(pathSplit[3], path, value);
+          }
         } else {
           SNodeOperations.insertNextSiblingChild(currNode, child);
           updateStructuralMap(child, index, Integer.MAX_VALUE, "+");
@@ -126,21 +124,42 @@ public class PatchOperations {
       }
     });
   }
-
-  private Boolean isLinkDecleration(final String toDecipher) {
-
-    final Wrappers._T<Boolean> isLinkDecleration = new Wrappers._T<Boolean>(false);
-    for (SNode currentConcept : ListSequence.fromList(this.structuralLanguageConcepts)) {
-      ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(currentConcept)).visitAll(new IVisitor<SNode>() {
-        public void visit(SNode currentReferenceLink) {
-          LoggingRuntime.logMsgView(Level.INFO, "current reference: " + SPropertyOperations.getString(currentReferenceLink, PROPS.name$MnvL), PatchOperations.class, null, null);
-          if (SPropertyOperations.getString(currentReferenceLink, PROPS.name$MnvL).equals(toDecipher)) {
-            isLinkDecleration.value = true;
-          }
-        }
-      });
+  private Boolean isLinkDecleration(String toDecipher, String path) {
+    if (getReferenceLink(toDecipher, path) == null) {
+      return false;
     }
-    return isLinkDecleration.value;
+    return true;
+  }
+
+  private void handleAddReference(String referenceName, final String path, final Object value) {
+    LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
+    SNode nodeToAddReference = getNode(path);
+    SNode referenceNode = getReferenceNode(valueMap.get("$ref"));
+    SLinkOperations.setTarget(nodeToAddReference, getReferenceLink(referenceName, path), referenceNode);
+
+  }
+
+  private SReferenceLink getReferenceLink(String toFind, String path) {
+    for (SReferenceLink currentReference : CollectionSequence.fromCollection(getNode(path).getConcept().getReferenceLinks())) {
+      if (currentReference.getName().equals(toFind)) {
+        return currentReference;
+      }
+    }
+    return null;
+  }
+
+  private Boolean isProperty(String toDecipher, String path) {
+    if (getProperty(getNode(path), toDecipher) == null) {
+      return false;
+    }
+    return true;
+  }
+
+  private void handleAddProperty(String propertyName, final String path, final Object value) {
+    String valueString = ((String) value);
+    SNode nodeToSetProperty = getNode(path);
+    LoggingRuntime.logMsgView(Level.INFO, "Setting property", PatchOperations.class, null, null);
+    SPropertyOperations.set(nodeToSetProperty, getProperty(nodeToSetProperty, propertyName), valueString);
   }
 
   private void replace(String path, final String value) {
@@ -151,21 +170,18 @@ public class PatchOperations {
     }
   }
 
-  private void replaceProperty(String path, final String value) {
-    final SNode element = getNode(path);
-    // Warning: Obtaining property like below might produce errors for nodes which have a child.
-    String property = path.split("/")[3];
-    final SProperty propertyToReplace = getProperty(element, property);
-    if (element != null && propertyToReplace != null) {
-      runCommand("Replace property", new Runnable() {
-        @Override
-        public void run() {
-          element.setProperty(propertyToReplace, value);
-        }
-      });
-    } else {
-      LoggingRuntime.logMsgView(Level.WARN, "Property not found for concept: " + element.getConcept().getName(), PatchOperations.class, null, null);
-    }
+  private void replaceProperty(final String path, final String value) {
+    runCommand("Replace property", new Runnable() {
+      @Override
+      public void run() {
+        final SNode element = getNode(path);
+        // Warning: Obtaining property like below might produce errors for nodes which have a child.
+        String property = path.split("/")[3];
+        final SProperty propertyToReplace = getProperty(element, property);
+        element.setProperty(propertyToReplace, value);
+      }
+    });
+
   }
 
   private void replaceReference(String path, final String value) {
@@ -214,11 +230,11 @@ public class PatchOperations {
   }
 
 
-  private SProperty getProperty(final SNode node, final String propertyName) {
+  private SProperty getProperty(SNode node, final String propertyName) {
     final Wrappers._T<SProperty> property = new Wrappers._T<SProperty>(null);
     LoggingRuntime.logMsgView(Level.INFO, "Fetching property: " + propertyName, PatchOperations.class, null, null);
-    this.project.getRepository().getModelAccess().runReadAction(() -> {
-      for (SProperty currentProperty : node.getProperties()) {
+    node.getConcept().getProperties().forEach((SProperty currentProperty) -> {
+      if (currentProperty.getName().equals(propertyName)) {
         if (currentProperty.getName().equals(propertyName)) {
           LoggingRuntime.logMsgView(Level.INFO, "Property found!", PatchOperations.class, null, null);
           property.value = currentProperty;
@@ -252,6 +268,7 @@ public class PatchOperations {
   }
 
   private SNode getNode(String path) {
+    // Only applicable when parsing "path" parameter received in patch from server.
     String[] pathSplit = path.split("/");
     SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, pathSplit[1]);
     Integer index;
@@ -277,6 +294,26 @@ public class PatchOperations {
     return null;
   }
 
+  private SNode getReferenceNode(String path) {
+    // Only applicable for "$ref" paramater received from the server.
+
+    // Function kind of a duplicate, can improve by checking if are dealing with reference or path..
+    String[] pathSplit = path.split("//@")[1].split("\\.");
+    SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, pathSplit[0]);
+    Integer index = Integer.valueOf(pathSplit[1]);
+
+    for (SNode node : SetSequence.fromSet(this.modelStructuralMap.keySet())) {
+      if (containmentLink.getTargetConcept().getName().equals(node.getConcept().getName())) {
+
+        if (this.modelStructuralMap.get(node) == index) {
+          LoggingRuntime.logMsgView(Level.INFO, "Found node!", PatchOperations.class, null, null);
+          return node;
+        }
+      }
+    }
+
+    return null;
+  }
   public Integer getLastIndexByConcept(final String conceptName) {
     final Wrappers._T<Integer> highestIndex = new Wrappers._T<Integer>(Integer.MIN_VALUE);
     this.modelStructuralMap.keySet().forEach((SNode currentNodeConcept) -> {
@@ -317,9 +354,5 @@ public class PatchOperations {
 
   public Integer getIndexRespectiveToConcept(SNode node) {
     return this.modelStructuralMap.get(node);
-  }
-
-  private static final class PROPS {
-    /*package*/ static final SProperty name$MnvL = MetaAdapterFactory.getProperty(0xceab519525ea4f22L, 0x9b92103b95ca8c0cL, 0x110396eaaa4L, 0x110396ec041L, "name");
   }
 }
