@@ -13,9 +13,9 @@ import org.jetbrains.mps.openapi.model.SNode;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import java.util.ArrayList;
 import java.util.HashMap;
-import jetbrains.mps.internal.collections.runtime.Sequence;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
+import jetbrains.mps.internal.collections.runtime.Sequence;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import java.util.Objects;
 
@@ -44,6 +44,7 @@ public class MPS_LocalRepo {
   }
 
   public void start(SNode modelInstance) {
+    LoggingRuntime.logMsgView(Level.WARN, "Loading repository..", MPS_LocalRepo.class, null, null);
     this.modelInstanceModule = modelInstance.getModel().getModule();
     this.myRepository = modelInstance.getModel().getRepository();
     myRepository.getModelAccess().runReadAction(() -> {
@@ -55,7 +56,6 @@ public class MPS_LocalRepo {
       }
     });
     mapModules();
-    LoggingRuntime.logMsgView(Level.INFO, "MPS_Local repo initialised successfully.", MPS_LocalRepo.class, null, null);
   }
 
   private void mapModules() {
@@ -129,6 +129,7 @@ public class MPS_LocalRepo {
   }
 
   public void stop() {
+    LoggingRuntime.logMsgView(Level.INFO, "Resetting local repo..", MPS_LocalRepo.class, null, null);
     this.myModules = ListSequence.fromList(new ArrayList<SModule>());
     this.mymodels = ListSequence.fromList(new ArrayList<SModel>());
     this.moduleMap = new HashMap<>();

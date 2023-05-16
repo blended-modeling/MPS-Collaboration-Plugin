@@ -10,15 +10,14 @@ import MPSListener.plugin.dataClasses.emf.ecore.Ecore;
 import java.util.Map;
 import MPSListener.plugin.dataClasses.emf.ecore.EClassifier;
 import org.jetbrains.mps.openapi.model.SNode;
-import java.util.List;
 import com.fasterxml.jackson.databind.MapperFeature;
 import java.util.HashMap;
+import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
+import org.apache.log4j.Level;
 import java.io.IOException;
 import org.jetbrains.mps.openapi.model.SModel;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SModelOperations;
 import java.util.ArrayList;
-import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
-import org.apache.log4j.Level;
 import java.util.Set;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import jetbrains.mps.internal.collections.runtime.SetSequence;
@@ -33,7 +32,6 @@ import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
 import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
 import jetbrains.mps.lang.core.behavior.IDeprecatable__BehaviorDescriptor;
 import java.util.Optional;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SEnumOperations;
 import java.util.HashSet;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import org.jetbrains.mps.openapi.language.SProperty;
@@ -54,7 +52,7 @@ public class PerformEcoreValidation {
   private Map<EClassifier, SNode> ecoreToMPS;
   private Map<String, String> emfToMpsConceptTerms;
   private Map<String, String> emfToMpsProperties;
-  private List<SNode> structuralElements;
+  private Iterable<SNode> structuralElements;
   private SNode selectedInstance;
 
   public PerformEcoreValidation(SNode selectedInstance) {
@@ -71,24 +69,32 @@ public class PerformEcoreValidation {
     this.emfToMpsConceptTerms = new HashMap<>();
     this.emfToMpsProperties = new HashMap<>();
   }
+
+
   public boolean ecoreIsMatchLocally(String eCoreString) {
+    LoggingRuntime.logMsgView(Level.INFO, "Performing structural validation for this model's meta model.", PerformEcoreValidation.class, null, null);
     try {
+      // Parse the received string 
       this.parsedServerSideEcore = this.om.readValue(eCoreString, Ecore.class);
     } catch (IOException e) {
       log.info(e.getMessage());
     }
     populateEmfToMpsTerms();
     boolean isMatch = false;
-    // At the moment, structure contains text and table nodes. We are interested in text only, however at the moment the list below contains both. 
+
+    // Fetch the meta-model of the selected model.
     SModel structuralModel = this.mpsLocalRepo.findModel(this.module, this.model);
     this.structuralElements = SModelOperations.roots(structuralModel, null);
     ArrayList<EClassifier> eClassifiers = parsedServerSideEcore.getData().getEClassifiers();
+
+    // Ensure all EClasses are present
     if (allEClassesPresentInMPS(eClassifiers, structuralElements)) {
-      LoggingRuntime.logMsgView(Level.INFO, "All elements present, continuing comparison", PerformEcoreValidation.class, null, null);
       eClassifiers.forEach((EClassifier eClassifier) -> {
         {
+          // Validate inheritance relationship
           SNode structuralNode = PerformEcoreValidation.this.ecoreToMPS.get(eClassifier);
           if (isMatchSuperType(eClassifier, structuralNode)) {
+            // Validate references and attributes, as well multiplicities for each of them, if any.
             isMatchStructuralFeatures(eClassifier, structuralNode);
           }
         }
@@ -96,14 +102,12 @@ public class PerformEcoreValidation {
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Mismatched ecore, all elements not present by name, discontinuing comparisons", PerformEcoreValidation.class, null, null);
     }
-    if (LOG.isInfoEnabled()) {
-      LOG.info("Validation complete");
-    }
+    LoggingRuntime.logMsgView(Level.INFO, "Validation complete", PerformEcoreValidation.class, null, null);
     return isMatch;
   }
 
 
-  private boolean allEClassesPresentInMPS(ArrayList<EClassifier> eClassifiers, List<SNode> structuralElements) {
+  private boolean allEClassesPresentInMPS(ArrayList<EClassifier> eClassifiers, Iterable<SNode> structuralElements) {
     // This method ensures that all eClassifiers from the eCore file are present in the structure. This method does not ensure all mps structural nodes are present in the ecore file. However, that should be done.
     // TODO: Method seems fishy, might not be checking if all eClasses are present, double check
     final Set<SNode> allStructuralNodes = getAllConcepts(structuralElements);
@@ -130,11 +134,9 @@ public class PerformEcoreValidation {
 
 
   private boolean isMatchSuperType(EClassifier eClassifier, SNode nodeToCompare) {
-    LoggingRuntime.logMsgView(Level.INFO, "Comparing super type(s) of " + eClassifier.getName(), PerformEcoreValidation.class, null, null);
     boolean isMatch = false;
     // This if statement is a bit misleading, nonetheless it checks wether the given eClassifier and MPS node have no supertypes or or if they do, then they are the same.
     if (eClassifier.getESuperTypes() == null && ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getImmediateSuperconcepts_idhMuxyK2.invoke(nodeToCompare)).count() == 0) {
-      LoggingRuntime.logMsgView(Level.INFO, "No super concepts detected.", PerformEcoreValidation.class, null, null);
       return true;
     }
     try {
@@ -154,18 +156,14 @@ public class PerformEcoreValidation {
       }
     } catch (NullPointerException e) {
       log.info(e.getMessage());
-      LoggingRuntime.logMsgView(Level.INFO, "Mismatch super type for " + eClassifier.getName(), PerformEcoreValidation.class, null, null);
     }
-    LoggingRuntime.logMsgView(Level.INFO, "Super type for " + eClassifier.getName() + " = " + isMatch, PerformEcoreValidation.class, null, null);
     return isMatch;
   }
 
   private boolean isMatchStructuralFeatures(EClassifier eClassifier, SNode nodeToCompare) {
-    LoggingRuntime.logMsgView(Level.INFO, "Comparing EStructural features of " + eClassifier.getName(), PerformEcoreValidation.class, null, null);
     // Also compares abstract if present
     boolean isMatch = false;
     if (eClassifier.getEStructuralFeatures() == null && ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).count() == 0 && ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f)).count() == 0) {
-      LoggingRuntime.logMsgView(Level.INFO, "Empty structure features detected for " + SPropertyOperations.getString(nodeToCompare, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
       return true;
     }
     for (EStructuralFeature structuralFeature : ListSequence.fromList(eClassifier.getEStructuralFeatures())) {
@@ -186,12 +184,10 @@ public class PerformEcoreValidation {
         }
       }
     }
-    LoggingRuntime.logMsgView(Level.INFO, eClassifier.getName() + " structural features " + " = " + isMatch, PerformEcoreValidation.class, null, null);
     return isMatch;
   }
 
   private boolean eContainmentOrEReferenceIsPresent(String eTypeRef, SNode nodeToCompare) {
-    LoggingRuntime.logMsgView(Level.INFO, "Cross checking eContainment or eReference for " + eTypeRef, PerformEcoreValidation.class, null, null);
     boolean isMatch = false;
     for (SNode linkDeclaration : ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f))) {
       if (SPropertyOperations.getString(SLinkOperations.getTarget(linkDeclaration, LINKS.target$m40F), PROPS.name$MnvL).equals(eTypeRef)) {
@@ -199,7 +195,6 @@ public class PerformEcoreValidation {
         break;
       }
     }
-    LoggingRuntime.logMsgView(Level.INFO, "eContainment or eReference present = " + isMatch, PerformEcoreValidation.class, null, null);
 
     return isMatch;
   }
@@ -230,7 +225,6 @@ public class PerformEcoreValidation {
     final Wrappers._boolean isCorrect = new Wrappers._boolean(false);
     // TODO: Check if carinalities can be other than -1 or 1. This part is kind of hardcoded for our pet project.
     // TODO: Parse the cardinalities to compare with upper and lower bounds, for now it just structural feature exists.
-    LoggingRuntime.logMsgView(Level.INFO, "Cross checking multiplicity for " + structuralFeature.getName(), PerformEcoreValidation.class, null, null);
     Optional<Integer> upperBound = structuralFeature.getUpperBound();
     Optional<Integer> lowerBound = structuralFeature.getLowerBound();
     boolean containment = structuralFeature.isContainment();
@@ -238,8 +232,6 @@ public class PerformEcoreValidation {
       ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getAggregationLinkDeclarations_idhEwILLp.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
         public void visit(SNode aggregLink) {
           if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
-            LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-            LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
             isCorrect.value = true;
           }
         }
@@ -248,29 +240,24 @@ public class PerformEcoreValidation {
       ListSequence.fromList(AbstractConceptDeclaration__BehaviorDescriptor.getReferenceLinkDeclarations_idhEwILL0.invoke(nodeToCompare)).visitAll(new IVisitor<SNode>() {
         public void visit(SNode aggregLink) {
           if (SPropertyOperations.getString(aggregLink, PROPS.name$MnvL).equals(structuralFeature.getName())) {
-            LoggingRuntime.logMsgView(Level.INFO, "Found " + SPropertyOperations.getString(aggregLink, PROPS.name$MnvL), PerformEcoreValidation.class, null, null);
-            LoggingRuntime.logMsgView(Level.INFO, "Cardinality " + SEnumOperations.getMemberName0(SPropertyOperations.getEnum(aggregLink, PROPS.sourceCardinality$cxYK)), PerformEcoreValidation.class, null, null);
             isCorrect.value = true;
           }
         }
       });
     }
-    LoggingRuntime.logMsgView(Level.INFO, "Multiciplicity for " + structuralFeature.getName() + " = " + isCorrect.value, PerformEcoreValidation.class, null, null);
 
     return isCorrect.value;
   }
 
 
-  private Set<SNode> getAllConcepts(List<SNode> rootsIncludingImported) {
+  private Set<SNode> getAllConcepts(Iterable<SNode> rootsIncludingImported) {
     final Set<SNode> allConcepts = SetSequence.fromSet(new HashSet<SNode>());
-    ListSequence.fromList(rootsIncludingImported).visitAll(new IVisitor<SNode>() {
-      public void visit(SNode root) {
-        Sequence.fromIterable(AbstractConceptDeclaration__BehaviorDescriptor.getAllSuperConcepts_id2A8AB0rAWpG.invoke(SNodeOperations.cast(root, CONCEPTS.AbstractConceptDeclaration$KA), ((boolean) true))).visitAll(new IVisitor<SNode>() {
-          public void visit(SNode node) {
-            SetSequence.fromSet(allConcepts).addElement(node);
-          }
-        });
-      }
+    rootsIncludingImported.forEach((SNode root) -> {
+      Sequence.fromIterable(AbstractConceptDeclaration__BehaviorDescriptor.getAllSuperConcepts_id2A8AB0rAWpG.invoke(SNodeOperations.cast(root, CONCEPTS.AbstractConceptDeclaration$KA), ((boolean) true))).visitAll(new IVisitor<SNode>() {
+        public void visit(SNode node) {
+          SetSequence.fromSet(allConcepts).addElement(node);
+        }
+      });
     });
     return allConcepts;
   }
@@ -303,6 +290,7 @@ public class PerformEcoreValidation {
   }
 
   public void stop() {
+    LoggingRuntime.logMsgView(Level.WARN, "Resetting ECore validator..", PerformEcoreValidation.class, null, null);
     this.ecoreToMPS = new HashMap<>();
     this.emfToMpsConceptTerms = new HashMap<>();
     this.emfToMpsProperties = new HashMap<>();
@@ -311,7 +299,6 @@ public class PerformEcoreValidation {
 
   private static final class PROPS {
     /*package*/ static final SProperty name$MnvL = MetaAdapterFactory.getProperty(0xceab519525ea4f22L, 0x9b92103b95ca8c0cL, 0x110396eaaa4L, 0x110396ec041L, "name");
-    /*package*/ static final SProperty sourceCardinality$cxYK = MetaAdapterFactory.getProperty(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0xf979bd086aL, 0xf98054bb04L, "sourceCardinality");
   }
 
   private static final class CONCEPTS {

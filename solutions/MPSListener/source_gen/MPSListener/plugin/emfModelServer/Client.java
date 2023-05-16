@@ -58,6 +58,7 @@ public class Client {
   }
 
   public void start(SNode selectedInstance, Project project) {
+    LoggingRuntime.logMsgView(Level.WARN, "Starting EMF model server client..", Client.class, null, null);
     // TODO: 
     // 1. Get statemachine.ecore by extracting it from eClass of the model
     // 2. Finalise mapper checks to ensure ecoreIsMatchLocally returns true
@@ -78,13 +79,10 @@ public class Client {
     }
 
     this.patchOpeartions.start(selectedInstance, project);
-    if (LOG.isInfoEnabled()) {
-      LOG.info("Client started successfully..");
-    }
-    LoggingRuntime.logMsgView(Level.INFO, "Client started successfully..", Client.class, null, null);
   }
 
   public void stop() {
+    LoggingRuntime.logMsgView(Level.WARN, "Stopping EMF model server client..", Client.class, null, null);
     this.modelServerClient.unsubscribe(this.subscribedModel);
     this.eCoreValidator.stop();
     this.contentSynchroniser.stop();
@@ -160,6 +158,7 @@ public class Client {
   }
 
   public String getModel(String modelUri, String format) {
+    LoggingRuntime.logMsgView(Level.INFO, "Performing GET request for " + modelUri, Client.class, null, null);
     String serverResponse = null;
     try {
       HttpClient httpClient = HttpClient.newHttpClient();
@@ -167,7 +166,6 @@ public class Client {
 
       HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
       serverResponse = httpResponse.body();
-      LoggingRuntime.logMsgView(Level.INFO, "Got " + serverResponse, Client.class, null, null);
       if (httpResponse.statusCode() == 404) {
         JOptionPane.showMessageDialog(null, "Model does not exist (by name) in server. Exiting application!");
         System.exit(2);
@@ -199,6 +197,6 @@ public class Client {
   }
 
   public Map<SNode, Integer> getStructuralMapping() {
-    return this.contentSynchroniser.getStructuralMap();
+    return this.contentSynchroniser.getIdentityMap();
   }
 }

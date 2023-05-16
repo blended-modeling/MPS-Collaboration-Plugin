@@ -7,21 +7,20 @@ import org.apache.log4j.LogManager;
 import org.jetbrains.mps.openapi.model.SNode;
 import MPSListener.plugin.emfModelServer.parsers.PatchParser;
 import java.util.Map;
-import java.util.List;
 import jetbrains.mps.project.Project;
 import MPSListener.plugin.listener.GlobalSModelListener;
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentHashMap;
-import MPSListener.plugin.synchronise.ContentSynchroniser;
-import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
+import java.util.concurrent.ConcurrentHashMap;
+import MPSListener.plugin.synchronise.ContentSynchroniser;
+import java.util.List;
 import MPSListener.plugin.dataClasses.emf.patches.Patch;
 import org.jetbrains.mps.openapi.language.SContainmentLink;
 import MPSListener.plugin.synchronise.NodeFactory;
 import java.util.LinkedHashMap;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
+import jetbrains.mps.smodel.SNodeAccessUtilImpl;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import org.jetbrains.mps.openapi.language.SProperty;
 import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
@@ -36,8 +35,8 @@ public class PatchOperations {
   private java.util.logging.Logger log;
   private static PatchOperations instance;
   private PatchParser patchParser;
-  private Map<SNode, Integer> modelStructuralMap;
-  private List<SNode> structuralLanguageConcepts;
+  private Map<SNode, Integer> identityMap;
+
   private Project project;
   private GlobalSModelListener myListener;
   private boolean ignorePatch;
@@ -46,7 +45,6 @@ public class PatchOperations {
     this.log = java.util.logging.Logger.getLogger(PatchOperations.class.getSimpleName());
     this.patchParser = new PatchParser();
     this.myListener = GlobalSModelListener.getInstance();
-    this.structuralLanguageConcepts = new ArrayList<>();
   }
 
   public static PatchOperations getInstance() {
@@ -61,19 +59,15 @@ public class PatchOperations {
   }
 
   public void start(SNode startingNode, Project project) {
-    this.modelStructuralMap = new ConcurrentHashMap<SNode, Integer>();
-    this.modelStructuralMap.putAll(ContentSynchroniser.getInstance().getStructuralMap());
-    for (SNode currentConcept : ListSequence.fromList(ContentSynchroniser.getInstance().getStructuralLanguageConcepts())) {
-      this.structuralLanguageConcepts.add(currentConcept);
-    }
+    LoggingRuntime.logMsgView(Level.WARN, "Starting PatchOperations", PatchOperations.class, null, null);
+    this.identityMap = new ConcurrentHashMap<SNode, Integer>();
+    this.identityMap.putAll(ContentSynchroniser.getInstance().getIdentityMap());
     this.startingNode = startingNode;
     this.project = project;
   }
 
   public void executePatch(final String serverPatchResponse) {
-    // Temporary fix to avoid duplicate operations since server fix is not deployed
     if (ignorePatch) {
-      LoggingRuntime.logMsgView(Level.INFO, "Ignoring patch request.", PatchOperations.class, null, null);
       ignorePatch = false;
       return;
     }
@@ -92,8 +86,10 @@ public class PatchOperations {
               break;
             case "add":
               add(patch.getPath(), patch.getValue());
+              break;
             case "move":
-              move(patch.getPath(), patch.getValue());
+              move(patch.getPath(), patch.getFrom());
+              break;
             default:
               return;
           }
@@ -104,7 +100,7 @@ public class PatchOperations {
 
   }
 
-  private void move(final String path, final Object value) {
+  private void move(final String path, String from) {
   }
 
   private void add(final String path, final Object value) {
@@ -112,15 +108,15 @@ public class PatchOperations {
     if (pathSplit.length > 3) {
       final String toDecipher = pathSplit[3];
       SNode nodeToAddTo = getNode(path);
-      if (isLinkDecleration(toDecipher, nodeToAddTo)) {
+      if (isReference(toDecipher, nodeToAddTo)) {
         handleAddReference(toDecipher, nodeToAddTo, value);
       } else if (isProperty(toDecipher, nodeToAddTo)) {
         handleAddProperty(toDecipher, nodeToAddTo, value);
       }
     } else {
+      LoggingRuntime.logMsgView(Level.INFO, "Adding node", PatchOperations.class, null, null);
       handleAddNode(path, value);
     }
-
   }
 
   private void handleAddNode(String path, Object value) {
@@ -128,12 +124,11 @@ public class PatchOperations {
     final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(startingNode, pathSplit[1]);
     final SNode child = new jetbrains.mps.smodel.SNode(ContentSynchroniser.getInstance().getConcept(containmentLink.getTargetConcept().getName()));
     final Integer index = (pathSplit[2].equals("-") ? getLastIndexByConcept(containmentLink.getTargetConcept().getName()) + 1 : Integer.valueOf(pathSplit[2]));
-
     SNode currNode = getNode(path);
 
     final LinkedHashMap<String, Object> valueMap = ((LinkedHashMap<String, Object>) value);
     valueMap.keySet().forEach((String currentField) -> {
-      if (isLinkDecleration(currentField, child)) {
+      if (isReference(currentField, child)) {
         handleAddReference(currentField, child, valueMap.get(currentField));
       } else if (isProperty(currentField, child)) {
         handleAddProperty(currentField, child, valueMap.get(currentField));
@@ -145,6 +140,7 @@ public class PatchOperations {
   }
 
   private void handleAddReference(String referenceName, SNode nodeToAddReference, final Object value) {
+    LoggingRuntime.logMsgView(Level.INFO, "Adding link", PatchOperations.class, null, null);
     LinkedHashMap<String, String> valueMap = ((LinkedHashMap<String, String>) value);
     SNode referenceNode = getReferenceNode(valueMap.get("$ref"));
     SLinkOperations.setTarget(nodeToAddReference, getReferenceLink(referenceName, nodeToAddReference), referenceNode);
@@ -153,7 +149,7 @@ public class PatchOperations {
   private void handleAddProperty(String propertyName, SNode nodeToSetProperty, final Object value) {
     LoggingRuntime.logMsgView(Level.INFO, "Setting property", PatchOperations.class, null, null);
     String valueString = ((String) value);
-    SPropertyOperations.set(nodeToSetProperty, getProperty(nodeToSetProperty, propertyName), valueString);
+    SNodeAccessUtilImpl.setPropertyValue(nodeToSetProperty, getProperty(nodeToSetProperty, propertyName), valueString);
   }
 
   private void replace(String path, final String value) {
@@ -180,9 +176,7 @@ public class PatchOperations {
     if (!(value.contains("$command.exec.res#"))) {
       final SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, referenceLocationTuple[0]);
       if (containmentLink != null) {
-        this.modelStructuralMap.entrySet().forEach((final Map.Entry<SNode, Integer> currentSet) -> {
-          LoggingRuntime.logMsgView(Level.INFO, "Current key: " + String.valueOf(currentSet.getKey().getConcept().getName()), PatchOperations.class, null, null);
-          LoggingRuntime.logMsgView(Level.INFO, "Current value: " + String.valueOf(currentSet.getValue()), PatchOperations.class, null, null);
+        this.identityMap.entrySet().forEach((final Map.Entry<SNode, Integer> currentSet) -> {
           if (currentSet.getKey().getConcept().getName().equals(containmentLink.getTargetConcept().getName()) && Integer.valueOf(referenceLocationTuple[1]).equals(currentSet.getValue())) {
             SLinkOperations.setTarget(element, NodeFactory.getSReferenceLink(element, referenceLinkName), currentSet.getKey());
             return;
@@ -199,7 +193,7 @@ public class PatchOperations {
     final String toDecipher = pathSplit[3];
     final SNode toRemove = getNode(path);
     if (pathSplit.length > 3) {
-      if (isLinkDecleration(toDecipher, toRemove)) {
+      if (isReference(toDecipher, toRemove)) {
         LoggingRuntime.logMsgView(Level.INFO, "Removing reference", PatchOperations.class, null, null);
         SLinkOperations.setTarget(getNode(path), getReferenceLink(toDecipher, toRemove), null);
       } else if (isProperty(toDecipher, toRemove)) {
@@ -220,10 +214,7 @@ public class PatchOperations {
     node.getConcept().getProperties().forEach((SProperty currentProperty) -> {
       if (currentProperty.getName().equals(propertyName)) {
         if (currentProperty.getName().equals(propertyName)) {
-          LoggingRuntime.logMsgView(Level.INFO, "Property found!", PatchOperations.class, null, null);
           property.value = currentProperty;
-        } else {
-          LoggingRuntime.logMsgView(Level.INFO, "Property not found!", PatchOperations.class, null, null);
         }
       }
     });
@@ -251,7 +242,7 @@ public class PatchOperations {
     }
   }
 
-  private Boolean isLinkDecleration(String toDecipher, SNode node) {
+  private Boolean isReference(String toDecipher, SNode node) {
     if (getReferenceLink(toDecipher, node) == null) {
       return false;
     }
@@ -290,10 +281,10 @@ public class PatchOperations {
       index = Integer.valueOf(pathSplit[2]);
     }
 
-    for (SNode node : SetSequence.fromSet(this.modelStructuralMap.keySet())) {
+    for (SNode node : SetSequence.fromSet(this.identityMap.keySet())) {
       if (containmentLink.getTargetConcept().getName().equals(node.getConcept().getName())) {
 
-        if (this.modelStructuralMap.get(node) == index) {
+        if (this.identityMap.get(node) == index) {
           return node;
         }
       }
@@ -309,9 +300,9 @@ public class PatchOperations {
     SContainmentLink containmentLink = NodeFactory.getSContainmentLink(this.startingNode, pathSplit[0]);
     Integer index = Integer.valueOf(pathSplit[1]);
 
-    for (SNode node : SetSequence.fromSet(this.modelStructuralMap.keySet())) {
+    for (SNode node : SetSequence.fromSet(this.identityMap.keySet())) {
       if (containmentLink.getTargetConcept().getName().equals(node.getConcept().getName())) {
-        if (this.modelStructuralMap.get(node) == index) {
+        if (this.identityMap.get(node) == index) {
           return node;
         }
       }
@@ -321,10 +312,10 @@ public class PatchOperations {
   }
   public Integer getLastIndexByConcept(final String conceptName) {
     final Wrappers._T<Integer> highestIndex = new Wrappers._T<Integer>(Integer.MIN_VALUE);
-    this.modelStructuralMap.keySet().forEach((SNode currentNodeConcept) -> {
+    this.identityMap.keySet().forEach((SNode currentNodeConcept) -> {
       if (currentNodeConcept.getConcept().getName().equals(conceptName)) {
-        if (highestIndex.value < PatchOperations.this.modelStructuralMap.get(currentNodeConcept)) {
-          highestIndex.value = PatchOperations.this.modelStructuralMap.get(currentNodeConcept);
+        if (highestIndex.value < PatchOperations.this.identityMap.get(currentNodeConcept)) {
+          highestIndex.value = PatchOperations.this.identityMap.get(currentNodeConcept);
         }
       }
     });
@@ -332,16 +323,16 @@ public class PatchOperations {
   }
 
   private void incrementOrDecrementIndexesByOneByConcept(final String conceptName, final Integer start, final Integer stop, final String op) {
-    this.modelStructuralMap.keySet().forEach((SNode currentNodeConcept) -> {
+    this.identityMap.keySet().forEach((SNode currentNodeConcept) -> {
       if (currentNodeConcept.getConcept().getName().equals(conceptName)) {
-        Integer currentIndex = PatchOperations.this.modelStructuralMap.get(currentNodeConcept);
+        Integer currentIndex = PatchOperations.this.identityMap.get(currentNodeConcept);
         if (currentIndex > start && currentIndex < stop) {
 
           LoggingRuntime.logMsgView(Level.INFO, "Performing " + op, PatchOperations.class, null, null);
           if (op.equals("+")) {
-            PatchOperations.this.modelStructuralMap.put(currentNodeConcept, PatchOperations.this.modelStructuralMap.get(currentNodeConcept) + 1);
+            PatchOperations.this.identityMap.put(currentNodeConcept, PatchOperations.this.identityMap.get(currentNodeConcept) + 1);
           } else {
-            PatchOperations.this.modelStructuralMap.put(currentNodeConcept, PatchOperations.this.modelStructuralMap.get(currentNodeConcept) - 1);
+            PatchOperations.this.identityMap.put(currentNodeConcept, PatchOperations.this.identityMap.get(currentNodeConcept) - 1);
           }
         }
       }
@@ -350,14 +341,14 @@ public class PatchOperations {
   public void updateStructuralMap(SNode child, Integer conceptStartIndex, Integer conceptEndIndex, String op) {
     if (op.equals("+")) {
       incrementOrDecrementIndexesByOneByConcept(child.getConcept().getName(), conceptStartIndex - 1, Integer.MAX_VALUE, op);
-      modelStructuralMap.put(child, conceptStartIndex);
+      identityMap.put(child, conceptStartIndex);
     } else {
-      modelStructuralMap.remove(child);
+      identityMap.remove(child);
       incrementOrDecrementIndexesByOneByConcept(child.getConcept().getName(), conceptStartIndex, Integer.MAX_VALUE, op);
     }
   }
 
   public Integer getIndexRespectiveToConcept(SNode node) {
-    return this.modelStructuralMap.get(node);
+    return this.identityMap.get(node);
   }
 }

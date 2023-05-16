@@ -3,6 +3,7 @@
   <persistence version="9" />
   <languages>
     <use id="f3061a53-9226-4cc5-a443-f952ceaf5816" name="jetbrains.mps.baseLanguage" version="12" />
+    <use id="760a0a8c-eabb-4521-8bfd-65db761a9ba3" name="jetbrains.mps.baseLanguage.logging" version="0" />
   </languages>
   <imports>
     <import index="mhbf" ref="8865b7a8-5271-43d3-884c-6fd1d9cfdd34/java:org.jetbrains.mps.openapi.model(MPS.OpenAPI/)" />
@@ -34,6 +35,9 @@
       <concept id="3870108946630849399" name="jetbrains.mps.baseLanguage.structure.StaticFieldReferenceOperation" flags="ng" index="SiP3y" />
       <concept id="1070462154015" name="jetbrains.mps.baseLanguage.structure.StaticFieldDeclaration" flags="ig" index="Wx3nA" />
       <concept id="1070475354124" name="jetbrains.mps.baseLanguage.structure.ThisExpression" flags="nn" index="Xjq3P" />
+      <concept id="1070475926800" name="jetbrains.mps.baseLanguage.structure.StringLiteral" flags="nn" index="Xl_RD">
+        <property id="1070475926801" name="value" index="Xl_RC" />
+      </concept>
       <concept id="1081236700938" name="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" flags="ig" index="2YIFZL" />
       <concept id="1081236700937" name="jetbrains.mps.baseLanguage.structure.StaticMethodCall" flags="nn" index="2YIFZM">
         <reference id="1144433194310" name="classConcept" index="1Pybhc" />
@@ -110,6 +114,12 @@
       <concept id="1146644623116" name="jetbrains.mps.baseLanguage.structure.PrivateVisibility" flags="nn" index="3Tm6S6" />
       <concept id="1116615150612" name="jetbrains.mps.baseLanguage.structure.ClassifierClassExpression" flags="nn" index="3VsKOn">
         <reference id="1116615189566" name="classifier" index="3VsUkX" />
+      </concept>
+    </language>
+    <language id="760a0a8c-eabb-4521-8bfd-65db761a9ba3" name="jetbrains.mps.baseLanguage.logging">
+      <concept id="6332851714983831325" name="jetbrains.mps.baseLanguage.logging.structure.MsgStatement" flags="ng" index="2xdQw9">
+        <property id="6332851714983843871" name="severity" index="2xdLsb" />
+        <child id="5721587534047265374" name="message" index="9lYJi" />
       </concept>
     </language>
     <language id="ceab5195-25ea-4f22-9b92-103b95ca8c0c" name="jetbrains.mps.lang.core">
@@ -435,6 +445,12 @@
                 </node>
               </node>
             </node>
+            <node concept="2xdQw9" id="6B54swY9asC" role="3cqZAp">
+              <property role="2xdLsb" value="gZ5fksE/warn" />
+              <node concept="Xl_RD" id="6B54swY9asE" role="9lYJi">
+                <property role="Xl_RC" value="Initiating start up.." />
+              </node>
+            </node>
             <node concept="3clFbF" id="3k68It1idFF" role="3cqZAp">
               <node concept="2OqwBi" id="3k68It1ieOu" role="3clFbG">
                 <node concept="2OqwBi" id="3k68It1ie0V" role="2Oq$k0">
@@ -504,7 +520,6 @@
                 </node>
               </node>
             </node>
-            <node concept="3clFbH" id="2avWSBVLCn2" role="3cqZAp" />
             <node concept="3clFbF" id="7NrQ5ebKqgz" role="3cqZAp">
               <node concept="37vLTI" id="7NrQ5ebKrfp" role="3clFbG">
                 <node concept="3clFbT" id="7NrQ5ebKrB_" role="37vLTx">
@@ -513,6 +528,12 @@
                 <node concept="37vLTw" id="7NrQ5ebKqgx" role="37vLTJ">
                   <ref role="3cqZAo" node="2Bjn4wMXZzP" resolve="isRunning" />
                 </node>
+              </node>
+            </node>
+            <node concept="2xdQw9" id="6B54swYeXGA" role="3cqZAp">
+              <property role="2xdLsb" value="gZ5fksE/warn" />
+              <node concept="Xl_RD" id="6B54swYeXGC" role="9lYJi">
+                <property role="Xl_RC" value="Start up successful." />
               </node>
             </node>
           </node>
@@ -530,6 +551,12 @@
     <node concept="3clFb_" id="2Bjn4wMWCfh" role="jymVt">
       <property role="TrG5h" value="stop" />
       <node concept="3clFbS" id="2Bjn4wMWCfk" role="3clF47">
+        <node concept="2xdQw9" id="6B54swY5tam" role="3cqZAp">
+          <property role="2xdLsb" value="gZ5fksE/warn" />
+          <node concept="Xl_RD" id="6B54swY5tao" role="9lYJi">
+            <property role="Xl_RC" value="Initiating shutdown.." />
+          </node>
+        </node>
         <node concept="3clFbF" id="7KJg77IIqbn" role="3cqZAp">
           <node concept="2OqwBi" id="7KJg77IIr0i" role="3clFbG">
             <node concept="2OqwBi" id="7KJg77IIqsf" role="2Oq$k0">
@@ -578,6 +605,12 @@
                 <ref role="3cqZAo" node="2Bjn4wMXZzP" resolve="isRunning" />
               </node>
             </node>
+          </node>
+        </node>
+        <node concept="2xdQw9" id="6B54swY99bF" role="3cqZAp">
+          <property role="2xdLsb" value="gZ5fksE/warn" />
+          <node concept="Xl_RD" id="6B54swY99bH" role="9lYJi">
+            <property role="Xl_RC" value="Shutdown successful." />
           </node>
         </node>
       </node>

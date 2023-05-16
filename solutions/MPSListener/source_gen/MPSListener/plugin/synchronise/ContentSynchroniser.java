@@ -9,14 +9,14 @@ import MPSListener.plugin.dataClasses.emf.ecore.EClassifier;
 import org.jetbrains.mps.openapi.model.SNode;
 import org.jetbrains.mps.openapi.model.SModel;
 import java.util.HashMap;
+import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
+import org.apache.log4j.Level;
 import java.util.List;
 import java.util.ArrayList;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
 import org.jdom.Document;
-import org.jdom.Element;
 import java.util.Iterator;
-import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
-import org.apache.log4j.Level;
+import org.jdom.Element;
 import jetbrains.mps.util.JDOMUtil;
 import java.io.ByteArrayInputStream;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,8 +43,7 @@ public class ContentSynchroniser {
   private java.util.logging.Logger logger;
   private SNode selectedInstance;
   private SModel currentModel;
-
-  private Map<SNode, Integer> structuralMap;
+  private Map<SNode, Integer> identityMap;
   private boolean isSynced;
   private Map<String, Integer> conceptCounterMap;
   private static ContentSynchroniser instance;
@@ -52,7 +51,7 @@ public class ContentSynchroniser {
   private ContentSynchroniser() {
     // TODO: Idea of isSynced is to catch any errors and return false if everything does not go smoothly. Look for possible cases where errors might occur to improve reliability of isSynced
     this.logger = java.util.logging.Logger.getLogger(ContentSynchroniser.class.getSimpleName());
-    this.structuralMap = new HashMap<>();
+    this.identityMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
   }
 
@@ -64,6 +63,7 @@ public class ContentSynchroniser {
   }
 
   public void start(Map<EClassifier, SNode> ecoreToMPSLangMap, SNode selectedInstance) {
+    LoggingRuntime.logMsgView(Level.WARN, "Starting ContentSynchroniser..", ContentSynchroniser.class, null, null);
     this.ecoreToMPSLangMap = ecoreToMPSLangMap;
     this.selectedInstance = selectedInstance;
     this.isSynced = false;
@@ -78,13 +78,19 @@ public class ContentSynchroniser {
   }
 
   public boolean synchroniseContent(String modelXML) {
+    LoggingRuntime.logMsgView(Level.INFO, "Synchronising local content with server...", ContentSynchroniser.class, null, null);
     if (!(ecoreToMPSLangMap.isEmpty())) {
+
+      // Parse model received in XMI, to a Document.
       Document modelDoc = getDoc(modelXML);
+
+      // Get the root EClassifier, statemachines in this case.
       EClassifier mainEClassifier = getEClassifier(modelDoc.getRootElement().getName());
       this.currentModel = MPS_LocalRepo.getInstance().findModel("StateMachines", "structure");
+
       removeAllChildrenSNode();
-      Iterable<Element> modelIterable = modelDoc.getRootElement().getChildren();
-      Iterator<Element> modelIterator = modelIterable.iterator();
+
+      Iterator<Element> modelIterator = modelDoc.getRootElement().getChildren().iterator();
 
       Map<Element, SNode> localMap = new HashMap<>();
 
@@ -93,7 +99,9 @@ public class ContentSynchroniser {
         Element currElement = modelIterator.next();
         localMap.put(currElement, addChild(currElement, mainEClassifier));
       }
-      modelIterator = modelIterable.iterator();
+
+      // Reset iterator.
+      modelIterator = modelDoc.getRootElement().getChildren().iterator();
 
       // Second run to add properties and references
       while (modelIterator.hasNext()) {
@@ -101,20 +109,17 @@ public class ContentSynchroniser {
         setProperties(currElement, localMap.get(currElement));
         setReferences(currElement, localMap.get(currElement), mainEClassifier);
       }
-
       isSynced = true;
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Map initialised with is empty", ContentSynchroniser.class, null, null);
       isSynced = false;
     }
-
     return isSynced;
   }
 
   private Document getDoc(String modelXML) {
     Document modelDoc = null;
     try {
-      LoggingRuntime.logMsgView(Level.INFO, "Received\n" + modelXML, ContentSynchroniser.class, null, null);
       modelDoc = JDOMUtil.loadDocument(new ByteArrayInputStream(new ObjectMapper().readTree(modelXML).get("data").textValue().getBytes()));
     } catch (JDOMException e) {
       LoggingRuntime.logMsgView(Level.INFO, e.getMessage(), ContentSynchroniser.class, null, null);
@@ -144,7 +149,6 @@ public class ContentSynchroniser {
     } else {
       SNode conceptDeclaration = ((SNode) concept);
       return NodeFactory.getConcept(SPropertyOperations.getString(SModelOperations.getModuleStub(this.currentModel), PROPS.uuid$otr), SPropertyOperations.getString(conceptDeclaration, PROPS.conceptId$rrGe), SPropertyOperations.getString(conceptDeclaration, PROPS.name$MnvL));
-
     }
   }
 
@@ -198,7 +202,7 @@ public class ContentSynchroniser {
 
     // Increment concept counter and add to structural map
     incrementConceptCounter(child.getConcept().getName());
-    this.structuralMap.put(child, this.conceptCounterMap.get(child.getConcept().getName()));
+    this.identityMap.put(child, this.conceptCounterMap.get(child.getConcept().getName()));
 
     return child;
   }
@@ -226,8 +230,8 @@ public class ContentSynchroniser {
           final String[] referenceLocationTuple = refPath.split("\\.");
           String[] refArray = getEStructuralFeature(referenceLocationTuple[0], mainEClassifier).getEType().get$ref().split("//");
           final String refConceptName = refArray[refArray.length - 1];
-          ContentSynchroniser.this.structuralMap.keySet().forEach((SNode currNode) -> {
-            if (currNode.getConcept().getName().equals(refConceptName) && ContentSynchroniser.this.structuralMap.get(currNode).equals(Integer.valueOf(referenceLocationTuple[1]))) {
+          ContentSynchroniser.this.identityMap.keySet().forEach((SNode currNode) -> {
+            if (currNode.getConcept().getName().equals(refConceptName) && ContentSynchroniser.this.identityMap.get(currNode).equals(Integer.valueOf(referenceLocationTuple[1]))) {
               referenceToTargetNodeMap.put(currentReferenceLink, currNode);
             }
           });
@@ -246,12 +250,13 @@ public class ContentSynchroniser {
     }
   }
 
-  public Map<SNode, Integer> getStructuralMap() {
-    return this.structuralMap;
+  public Map<SNode, Integer> getIdentityMap() {
+    return this.identityMap;
   }
 
   public void stop() {
-    this.structuralMap = new HashMap<>();
+    LoggingRuntime.logMsgView(Level.WARN, "Resetting contentSynchroniser..", ContentSynchroniser.class, null, null);
+    this.identityMap = new HashMap<>();
     this.conceptCounterMap = new HashMap<>();
     this.isSynced = false;
   }
