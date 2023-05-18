@@ -65,6 +65,7 @@ public class StartPlugin {
   }
 
   public void stop() {
+    // Use this function to disable the plugin. Call it anywhere in the framework.
     LoggingRuntime.logMsgView(Level.WARN, "Initiating shutdown..", StartPlugin.class, null, null);
     this.emfClient.stop();
     this.mylistener.stop();

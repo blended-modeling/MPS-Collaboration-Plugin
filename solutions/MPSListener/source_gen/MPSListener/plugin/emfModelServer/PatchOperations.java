@@ -97,7 +97,6 @@ public class PatchOperations {
         }
       });
     });
-
   }
 
   private void move(final String path, String from) {
@@ -210,7 +209,6 @@ public class PatchOperations {
 
   private SProperty getProperty(SNode node, final String propertyName) {
     final Wrappers._T<SProperty> property = new Wrappers._T<SProperty>(null);
-    LoggingRuntime.logMsgView(Level.INFO, "Fetching property: " + propertyName, PatchOperations.class, null, null);
     node.getConcept().getProperties().forEach((SProperty currentProperty) -> {
       if (currentProperty.getName().equals(propertyName)) {
         if (currentProperty.getName().equals(propertyName)) {
@@ -327,8 +325,6 @@ public class PatchOperations {
       if (currentNodeConcept.getConcept().getName().equals(conceptName)) {
         Integer currentIndex = PatchOperations.this.identityMap.get(currentNodeConcept);
         if (currentIndex > start && currentIndex < stop) {
-
-          LoggingRuntime.logMsgView(Level.INFO, "Performing " + op, PatchOperations.class, null, null);
           if (op.equals("+")) {
             PatchOperations.this.identityMap.put(currentNodeConcept, PatchOperations.this.identityMap.get(currentNodeConcept) + 1);
           } else {

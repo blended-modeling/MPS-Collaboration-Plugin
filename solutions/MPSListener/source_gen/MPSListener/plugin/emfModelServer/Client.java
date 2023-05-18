@@ -12,6 +12,7 @@ import org.jetbrains.mps.openapi.model.SNode;
 import jetbrains.mps.project.Project;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
+import MPSListener.plugin.initiate.StartPlugin;
 import org.eclipse.emfcloud.modelserver.client.JsonToStringSubscriptionListener;
 import org.eclipse.emfcloud.modelserver.client.ModelServerNotification;
 import java.util.Optional;
@@ -22,7 +23,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import org.apache.http.client.utils.URIBuilder;
 import java.net.http.HttpResponse;
-import javax.swing.JOptionPane;
 import java.net.URISyntaxException;
 import java.io.IOException;
 import java.util.Map;
@@ -67,8 +67,13 @@ public class Client {
     subscribe();
 
     this.eCoreValidator = new PerformEcoreValidation(selectedInstance);
+    boolean validationIsSuccess = this.eCoreValidator.ecoreIsMatchLocally(getModel(selectedInstance.getConcept().getName().toLowerCase() + ".ecore", "json"));
+    if (!(validationIsSuccess)) {
+      LoggingRuntime.logMsgView(Level.INFO, "Validation failed. Exiting plugin...", Client.class, null, null);
+      StartPlugin.getInstance().stop();
+    }
+    LoggingRuntime.logMsgView(Level.INFO, "Meta model validation = " + validationIsSuccess, Client.class, null, null);
 
-    this.eCoreValidator.ecoreIsMatchLocally(getModel(selectedInstance.getConcept().getName().toLowerCase() + ".ecore", "json"));
     this.contentSynchroniser = ContentSynchroniser.getInstance();
     this.contentSynchroniser.start(this.eCoreValidator.getEcoreToMPS(), selectedInstance);
 
@@ -76,6 +81,7 @@ public class Client {
       LoggingRuntime.logMsgView(Level.INFO, "Synchronisation successful", Client.class, null, null);
     } else {
       LoggingRuntime.logMsgView(Level.INFO, "Synchronisation unsuccessful!", Client.class, null, null);
+      StartPlugin.getInstance().stop();
     }
 
     this.patchOpeartions.start(selectedInstance, project);
@@ -167,12 +173,11 @@ public class Client {
       HttpResponse<String> httpResponse = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
       serverResponse = httpResponse.body();
       if (httpResponse.statusCode() == 404) {
-        JOptionPane.showMessageDialog(null, "Model does not exist (by name) in server. Exiting application!");
-        System.exit(2);
+        StartPlugin.getInstance().stop();
       }
     } catch (URISyntaxException se) {
     } catch (IOException e) {
-      System.exit(2);
+      StartPlugin.getInstance().stop();
 
     } catch (InterruptedException e) {
       LoggingRuntime.logMsgView(Level.INFO, "Interrupted exception", Client.class, null, null);

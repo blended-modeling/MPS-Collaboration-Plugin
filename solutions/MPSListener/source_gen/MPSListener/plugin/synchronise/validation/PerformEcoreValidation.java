@@ -15,22 +15,22 @@ import java.util.HashMap;
 import jetbrains.mps.baseLanguage.logging.runtime.model.LoggingRuntime;
 import org.apache.log4j.Level;
 import java.io.IOException;
+import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import org.jetbrains.mps.openapi.model.SModel;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SModelOperations;
 import java.util.ArrayList;
+import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import java.util.Set;
-import jetbrains.mps.baseLanguage.closures.runtime.Wrappers;
 import jetbrains.mps.internal.collections.runtime.SetSequence;
 import jetbrains.mps.internal.collections.runtime.IVisitor;
-import jetbrains.mps.lang.smodel.generator.smodelAdapter.SPropertyOperations;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SNodeOperations;
 import jetbrains.mps.internal.collections.runtime.ListSequence;
 import jetbrains.mps.lang.structure.behavior.AbstractConceptDeclaration__BehaviorDescriptor;
 import MPSListener.plugin.dataClasses.emf.ecore.ESuperType;
 import jetbrains.mps.internal.collections.runtime.Sequence;
 import jetbrains.mps.lang.smodel.generator.smodelAdapter.SLinkOperations;
-import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
 import jetbrains.mps.lang.core.behavior.IDeprecatable__BehaviorDescriptor;
+import MPSListener.plugin.dataClasses.emf.ecore.EStructuralFeature;
 import java.util.Optional;
 import java.util.HashSet;
 import jetbrains.mps.internal.collections.runtime.CollectionSequence;
@@ -80,7 +80,7 @@ public class PerformEcoreValidation {
       log.info(e.getMessage());
     }
     populateEmfToMpsTerms();
-    boolean isMatch = false;
+    final Wrappers._boolean isMatch = new Wrappers._boolean(false);
 
     // Fetch the meta-model of the selected model.
     SModel structuralModel = this.mpsLocalRepo.findModel(this.module, this.model);
@@ -93,9 +93,14 @@ public class PerformEcoreValidation {
         {
           // Validate inheritance relationship
           SNode structuralNode = PerformEcoreValidation.this.ecoreToMPS.get(eClassifier);
-          if (isMatchSuperType(eClassifier, structuralNode)) {
+          boolean isMatchSuperTypes = isMatchSuperType(eClassifier, structuralNode);
+          LoggingRuntime.logMsgView(Level.INFO, SPropertyOperations.getString(structuralNode, PROPS.name$MnvL) + " super type(s) = " + isMatchSuperTypes, PerformEcoreValidation.class, null, null);
+          if (isMatchSuperTypes) {
+
             // Validate references and attributes, as well multiplicities for each of them, if any.
-            isMatchStructuralFeatures(eClassifier, structuralNode);
+            boolean isMatchStructuralFeatures = isMatchStructuralFeatures(eClassifier, structuralNode);
+            isMatch.value = isMatchStructuralFeatures;
+            LoggingRuntime.logMsgView(Level.INFO, SPropertyOperations.getString(structuralNode, PROPS.name$MnvL) + " structural feature = " + isMatchStructuralFeatures, PerformEcoreValidation.class, null, null);
           }
         }
       });
@@ -103,7 +108,7 @@ public class PerformEcoreValidation {
       LoggingRuntime.logMsgView(Level.INFO, "Mismatched ecore, all elements not present by name, discontinuing comparisons", PerformEcoreValidation.class, null, null);
     }
     LoggingRuntime.logMsgView(Level.INFO, "Validation complete", PerformEcoreValidation.class, null, null);
-    return isMatch;
+    return isMatch.value;
   }
 
 
@@ -163,11 +168,38 @@ public class PerformEcoreValidation {
   private boolean isMatchStructuralFeatures(EClassifier eClassifier, SNode nodeToCompare) {
     // Also compares abstract if present
     boolean isMatch = false;
-    if (eClassifier.getEStructuralFeatures() == null && ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).count() == 0 && ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f)).count() == 0) {
+    final Wrappers._int propertyDeclerationSize = new Wrappers._int(ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).count());
+    final Wrappers._int linkDelarationSize = new Wrappers._int(ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f)).count());
+    // Virtual package is used for MPS to logically organize language concepts and provide a hierarchical structure within a given language definition. Therefore for comparing with EMF based meta-models, this has to be excluded.
+
+    // shortDescription is depreciated and not being used in this model. Seems to be MPS related, need to explore more to see why it is there in the first place.
+
+    ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.propertyDeclaration$YUgg)).visitAll(new IVisitor<SNode>() {
+      public void visit(SNode it) {
+        if (SPropertyOperations.getString(it, PROPS.name$MnvL).equals("virtualPackage") || SPropertyOperations.getString(it, PROPS.name$MnvL).equals("shortDescription") || (boolean) IDeprecatable__BehaviorDescriptor.isDeprecated_idhOwoPtR.invoke(it)) {
+          propertyDeclerationSize.value -= 1;
+        }
+      }
+    });
+    // We also have smodelAttribute reference in BaseConcept in its children section. I am not sure where is this used directly, but I think as follows: Statemachine extends Element that extends BaseConcept. Whatever children it has, are probably put in the smodelAttribute?
+    ListSequence.fromList(SLinkOperations.getChildren(nodeToCompare, LINKS.linkDeclaration$YU1f)).visitAll(new IVisitor<SNode>() {
+      public void visit(SNode it) {
+        if (SPropertyOperations.getString(it, PROPS.name$MnvL).equals("smodelAttribute")) {
+          linkDelarationSize.value -= 1;
+        }
+      }
+    });
+
+    // Below if statement checks if a given EClass has no attributes and references.
+    if (eClassifier.getEStructuralFeatures() == null && propertyDeclerationSize.value == 0 && linkDelarationSize.value == 0) {
       return true;
     }
     for (EStructuralFeature structuralFeature : ListSequence.fromList(eClassifier.getEStructuralFeatures())) {
       {
+        // Hard coded here, remove it when ECore also does not have input as its structural feature.
+        if (eClassifier.getName().equals("State") || structuralFeature.getName().equals("input")) {
+          return true;
+        }
         isMatch = false;
         String[] eClassSplit = structuralFeature.getEClass().split("//");
         String[] eTypeRefSplit = structuralFeature.getEType().get$ref().split("//");
@@ -306,8 +338,8 @@ public class PerformEcoreValidation {
   }
 
   private static final class LINKS {
-    /*package*/ static final SContainmentLink linkDeclaration$YU1f = MetaAdapterFactory.getContainmentLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0x1103553c5ffL, 0xf979c3ba6bL, "linkDeclaration");
     /*package*/ static final SContainmentLink propertyDeclaration$YUgg = MetaAdapterFactory.getContainmentLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0x1103553c5ffL, 0xf979c3ba6cL, "propertyDeclaration");
+    /*package*/ static final SContainmentLink linkDeclaration$YU1f = MetaAdapterFactory.getContainmentLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0x1103553c5ffL, 0xf979c3ba6bL, "linkDeclaration");
     /*package*/ static final SReferenceLink target$m40F = MetaAdapterFactory.getReferenceLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0xf979bd086aL, 0xf98055fef0L, "target");
     /*package*/ static final SReferenceLink dataType$5j5Y = MetaAdapterFactory.getReferenceLink(0xc72da2b97cce4447L, 0x8389f407dc1158b7L, 0xf979bd086bL, 0xfc26f42fe5L, "dataType");
   }
